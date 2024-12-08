@@ -13,9 +13,12 @@ namespace Endurance_Testing
         private CancellationTokenSource cancellationTokenSource;
         private List<EnduranceTestResult> enduranceTestResults = new List<EnduranceTestResult>();
         private int totalRequests;
-        private int elapsedTime;
         private int durationInSeconds;
-        private int currentRound; // Variabel untuk menyimpan nomor putaran
+        private int currentRound;
+        private int totalSuccessfulRequests; // Total permintaan berhasil untuk semua putaran
+        private int totalFailedRequests; // Total permintaan gagal untuk semua putaran
+        private float totalCpuUsage;
+        private float totalRamUsage;
 
         public EnduranceTesting()
         {
@@ -24,7 +27,6 @@ namespace Endurance_Testing
             textBoxInputRequest.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
             textBoxTime.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
 
-            // Set tombol Stop tidak aktif saat aplikasi dimulai
             btnStop.Enabled = false;
         }
 
@@ -66,7 +68,7 @@ namespace Endurance_Testing
                 return;
             }
 
-            // Menentukan durasi dalam detik
+            // Menentukan durasi dalam detik berdasarkan pilihan periode
             if (radioButtonMinute.Checked)
             {
                 durationInSeconds *= 60;
@@ -74,6 +76,11 @@ namespace Endurance_Testing
             else if (radioButtonHour.Checked)
             {
                 durationInSeconds *= 3600;
+            }
+            else if (!radioButtonSecond.Checked) // Pastikan salah satu periode dipilih
+            {
+                MessageBox.Show("Please select a time period (seconds, minutes, or hours).");
+                return;
             }
 
             // Nonaktifkan tombol Start, Stop, Clear, dan Export
@@ -83,8 +90,11 @@ namespace Endurance_Testing
             btnExport.Enabled = false;
 
             cancellationTokenSource = new CancellationTokenSource();
-            elapsedTime = 0;
             currentRound = 0; // Reset nomor putaran
+            totalSuccessfulRequests = 0; // Reset total permintaan berhasil
+            totalFailedRequests = 0; // Reset total permintaan gagal
+            totalCpuUsage = 0; // Reset total penggunaan CPU
+            totalRamUsage = 0; // Reset total penggunaan RAM
 
             // Mulai penghitungan mundur waktu
             var countdownTask = StartCountdown(durationInSeconds, cancellationTokenSource.Token);
@@ -98,6 +108,9 @@ namespace Endurance_Testing
             // Aktifkan kembali tombol Clear dan Export setelah pengujian selesai
             btnClear.Enabled = true;
             btnExport.Enabled = true;
+
+            // Tampilkan ringkasan setelah pengujian selesai di output
+            ShowSummary();
         }
 
         private async Task StartCountdown(int durationInSeconds, CancellationToken cancellationToken)
@@ -131,6 +144,10 @@ namespace Endurance_Testing
             {
                 currentRound++; // Increment nomor putaran
 
+                // Reset permintaan berhasil dan gagal untuk putaran ini
+                int roundSuccessfulRequests = 0;
+                int roundFailedRequests = 0;
+
                 // Kirim permintaan secara bersamaan
                 var tasks = new List<Task<EnduranceTestResult>>();
                 for (int i = 0; i < totalRequests; i++)
@@ -142,11 +159,30 @@ namespace Endurance_Testing
                 var results = await Task.WhenAll(tasks);
                 enduranceTestResults.AddRange(results);
 
+                // Hitung penggunaan CPU dan RAM
+                float currentCpuUsage = GetCpuUsage();
+                float currentRamUsage = GetRamUsage();
+                totalCpuUsage += currentCpuUsage;
+                totalRamUsage += currentRamUsage;
+
                 // Tampilkan hasil secara real-time dengan informasi putaran
                 foreach (var result in results)
                 {
                     DisplayResult(result, currentRound);
+                    if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        roundSuccessfulRequests++;
+                        totalSuccessfulRequests++;
+                    }
+                    else
+                    {
+                        roundFailedRequests++;
+                        totalFailedRequests++;
+                    }
                 }
+
+                // Tampilkan statistik untuk putaran saat ini
+                DisplayRoundStatistics(currentCpuUsage, currentRamUsage, roundSuccessfulRequests, roundFailedRequests);
 
                 // Tunggu sebelum mengirim permintaan berikutnya
                 await Task.Delay(1000); // Delay 1 detik antara putaran
@@ -155,9 +191,6 @@ namespace Endurance_Testing
             stopwatch.Stop();
             btnStart.Enabled = true;
             btnStop.Enabled = false;
-
-            // Tampilkan hasil akhir
-            DisplayResults();
         }
 
         private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url)
@@ -199,10 +232,54 @@ namespace Endurance_Testing
             textBoxOutput.ScrollToCaret(); // Scroll ke bawah untuk menampilkan hasil terbaru
         }
 
-        private void DisplayResults()
+        private void DisplayRoundStatistics(float currentCpuUsage, float currentRamUsage, int roundSuccessfulRequests, int roundFailedRequests)
         {
-            // Tampilkan hasil akhir jika diperlukan
-            // Saat ini, hasil sudah ditampilkan secara real-time di DisplayResult
+            // Tampilkan statistik untuk putaran saat ini
+            string roundStats = $"Round {currentRound} Statistics:{Environment.NewLine}" +
+                                $"CPU Usage: {currentCpuUsage:F2}%{Environment.NewLine}" +
+                                $"RAM Usage: {currentRamUsage:F2} MB{Environment.NewLine}" +
+                                $"Total Requests: {totalRequests}{Environment.NewLine}" +
+                                $"Successful Requests: {roundSuccessfulRequests}{Environment.NewLine}" +
+                                $"Failed Requests: {roundFailedRequests}{Environment.NewLine}{Environment.NewLine}"; // Tambahkan baris baru
+
+            textBoxOutput.AppendText(roundStats);
+            textBoxOutput.ScrollToCaret(); // Scroll ke bawah untuk menampilkan statistik terbaru
+        }
+
+        private void ShowSummary()
+        {
+            // Hitung rata-rata penggunaan CPU dan RAM
+            float averageCpuUsage = totalCpuUsage / currentRound;
+            float averageRamUsage = totalRamUsage / currentRound;
+
+            // Tampilkan ringkasan di output
+            string summaryMessage = $"Summary:{Environment.NewLine}" +
+                                    $"Total Requests: {totalRequests * currentRound}{Environment.NewLine}" +
+                                    $"Successful Requests: {totalSuccessfulRequests}{Environment.NewLine}" +
+                                    $"Failed Requests: {totalFailedRequests}{Environment.NewLine}" +
+                                    $"Average CPU Usage: {averageCpuUsage:F2}%{Environment.NewLine}" +
+                                    $"Average RAM Usage: {averageRamUsage:F2} MB{Environment.NewLine}"; // Tambahkan baris baru
+
+            textBoxOutput.AppendText(summaryMessage);
+            textBoxOutput.ScrollToCaret(); // Scroll ke bawah untuk menampilkan ringkasan terbaru
+        }
+
+        private float GetCpuUsage()
+        {
+            // Menggunakan PerformanceCounter untuk mendapatkan penggunaan CPU
+            using (var cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total"))
+            {
+                return cpuCounter.NextValue();
+            }
+        }
+
+        private float GetRamUsage()
+        {
+            // Menggunakan PerformanceCounter untuk mendapatkan penggunaan RAM
+            using (var ramCounter = new PerformanceCounter("Memory", "Available MBytes"))
+            {
+                return ramCounter.NextValue();
+            }
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -259,7 +336,6 @@ namespace Endurance_Testing
             textBoxOutput.Clear();
             enduranceTestResults.Clear();
             totalRequests = 0;
-            elapsedTime = 0;
             durationInSeconds = 0;
             btnStart.Enabled = true;
             btnStop.Enabled = false;
