@@ -1,0 +1,9 @@
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\Endurance Testing.exe.config
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\Endurance Testing.exe
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\Endurance Testing.pdb
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\Endurance Testing.csproj.AssemblyReference.cache
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\Endurance_Testing.Properties.Resources.resources
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\Endurance Testing.csproj.GenerateResource.cache
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\Endurance Testing.csproj.CoreCompileInputs.cache
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\Endurance Testing.exe
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\Endurance Testing.pdb

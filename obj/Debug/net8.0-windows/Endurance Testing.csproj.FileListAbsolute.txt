@@ -1,0 +1,15 @@
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\Endurance Testing.exe
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\Endurance Testing.dll.config
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\Endurance Testing.deps.json
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\Endurance Testing.runtimeconfig.json
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\Endurance Testing.dll
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\Endurance Testing.pdb
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance_Testing.Properties.Resources.resources
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.csproj.GenerateResource.cache
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.csproj.CoreCompileInputs.cache
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.dll
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\refint\Endurance Testing.dll
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.pdb
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.genruntimeconfig.cache
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\ref\Endurance Testing.dll
