@@ -15,10 +15,12 @@ namespace Endurance_Testing
         private int totalRequests;
         private int durationInSeconds;
         private int currentRound;
-        private int totalSuccessfulRequests; // Total permintaan berhasil untuk semua putaran
-        private int totalFailedRequests; // Total permintaan gagal untuk semua putaran
+        private int totalSuccessfulRequests;
+        private int totalFailedRequests;
         private float totalCpuUsage;
         private float totalRamUsage;
+        private float totalResponseTime;
+        private int totalResponses;
 
         public EnduranceTesting()
         {
@@ -77,24 +79,25 @@ namespace Endurance_Testing
             {
                 durationInSeconds *= 3600;
             }
-            else if (!radioButtonSecond.Checked) // Pastikan salah satu periode dipilih
+            else if (!radioButtonSecond.Checked)
             {
                 MessageBox.Show("Please select a time period (seconds, minutes, or hours).");
                 return;
             }
 
-            // Nonaktifkan tombol Start, Stop, Clear, dan Export
             btnStart.Enabled = false;
             btnStop.Enabled = true;
             btnClear.Enabled = false;
             btnExport.Enabled = false;
 
             cancellationTokenSource = new CancellationTokenSource();
-            currentRound = 0; // Reset nomor putaran
-            totalSuccessfulRequests = 0; // Reset total permintaan berhasil
-            totalFailedRequests = 0; // Reset total permintaan gagal
-            totalCpuUsage = 0; // Reset total penggunaan CPU
-            totalRamUsage = 0; // Reset total penggunaan RAM
+            currentRound = 0;
+            totalSuccessfulRequests = 0;
+            totalFailedRequests = 0;
+            totalCpuUsage = 0;
+            totalRamUsage = 0;
+            totalResponseTime = 0;
+            totalResponses = 0;
 
             // Mulai penghitungan mundur waktu
             var countdownTask = StartCountdown(durationInSeconds, cancellationTokenSource.Token);
@@ -142,11 +145,12 @@ namespace Endurance_Testing
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                currentRound++; // Increment nomor putaran
+                currentRound++;
 
                 // Reset permintaan berhasil dan gagal untuk putaran ini
                 int roundSuccessfulRequests = 0;
                 int roundFailedRequests = 0;
+                float roundResponseTime = 0; // Reset total waktu respons untuk putaran ini
 
                 // Kirim permintaan secara bersamaan
                 var tasks = new List<Task<EnduranceTestResult>>();
@@ -169,6 +173,7 @@ namespace Endurance_Testing
                 foreach (var result in results)
                 {
                     DisplayResult(result, currentRound);
+                    roundResponseTime += (float)result.ResponseTime.TotalMilliseconds; // Tambahkan waktu respons ke total putaran
                     if (result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         roundSuccessfulRequests++;
@@ -181,8 +186,14 @@ namespace Endurance_Testing
                     }
                 }
 
-                // Tampilkan statistik untuk putaran saat ini
-                DisplayRoundStatistics(currentCpuUsage, currentRamUsage, roundSuccessfulRequests, roundFailedRequests);
+                // Hitung rata-rata waktu respons untuk putaran ini
+                if (totalRequests > 0)
+                {
+                    float averageRoundResponseTime = roundResponseTime / totalRequests; // Hitung rata-rata untuk putaran ini
+                    totalResponseTime += roundResponseTime; // Tambahkan ke total waktu respons keseluruhan
+                    totalResponses += totalRequests; // Tambahkan ke total respons
+                    DisplayRoundStatistics(currentCpuUsage, currentRamUsage, roundSuccessfulRequests, roundFailedRequests, averageRoundResponseTime);
+                }
 
                 // Tunggu sebelum mengirim permintaan berikutnya
                 await Task.Delay(1000); // Delay 1 detik antara putaran
@@ -229,10 +240,10 @@ namespace Endurance_Testing
         {
             string resultString = $"Round {round}: Status: {result.StatusCode}, Reason: {result.ReasonPhrase}, Response Time: {result.ResponseTime.TotalMilliseconds} ms";
             textBoxOutput.AppendText(resultString + Environment.NewLine);
-            textBoxOutput.ScrollToCaret(); // Scroll ke bawah untuk menampilkan hasil terbaru
+            textBoxOutput.ScrollToCaret();
         }
 
-        private void DisplayRoundStatistics(float currentCpuUsage, float currentRamUsage, int roundSuccessfulRequests, int roundFailedRequests)
+        private void DisplayRoundStatistics(float currentCpuUsage, float currentRamUsage, int roundSuccessfulRequests, int roundFailedRequests, float averageRoundResponseTime)
         {
             // Tampilkan statistik untuk putaran saat ini
             string roundStats = $"Round {currentRound} Statistics:{Environment.NewLine}" +
@@ -240,10 +251,11 @@ namespace Endurance_Testing
                                 $"RAM Usage: {currentRamUsage:F2} MB{Environment.NewLine}" +
                                 $"Total Requests: {totalRequests}{Environment.NewLine}" +
                                 $"Successful Requests: {roundSuccessfulRequests}{Environment.NewLine}" +
-                                $"Failed Requests: {roundFailedRequests}{Environment.NewLine}{Environment.NewLine}"; // Tambahkan baris baru
+                                $"Failed Requests: {roundFailedRequests}{Environment.NewLine}" +
+                                $"Average Response Time: {averageRoundResponseTime:F2} ms{Environment.NewLine}{Environment.NewLine}";
 
             textBoxOutput.AppendText(roundStats);
-            textBoxOutput.ScrollToCaret(); // Scroll ke bawah untuk menampilkan statistik terbaru
+            textBoxOutput.ScrollToCaret();
         }
 
         private void ShowSummary()
@@ -252,16 +264,20 @@ namespace Endurance_Testing
             float averageCpuUsage = totalCpuUsage / currentRound;
             float averageRamUsage = totalRamUsage / currentRound;
 
+            // Hitung rata-rata waktu respons keseluruhan
+            float averageResponseTime = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
+
             // Tampilkan ringkasan di output
             string summaryMessage = $"Summary:{Environment.NewLine}" +
                                     $"Total Requests: {totalRequests * currentRound}{Environment.NewLine}" +
                                     $"Successful Requests: {totalSuccessfulRequests}{Environment.NewLine}" +
                                     $"Failed Requests: {totalFailedRequests}{Environment.NewLine}" +
                                     $"Average CPU Usage: {averageCpuUsage:F2}%{Environment.NewLine}" +
-                                    $"Average RAM Usage: {averageRamUsage:F2} MB{Environment.NewLine}"; // Tambahkan baris baru
+                                    $"Average RAM Usage: {averageRamUsage:F2} MB{Environment.NewLine}" +
+                                    $"Average Response Time: {averageResponseTime:F2} ms{Environment.NewLine}";
 
             textBoxOutput.AppendText(summaryMessage);
-            textBoxOutput.ScrollToCaret(); // Scroll ke bawah untuk menampilkan ringkasan terbaru
+            textBoxOutput.ScrollToCaret();
         }
 
         private float GetCpuUsage()
@@ -287,8 +303,8 @@ namespace Endurance_Testing
             cancellationTokenSource.Cancel();
             btnStart.Enabled = true;
             btnStop.Enabled = false;
-            btnClear.Enabled = true; // Aktifkan tombol Clear setelah dihentikan
-            btnExport.Enabled = true; // Aktifkan tombol Export setelah dihentikan
+            btnClear.Enabled = true;
+            btnExport.Enabled = true;
         }
 
         private void btnHelp_Click(object sender, EventArgs e)
@@ -332,15 +348,15 @@ namespace Endurance_Testing
             textBoxInputUrl.Clear();
             textBoxInputRequest.Clear();
             textBoxTime.Clear();
-            lblTimeLeft.Text = "00:00:00"; // Reset label ke format default
+            lblTimeLeft.Text = "00:00:00";
             textBoxOutput.Clear();
             enduranceTestResults.Clear();
             totalRequests = 0;
             durationInSeconds = 0;
             btnStart.Enabled = true;
             btnStop.Enabled = false;
-            btnClear.Enabled = false; // Nonaktifkan tombol Clear saat pengujian sedang berjalan
-            btnExport.Enabled = false; // Nonaktifkan tombol Export saat pengujian sedang berjalan
+            btnClear.Enabled = false;
+            btnExport.Enabled = false;
         }
 
         private void btnExport_Click(object sender, EventArgs e)
