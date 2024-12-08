@@ -28,20 +28,305 @@
         /// </summary>
         private void InitializeComponent()
         {
+            lblEnduranceTesting = new System.Windows.Forms.Label();
+            lblInputUrl = new System.Windows.Forms.Label();
+            textBoxInputUrl = new System.Windows.Forms.TextBox();
+            panelPeriod = new System.Windows.Forms.Panel();
+            radioButtonHour = new System.Windows.Forms.RadioButton();
+            radioButtonMinute = new System.Windows.Forms.RadioButton();
+            radioButtonSecond = new System.Windows.Forms.RadioButton();
+            textBoxInputRequest = new System.Windows.Forms.TextBox();
+            lblInputNumberOfRequest = new System.Windows.Forms.Label();
+            textBoxTime = new System.Windows.Forms.TextBox();
+            lblTime = new System.Windows.Forms.Label();
+            btnStart = new System.Windows.Forms.Button();
+            btnStop = new System.Windows.Forms.Button();
+            lblTimeLeft = new System.Windows.Forms.Label();
+            lblOutput = new System.Windows.Forms.Label();
+            textBox1 = new System.Windows.Forms.TextBox();
+            btnHelp = new System.Windows.Forms.Button();
+            btnInfo = new System.Windows.Forms.Button();
+            btnClear = new System.Windows.Forms.Button();
+            btnExport = new System.Windows.Forms.Button();
+            panelPeriod.SuspendLayout();
             SuspendLayout();
+            // 
+            // lblEnduranceTesting
+            // 
+            lblEnduranceTesting.AutoSize = true;
+            lblEnduranceTesting.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            lblEnduranceTesting.Location = new System.Drawing.Point(418, 24);
+            lblEnduranceTesting.Name = "lblEnduranceTesting";
+            lblEnduranceTesting.Size = new System.Drawing.Size(366, 54);
+            lblEnduranceTesting.TabIndex = 0;
+            lblEnduranceTesting.Text = "Endurance Testing";
+            // 
+            // lblInputUrl
+            // 
+            lblInputUrl.AutoSize = true;
+            lblInputUrl.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            lblInputUrl.Location = new System.Drawing.Point(13, 105);
+            lblInputUrl.Name = "lblInputUrl";
+            lblInputUrl.Size = new System.Drawing.Size(129, 35);
+            lblInputUrl.TabIndex = 0;
+            lblInputUrl.Text = "Input URL:";
+            // 
+            // textBoxInputUrl
+            // 
+            textBoxInputUrl.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            textBoxInputUrl.Location = new System.Drawing.Point(13, 151);
+            textBoxInputUrl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            textBoxInputUrl.MaxLength = 999999999;
+            textBoxInputUrl.Name = "textBoxInputUrl";
+            textBoxInputUrl.Size = new System.Drawing.Size(348, 37);
+            textBoxInputUrl.TabIndex = 1;
+            // 
+            // panelPeriod
+            // 
+            panelPeriod.Controls.Add(radioButtonHour);
+            panelPeriod.Controls.Add(radioButtonMinute);
+            panelPeriod.Controls.Add(radioButtonSecond);
+            panelPeriod.Location = new System.Drawing.Point(1085, 105);
+            panelPeriod.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            panelPeriod.Name = "panelPeriod";
+            panelPeriod.Size = new System.Drawing.Size(86, 87);
+            panelPeriod.TabIndex = 4;
+            // 
+            // radioButtonHour
+            // 
+            radioButtonHour.AutoSize = true;
+            radioButtonHour.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            radioButtonHour.Location = new System.Drawing.Point(3, 60);
+            radioButtonHour.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            radioButtonHour.Name = "radioButtonHour";
+            radioButtonHour.Size = new System.Drawing.Size(66, 25);
+            radioButtonHour.TabIndex = 6;
+            radioButtonHour.TabStop = true;
+            radioButtonHour.Text = "Hour";
+            radioButtonHour.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonMinute
+            // 
+            radioButtonMinute.AutoSize = true;
+            radioButtonMinute.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            radioButtonMinute.Location = new System.Drawing.Point(3, 32);
+            radioButtonMinute.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            radioButtonMinute.Name = "radioButtonMinute";
+            radioButtonMinute.Size = new System.Drawing.Size(80, 25);
+            radioButtonMinute.TabIndex = 5;
+            radioButtonMinute.TabStop = true;
+            radioButtonMinute.Text = "Minute";
+            radioButtonMinute.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSecond
+            // 
+            radioButtonSecond.AutoSize = true;
+            radioButtonSecond.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            radioButtonSecond.Location = new System.Drawing.Point(3, 4);
+            radioButtonSecond.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            radioButtonSecond.Name = "radioButtonSecond";
+            radioButtonSecond.Size = new System.Drawing.Size(82, 25);
+            radioButtonSecond.TabIndex = 4;
+            radioButtonSecond.TabStop = true;
+            radioButtonSecond.Text = "Second";
+            radioButtonSecond.UseVisualStyleBackColor = true;
+            // 
+            // textBoxInputRequest
+            // 
+            textBoxInputRequest.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            textBoxInputRequest.Location = new System.Drawing.Point(374, 151);
+            textBoxInputRequest.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            textBoxInputRequest.MaxLength = 999999999;
+            textBoxInputRequest.Name = "textBoxInputRequest";
+            textBoxInputRequest.Size = new System.Drawing.Size(348, 37);
+            textBoxInputRequest.TabIndex = 2;
+            // 
+            // lblInputNumberOfRequest
+            // 
+            lblInputNumberOfRequest.AutoSize = true;
+            lblInputNumberOfRequest.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            lblInputNumberOfRequest.Location = new System.Drawing.Point(374, 105);
+            lblInputNumberOfRequest.Name = "lblInputNumberOfRequest";
+            lblInputNumberOfRequest.Size = new System.Drawing.Size(302, 35);
+            lblInputNumberOfRequest.TabIndex = 0;
+            lblInputNumberOfRequest.Text = "Input Number of Request:";
+            // 
+            // textBoxTime
+            // 
+            textBoxTime.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            textBoxTime.Location = new System.Drawing.Point(734, 151);
+            textBoxTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            textBoxTime.MaxLength = 999999999;
+            textBoxTime.Name = "textBoxTime";
+            textBoxTime.Size = new System.Drawing.Size(348, 37);
+            textBoxTime.TabIndex = 3;
+            // 
+            // lblTime
+            // 
+            lblTime.AutoSize = true;
+            lblTime.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            lblTime.Location = new System.Drawing.Point(734, 105);
+            lblTime.Name = "lblTime";
+            lblTime.Size = new System.Drawing.Size(244, 35);
+            lblTime.TabIndex = 0;
+            lblTime.Text = "Input Time in Period:";
+            // 
+            // btnStart
+            // 
+            btnStart.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnStart.Location = new System.Drawing.Point(418, 217);
+            btnStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            btnStart.Name = "btnStart";
+            btnStart.Size = new System.Drawing.Size(110, 47);
+            btnStart.TabIndex = 7;
+            btnStart.Text = "Start";
+            btnStart.UseVisualStyleBackColor = true;
+            // 
+            // btnStop
+            // 
+            btnStop.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnStop.Location = new System.Drawing.Point(674, 217);
+            btnStop.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            btnStop.Name = "btnStop";
+            btnStop.Size = new System.Drawing.Size(110, 47);
+            btnStop.TabIndex = 8;
+            btnStop.Text = "Stop";
+            btnStop.UseVisualStyleBackColor = true;
+            // 
+            // lblTimeLeft
+            // 
+            lblTimeLeft.AutoSize = true;
+            lblTimeLeft.Font = new System.Drawing.Font("Segoe UI", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            lblTimeLeft.Location = new System.Drawing.Point(531, 295);
+            lblTimeLeft.Name = "lblTimeLeft";
+            lblTimeLeft.Size = new System.Drawing.Size(136, 45);
+            lblTimeLeft.TabIndex = 0;
+            lblTimeLeft.Text = "00:00:00";
+            // 
+            // lblOutput
+            // 
+            lblOutput.AutoSize = true;
+            lblOutput.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            lblOutput.Location = new System.Drawing.Point(13, 362);
+            lblOutput.Name = "lblOutput";
+            lblOutput.Size = new System.Drawing.Size(98, 35);
+            lblOutput.TabIndex = 0;
+            lblOutput.Text = "Output:";
+            // 
+            // textBox1
+            // 
+            textBox1.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            textBox1.Location = new System.Drawing.Point(13, 407);
+            textBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            textBox1.MaxLength = 999999999;
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.ReadOnly = true;
+            textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            textBox1.Size = new System.Drawing.Size(1009, 307);
+            textBox1.TabIndex = 9;
+            // 
+            // btnHelp
+            // 
+            btnHelp.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnHelp.Location = new System.Drawing.Point(1048, 407);
+            btnHelp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            btnHelp.Name = "btnHelp";
+            btnHelp.Size = new System.Drawing.Size(110, 47);
+            btnHelp.TabIndex = 10;
+            btnHelp.Text = "Help";
+            btnHelp.UseVisualStyleBackColor = true;
+            // 
+            // btnInfo
+            // 
+            btnInfo.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnInfo.Location = new System.Drawing.Point(1048, 494);
+            btnInfo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            btnInfo.Name = "btnInfo";
+            btnInfo.Size = new System.Drawing.Size(110, 47);
+            btnInfo.TabIndex = 11;
+            btnInfo.Text = "Info";
+            btnInfo.UseVisualStyleBackColor = true;
+            // 
+            // btnClear
+            // 
+            btnClear.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnClear.Location = new System.Drawing.Point(1048, 582);
+            btnClear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            btnClear.Name = "btnClear";
+            btnClear.Size = new System.Drawing.Size(110, 47);
+            btnClear.TabIndex = 12;
+            btnClear.Text = "Clear";
+            btnClear.UseVisualStyleBackColor = true;
+            // 
+            // btnExport
+            // 
+            btnExport.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnExport.Location = new System.Drawing.Point(1048, 666);
+            btnExport.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            btnExport.Name = "btnExport";
+            btnExport.Size = new System.Drawing.Size(110, 47);
+            btnExport.TabIndex = 13;
+            btnExport.Text = "Export";
+            btnExport.UseVisualStyleBackColor = true;
             // 
             // EnduranceTestingForm
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(800, 450);
+            ClientSize = new System.Drawing.Size(1182, 726);
+            Controls.Add(btnExport);
+            Controls.Add(btnClear);
+            Controls.Add(btnInfo);
+            Controls.Add(btnHelp);
+            Controls.Add(textBox1);
+            Controls.Add(lblOutput);
+            Controls.Add(lblTimeLeft);
+            Controls.Add(btnStop);
+            Controls.Add(btnStart);
+            Controls.Add(textBoxTime);
+            Controls.Add(lblTime);
+            Controls.Add(textBoxInputRequest);
+            Controls.Add(lblInputNumberOfRequest);
+            Controls.Add(panelPeriod);
+            Controls.Add(textBoxInputUrl);
+            Controls.Add(lblInputUrl);
+            Controls.Add(lblEnduranceTesting);
+            Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             MaximizeBox = false;
+            MaximumSize = new System.Drawing.Size(1200, 773);
+            MinimumSize = new System.Drawing.Size(1200, 773);
             Name = "EnduranceTestingForm";
             Text = "Endurance Testing";
+            panelPeriod.ResumeLayout(false);
+            panelPeriod.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private System.Windows.Forms.Label lblEnduranceTesting;
+        private System.Windows.Forms.Label lblInputUrl;
+        private System.Windows.Forms.TextBox textBoxInputUrl;
+        private System.Windows.Forms.Panel panelPeriod;
+        private System.Windows.Forms.RadioButton radioButtonHour;
+        private System.Windows.Forms.RadioButton radioButtonMinute;
+        private System.Windows.Forms.RadioButton radioButtonSecond;
+        private System.Windows.Forms.TextBox textBoxInputRequest;
+        private System.Windows.Forms.Label lblInputNumberOfRequest;
+        private System.Windows.Forms.TextBox textBoxTime;
+        private System.Windows.Forms.Label lblTime;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Label lblTimeLeft;
+        private System.Windows.Forms.Label lblOutput;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button btnHelp;
+        private System.Windows.Forms.Button btnInfo;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnExport;
     }
 }
 
