@@ -81,6 +81,10 @@ namespace Endurance_Testing
                 return;
             }
 
+            textBoxOutput.Clear();
+
+            enduranceTestResults.Clear();
+
             btnStart.Enabled = false;
             btnStop.Enabled = true;
             btnClear.Enabled = false;
@@ -244,7 +248,7 @@ namespace Endurance_Testing
 
         private void DisplayResult(EnduranceTestResult result, int round)
         {
-            string resultString = $"Round {round}: Status: {result.StatusCode}, Reason: {result.ReasonPhrase}, Response Time: {result.ResponseTime.TotalMilliseconds} ms";
+            string resultString = $"Round {round}: Status: {(int)result.StatusCode}, Reason: {result.ReasonPhrase}, Response Time: {result.ResponseTime.TotalMilliseconds} ms";
             textBoxOutput.AppendText(resultString + Environment.NewLine);
             textBoxOutput.ScrollToCaret();
         }
@@ -394,7 +398,7 @@ namespace Endurance_Testing
                 foreach (var result in enduranceTestResults)
                 {
                     worksheet.Cell(row, 1).Value = result.Round;
-                    worksheet.Cell(row, 2).Value = result.StatusCode.ToString();
+                    worksheet.Cell(row, 2).Value = (int)result.StatusCode;
                     worksheet.Cell(row, 3).Value = result.ReasonPhrase;
                     worksheet.Cell(row, 4).Value = result.ResponseTime.TotalMilliseconds;
                     worksheet.Cell(row, 5).Value = result.CpuUsage;
