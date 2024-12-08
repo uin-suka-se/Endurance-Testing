@@ -256,8 +256,8 @@ namespace Endurance_Testing
         private void DisplayRoundStatistics(float currentCpuUsage, float currentRamUsage, int roundSuccessfulRequests, int roundFailedRequests, float averageRoundResponseTime)
         {
             string roundStats = $"Round {currentRound} Statistics:{Environment.NewLine}" +
-                                $"CPU Usage: {currentCpuUsage:F2}%{Environment.NewLine}" +
-                                $"RAM Usage: {currentRamUsage:F2} MB{Environment.NewLine}" +
+                                $"Computer's CPU Usage: {currentCpuUsage:F2}%{Environment.NewLine}" +
+                                $"Computer's RAM Usage: {currentRamUsage:F2} MB{Environment.NewLine}" +
                                 $"Total Requests: {totalRequests}{Environment.NewLine}" +
                                 $"Successful Requests: {roundSuccessfulRequests}{Environment.NewLine}" +
                                 $"Failed Requests: {roundFailedRequests}{Environment.NewLine}" +
@@ -278,8 +278,8 @@ namespace Endurance_Testing
                                     $"Total Requests: {totalRequests * currentRound}{Environment.NewLine}" +
                                     $"Successful Requests: {totalSuccessfulRequests}{Environment.NewLine}" +
                                     $"Failed Requests: {totalFailedRequests}{Environment.NewLine}" +
-                                    $"Average CPU Usage: {averageCpuUsage:F2}%{Environment.NewLine}" +
-                                    $"Average RAM Usage: {averageRamUsage:F2} MB{Environment.NewLine}" +
+                                    $"Average Computer's CPU Usage: {averageCpuUsage:F2}%{Environment.NewLine}" +
+                                    $"Average Computer's RAM Usage: {averageRamUsage:F2} MB{Environment.NewLine}" +
                                     $"Average Response Time: {averageResponseTime:F2} ms{Environment.NewLine}";
 
             textBoxOutput.AppendText(summaryMessage);
@@ -410,10 +410,12 @@ namespace Endurance_Testing
                     row++;
                 }
 
-                row += 2;
-                worksheet.Cell(row, 1).Value = "Overall Summary";
-                worksheet.Cell(row, 1).Style.Font.Bold = true;
-                worksheet.Cell(row, 1).Style.Font.FontSize = 14;
+                int summaryStartRow = 1;
+                int summaryStartColumn = 12;
+
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Overall Summary";
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Style.Font.Bold = true;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Style.Font.FontSize = 14;
 
                 int totalRequestsOverall = totalRequests * currentRound;
                 int totalSuccessfulRequestsOverall = totalSuccessfulRequests;
@@ -422,29 +424,29 @@ namespace Endurance_Testing
                 float averageRamUsageOverall = currentRound > 0 ? totalRamUsage / currentRound : 0;
                 float averageResponseTimeOverall = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
 
-                row++;
-                worksheet.Cell(row, 1).Value = "Total Requests:";
-                worksheet.Cell(row, 2).Value = totalRequestsOverall;
+                summaryStartRow++;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Total Requests:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = totalRequestsOverall;
 
-                row++;
-                worksheet.Cell(row, 1).Value = "Successful Requests:";
-                worksheet.Cell(row, 2).Value = totalSuccessfulRequestsOverall;
+                summaryStartRow++;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Successful Requests:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = totalSuccessfulRequestsOverall;
 
-                row++;
-                worksheet.Cell(row, 1).Value = "Failed Requests:";
-                worksheet.Cell(row, 2).Value = totalFailedRequestsOverall;
+                summaryStartRow++;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Failed Requests:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = totalFailedRequestsOverall;
 
-                row++;
-                worksheet.Cell(row, 1).Value = "Average CPU Usage:";
-                worksheet.Cell(row, 2).Value = averageCpuUsageOverall.ToString("F2") + "%";
+                summaryStartRow++;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average CPU Usage:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageCpuUsageOverall.ToString("F2") + "%";
 
-                row++;
-                worksheet.Cell(row, 1).Value = "Average RAM Usage:";
-                worksheet.Cell(row, 2).Value = averageRamUsageOverall.ToString("F2") + " MB";
+                summaryStartRow++;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average RAM Usage:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageRamUsageOverall.ToString("F2") + " MB";
 
-                row++;
-                worksheet.Cell(row, 1).Value = "Average Response Time:";
-                worksheet.Cell(row, 2).Value = averageResponseTimeOverall.ToString("F2") + " ms";
+                summaryStartRow++;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Response Time:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageResponseTimeOverall.ToString("F2") + " ms";
 
                 using (var saveFileDialog = new SaveFileDialog())
                 {
@@ -458,6 +460,8 @@ namespace Endurance_Testing
                         MessageBox.Show("Export successful!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
+
+                worksheet.Columns().AdjustToContents();
             }
         }
     }
