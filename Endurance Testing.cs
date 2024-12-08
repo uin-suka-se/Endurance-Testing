@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text;
 
 namespace Endurance_Testing
 {
@@ -14,7 +15,7 @@ namespace Endurance_Testing
         private CancellationTokenSource cancellationTokenSource;
         private List<EnduranceTestResult> enduranceTestResults = new List<EnduranceTestResult>();
         private int totalRequests;
-        private int durationInSeconds;
+        private long durationInSeconds;
         private int currentRound;
         private int totalSuccessfulRequests;
         private int totalFailedRequests;
@@ -61,7 +62,7 @@ namespace Endurance_Testing
                 return;
             }
 
-            if (!int.TryParse(textBoxTime.Text, out durationInSeconds) || durationInSeconds <= 0)
+            if (!long.TryParse(textBoxTime.Text, out durationInSeconds) || durationInSeconds <= 0)
             {
                 MessageBox.Show("Please enter a valid duration.");
                 return;
@@ -111,9 +112,9 @@ namespace Endurance_Testing
             ShowSummary();
         }
 
-        private async Task StartCountdown(int durationInSeconds, CancellationToken cancellationToken)
+        private async Task StartCountdown(long durationInSeconds, CancellationToken cancellationToken)
         {
-            for (int i = durationInSeconds; i > 0; i--)
+            for (long i = durationInSeconds; i > 0; i--)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -326,15 +327,29 @@ namespace Endurance_Testing
 
         private string GenerateHelpMessage()
         {
-            return "User Guide for Endurance Testing:\n" +
-                   "1. Enter the target URL in the URL column.\n" +
-                   "2. Enter the number of requests in the Requests column.\n" +
-                   "3. Enter the duration for the endurance test in the Time column.\n" +
-                   "4. Select the time period (seconds, minutes, hours).\n" +
-                   "5. Click the 'Start' button to begin the endurance testing.\n" +
-                   "6. Monitor the results in the output area.\n" +
-                   "7. Click 'Stop' to halt the testing process.\n" +
-                   "8. Use 'Clear' to reset the input fields and output.";
+            StringBuilder helpMessage = new StringBuilder();
+
+            helpMessage.AppendLine("User Guide for Endurance Testing:");
+            helpMessage.AppendLine();
+            helpMessage.AppendLine("1. Enter the target URL in the URL column.");
+            helpMessage.AppendLine("2. Enter the number of requests in the Requests column (maximum 8 digits).");
+            helpMessage.AppendLine("3. Enter the duration for the endurance test in the Time column (in seconds, minutes, or hours).");
+            helpMessage.AppendLine("4. Select the time period (seconds, minutes, or hours) using the radio buttons.");
+            helpMessage.AppendLine("5. Click the 'Start' button to begin the endurance testing.");
+            helpMessage.AppendLine("6. Monitor the results in the output area in real-time.");
+            helpMessage.AppendLine("7. After the test, the output will display:");
+            helpMessage.AppendLine("   a. Total Requests.");
+            helpMessage.AppendLine("   b. Successful Requests.");
+            helpMessage.AppendLine("   c. Failed Requests.");
+            helpMessage.AppendLine("   d. Average CPU Usage (in percentage).");
+            helpMessage.AppendLine("   e. Average RAM Usage (in megabytes).");
+            helpMessage.AppendLine("   f. Average Response Time (in milliseconds).");
+            helpMessage.AppendLine("8. Optionally, export the endurance testing results to an Excel file using the 'Export' button.");
+            helpMessage.AppendLine("9. Click the 'Clear' button to reset the input fields and output area.");
+            helpMessage.AppendLine();
+            helpMessage.AppendLine("Note: Ensure that your internet connection is stable and reliable for conducting this test.");
+
+            return helpMessage.ToString();
         }
 
         private void btnInfo_Click(object sender, EventArgs e)
@@ -344,9 +359,52 @@ namespace Endurance_Testing
 
         private void ShowInfoMessageBox()
         {
-            string infoMessage = "Endurance Testing:\n" +
-                                 "Endurance testing is a type of performance testing that determines how a system behaves under sustained load. It helps identify performance issues and ensures the system can handle prolonged usage.";
+            string infoMessage = GenerateInfoMessage();
             MessageBox.Show(infoMessage, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        private string GenerateInfoMessage()
+        {
+            StringBuilder infoMessage = new StringBuilder();
+
+            infoMessage.AppendLine("Endurance Testing:");
+            infoMessage.AppendLine();
+            infoMessage.AppendLine("\"Endurance testing, also known as soak testing, involves subjecting an application to a sustained load for an extended period. This methodology helps uncover memory leaks, resource depletion, and other performance degradation issues that might only surface after prolonged usage.\"[1]");
+            infoMessage.AppendLine("[1]\tS. Pargaonkar, \"A Comprehensive Review of Performance Testing Methodologies and Best Practices: Software Quality Engineering,\" International Journal of Science and Research (IJSR), vol. 12, no. 8, pp. 2008-2014, August 2023.");
+            infoMessage.AppendLine();
+            infoMessage.AppendLine("Metrics:");
+            infoMessage.AppendLine();
+            infoMessage.AppendLine("1. CPU Usage:");
+            infoMessage.AppendLine("    a. Description:");
+            infoMessage.AppendLine("        The CPU usage metric represents the percentage of the computer's processing power utilized during the endurance testing.");
+            infoMessage.AppendLine("    b. Formula:");
+            infoMessage.AppendLine("        CPU Usage = Current CPU Usage");
+            infoMessage.AppendLine("2. RAM Usage:");
+            infoMessage.AppendLine("    a. Description:");
+            infoMessage.AppendLine("        The RAM usage metric indicates the amount of computer memory used during the endurance testing.");
+            infoMessage.AppendLine("    b. Formula:");
+            infoMessage.AppendLine("        RAM Usage = Current RAM Usage");
+            infoMessage.AppendLine("3. Total Requests:");
+            infoMessage.AppendLine("    a. Description:");
+            infoMessage.AppendLine("        Total Requests is the sum of all requests sent during the endurance testing.");
+            infoMessage.AppendLine("    b. Formula:");
+            infoMessage.AppendLine("        Total Requests = Number of Requests Sent");
+            infoMessage.AppendLine("4. Successful Requests:");
+            infoMessage.AppendLine("    a. Description:");
+            infoMessage.AppendLine("        Successful Requests is the sum of requests with an HTTP status code of 200 (OK).");
+            infoMessage.AppendLine("    b. Formula:");
+            infoMessage.AppendLine("        Successful Requests = Number of Requests with HTTP Status Code 200 (OK)");
+            infoMessage.AppendLine("5. Failed Requests:");
+            infoMessage.AppendLine("    a. Description:");
+            infoMessage.AppendLine("        Failed Requests is the sum of requests that failed, calculated as Total Requests minus Successful Requests.");
+            infoMessage.AppendLine("    b. Formula:");
+            infoMessage.AppendLine("        Failed Requests = Total Requests − Successful Requests");
+            infoMessage.AppendLine("6. Average Response Time:");
+            infoMessage.AppendLine("    a. Description:");
+            infoMessage.AppendLine("        Average Response Time represents the mean response time per request during the endurance testing.");
+            infoMessage.AppendLine("    b. Formula:");
+            infoMessage.AppendLine("        Average Response Time = Total Response Time / Total Requests");
+
+            return infoMessage.ToString();
         }
 
         private void btnClear_Click(object sender, EventArgs e)
