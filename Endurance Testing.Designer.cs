@@ -1,6 +1,6 @@
 ﻿namespace Endurance_Testing
 {
-    partial class EnduranceTestingForm
+    partial class EnduranceTesting
     {
         /// <summary>
         /// Required designer variable.
@@ -43,7 +43,7 @@
             btnStop = new System.Windows.Forms.Button();
             lblTimeLeft = new System.Windows.Forms.Label();
             lblOutput = new System.Windows.Forms.Label();
-            textBox1 = new System.Windows.Forms.TextBox();
+            textBoxOutput = new System.Windows.Forms.TextBox();
             btnHelp = new System.Windows.Forms.Button();
             btnInfo = new System.Windows.Forms.Button();
             btnClear = new System.Windows.Forms.Button();
@@ -181,6 +181,7 @@
             btnStart.TabIndex = 7;
             btnStart.Text = "Start";
             btnStart.UseVisualStyleBackColor = true;
+            btnStart.Click += btnStart_Click;
             // 
             // btnStop
             // 
@@ -192,6 +193,7 @@
             btnStop.TabIndex = 8;
             btnStop.Text = "Stop";
             btnStop.UseVisualStyleBackColor = true;
+            btnStop.Click += btnStop_Click;
             // 
             // lblTimeLeft
             // 
@@ -213,18 +215,18 @@
             lblOutput.TabIndex = 0;
             lblOutput.Text = "Output:";
             // 
-            // textBox1
+            // textBoxOutput
             // 
-            textBox1.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBox1.Location = new System.Drawing.Point(13, 407);
-            textBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            textBox1.MaxLength = 999999999;
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.ReadOnly = true;
-            textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            textBox1.Size = new System.Drawing.Size(1009, 307);
-            textBox1.TabIndex = 9;
+            textBoxOutput.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            textBoxOutput.Location = new System.Drawing.Point(13, 407);
+            textBoxOutput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            textBoxOutput.MaxLength = 999999999;
+            textBoxOutput.Multiline = true;
+            textBoxOutput.Name = "textBoxOutput";
+            textBoxOutput.ReadOnly = true;
+            textBoxOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            textBoxOutput.Size = new System.Drawing.Size(1009, 307);
+            textBoxOutput.TabIndex = 9;
             // 
             // btnHelp
             // 
@@ -236,6 +238,7 @@
             btnHelp.TabIndex = 10;
             btnHelp.Text = "Help";
             btnHelp.UseVisualStyleBackColor = true;
+            btnHelp.Click += btnHelp_Click;
             // 
             // btnInfo
             // 
@@ -247,6 +250,7 @@
             btnInfo.TabIndex = 11;
             btnInfo.Text = "Info";
             btnInfo.UseVisualStyleBackColor = true;
+            btnInfo.Click += btnInfo_Click;
             // 
             // btnClear
             // 
@@ -258,6 +262,7 @@
             btnClear.TabIndex = 12;
             btnClear.Text = "Clear";
             btnClear.UseVisualStyleBackColor = true;
+            btnClear.Click += btnClear_Click;
             // 
             // btnExport
             // 
@@ -269,8 +274,9 @@
             btnExport.TabIndex = 13;
             btnExport.Text = "Export";
             btnExport.UseVisualStyleBackColor = true;
+            btnExport.Click += btnExport_Click;
             // 
-            // EnduranceTestingForm
+            // EnduranceTesting
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -279,7 +285,7 @@
             Controls.Add(btnClear);
             Controls.Add(btnInfo);
             Controls.Add(btnHelp);
-            Controls.Add(textBox1);
+            Controls.Add(textBoxOutput);
             Controls.Add(lblOutput);
             Controls.Add(lblTimeLeft);
             Controls.Add(btnStop);
@@ -297,7 +303,7 @@
             MaximizeBox = false;
             MaximumSize = new System.Drawing.Size(1200, 773);
             MinimumSize = new System.Drawing.Size(1200, 773);
-            Name = "EnduranceTestingForm";
+            Name = "EnduranceTesting";
             Text = "Endurance Testing";
             panelPeriod.ResumeLayout(false);
             panelPeriod.PerformLayout();
@@ -322,7 +328,7 @@
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Label lblTimeLeft;
         private System.Windows.Forms.Label lblOutput;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBoxOutput;
         private System.Windows.Forms.Button btnHelp;
         private System.Windows.Forms.Button btnInfo;
         private System.Windows.Forms.Button btnClear;

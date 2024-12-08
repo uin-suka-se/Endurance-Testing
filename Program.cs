@@ -16,7 +16,7 @@ namespace Endurance_Testing
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EnduranceTestingForm());
+            Application.Run(new EnduranceTesting());
         }
     }
 }

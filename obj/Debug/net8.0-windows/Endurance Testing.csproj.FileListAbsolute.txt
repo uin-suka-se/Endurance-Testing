@@ -13,5 +13,5 @@ C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8
 C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.pdb
 C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.genruntimeconfig.cache
 C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\ref\Endurance Testing.dll
-C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance_Testing.EnduranceTestingForm.resources
 C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.sourcelink.json
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance_Testing.EnduranceTesting.resources
