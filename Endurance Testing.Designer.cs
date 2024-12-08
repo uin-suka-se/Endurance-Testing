@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EnduranceTesting));
             lblEnduranceTesting = new System.Windows.Forms.Label();
             lblInputUrl = new System.Windows.Forms.Label();
             textBoxInputUrl = new System.Windows.Forms.TextBox();
@@ -299,6 +300,7 @@
             Controls.Add(lblInputUrl);
             Controls.Add(lblEnduranceTesting);
             Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             MaximizeBox = false;
             MaximumSize = new System.Drawing.Size(1200, 773);
