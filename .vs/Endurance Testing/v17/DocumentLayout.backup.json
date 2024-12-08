@@ -18,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -27,10 +27,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             },
             {
               "$type": "Bookmark",
@@ -44,7 +40,7 @@
               "RelativeDocumentMoniker": "Endurance Testing.cs",
               "ToolTip": "C:\\Users\\acer\\Documents\\Semester 8\\PPPL\\Versi 1\\Endurance Testing\\Endurance Testing.cs",
               "RelativeToolTip": "Endurance Testing.cs",
-              "ViewState": "AgIAAKsAAAAAAAAAAAAAAMwAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAALEBAAAAAAAAAAAswB8BAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-08T02:09:32.517Z",
               "EditorCaption": ""
@@ -58,7 +54,8 @@
               "ToolTip": "C:\\Users\\acer\\Documents\\Semester 8\\PPPL\\Versi 1\\Endurance Testing\\Endurance Testing.cs [Design]",
               "RelativeToolTip": "Endurance Testing.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-08T01:24:58.423Z"
+              "WhenOpened": "2024-12-08T01:24:58.423Z",
+              "EditorCaption": " [Design]"
             }
           ]
         }

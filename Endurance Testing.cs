@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClosedXML.Excel;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
@@ -39,7 +40,6 @@ namespace Endurance_Testing
 
         private void textBoxOnlyNumber_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Hanya izinkan input angka dan kontrol khusus (seperti Backspace)
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
@@ -48,7 +48,6 @@ namespace Endurance_Testing
 
         private async void btnStart_Click(object sender, EventArgs e)
         {
-            // Validasi input URL
             string url = textBoxInputUrl.Text;
             if (string.IsNullOrWhiteSpace(url))
             {
@@ -56,21 +55,18 @@ namespace Endurance_Testing
                 return;
             }
 
-            // Validasi input request
             if (!int.TryParse(textBoxInputRequest.Text, out totalRequests) || totalRequests <= 0)
             {
                 MessageBox.Show("Please enter a valid number of requests.");
                 return;
             }
 
-            // Validasi input waktu
             if (!int.TryParse(textBoxTime.Text, out durationInSeconds) || durationInSeconds <= 0)
             {
                 MessageBox.Show("Please enter a valid duration.");
                 return;
             }
 
-            // Menentukan durasi dalam detik berdasarkan pilihan periode
             if (radioButtonMinute.Checked)
             {
                 durationInSeconds *= 60;
@@ -99,20 +95,15 @@ namespace Endurance_Testing
             totalResponseTime = 0;
             totalResponses = 0;
 
-            // Mulai penghitungan mundur waktu
             var countdownTask = StartCountdown(durationInSeconds, cancellationTokenSource.Token);
 
-            // Mulai pengujian
             await RunEnduranceTest(url, cancellationTokenSource.Token);
 
-            // Tunggu hingga penghitungan mundur selesai
             await countdownTask;
 
-            // Aktifkan kembali tombol Clear dan Export setelah pengujian selesai
             btnClear.Enabled = true;
             btnExport.Enabled = true;
 
-            // Tampilkan ringkasan setelah pengujian selesai di output
             ShowSummary();
         }
 
@@ -122,18 +113,16 @@ namespace Endurance_Testing
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    return; // Hentikan penghitungan mundur jika diminta
+                    return;
                 }
 
                 TimeSpan timeLeft = TimeSpan.FromSeconds(i);
-                lblTimeLeft.Text = $"{timeLeft:hh\\:mm\\:ss}"; // Hanya angka dalam format HH:mm:ss
-                await Task.Delay(1000); // Tunggu 1 detik
+                lblTimeLeft.Text = $"{timeLeft:hh\\:mm\\:ss}";
+                await Task.Delay(1000);
             }
 
-            // Setelah loop selesai, setel label ke 00:00:00
             lblTimeLeft.Text = "00:00:00";
 
-            // Jika waktu habis, cancel pengujian
             cancellationTokenSource.Cancel();
         }
 
@@ -147,33 +136,27 @@ namespace Endurance_Testing
             {
                 currentRound++;
 
-                // Reset permintaan berhasil dan gagal untuk putaran ini
                 int roundSuccessfulRequests = 0;
                 int roundFailedRequests = 0;
-                float roundResponseTime = 0; // Reset total waktu respons untuk putaran ini
+                float roundResponseTime = 0;
 
-                // Kirim permintaan secara bersamaan
                 var tasks = new List<Task<EnduranceTestResult>>();
                 for (int i = 0; i < totalRequests; i++)
                 {
-                    tasks.Add(SendHttpRequest(httpClient, url));
+                    tasks.Add(SendHttpRequest(httpClient, url, currentRound));
                 }
 
-                // Tunggu hingga semua permintaan selesai
                 var results = await Task.WhenAll(tasks);
                 enduranceTestResults.AddRange(results);
 
-                // Hitung penggunaan CPU dan RAM
-                float currentCpuUsage = GetCpuUsage();
-                float currentRamUsage = GetRamUsage();
-                totalCpuUsage += currentCpuUsage;
-                totalRamUsage += currentRamUsage;
+                float roundCpuUsage = GetCpuUsage();
+                float roundRamUsage = GetRamUsage();
 
-                // Tampilkan hasil secara real-time dengan informasi putaran
                 foreach (var result in results)
                 {
                     DisplayResult(result, currentRound);
-                    roundResponseTime += (float)result.ResponseTime.TotalMilliseconds; // Tambahkan waktu respons ke total putaran
+                    roundResponseTime += (float)result.ResponseTime.TotalMilliseconds;
+
                     if (result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         roundSuccessfulRequests++;
@@ -186,17 +169,28 @@ namespace Endurance_Testing
                     }
                 }
 
-                // Hitung rata-rata waktu respons untuk putaran ini
                 if (totalRequests > 0)
                 {
-                    float averageRoundResponseTime = roundResponseTime / totalRequests; // Hitung rata-rata untuk putaran ini
-                    totalResponseTime += roundResponseTime; // Tambahkan ke total waktu respons keseluruhan
-                    totalResponses += totalRequests; // Tambahkan ke total respons
-                    DisplayRoundStatistics(currentCpuUsage, currentRamUsage, roundSuccessfulRequests, roundFailedRequests, averageRoundResponseTime);
+                    float averageRoundResponseTime = roundResponseTime / totalRequests;
+
+                    foreach (var result in results)
+                    {
+                        result.CpuUsage = roundCpuUsage;
+                        result.RamUsage = roundRamUsage;
+                        result.SuccessfulRequests = roundSuccessfulRequests;
+                        result.FailedRequests = roundFailedRequests;
+                        result.AverageResponseTime = averageRoundResponseTime;
+                    }
+
+                    totalCpuUsage += roundCpuUsage;
+                    totalRamUsage += roundRamUsage;
+                    totalResponseTime += roundResponseTime;
+                    totalResponses += totalRequests;
+
+                    DisplayRoundStatistics(roundCpuUsage, roundRamUsage, roundSuccessfulRequests, roundFailedRequests, averageRoundResponseTime);
                 }
 
-                // Tunggu sebelum mengirim permintaan berikutnya
-                await Task.Delay(1000); // Delay 1 detik antara putaran
+                await Task.Delay(1000);
             }
 
             stopwatch.Stop();
@@ -204,7 +198,7 @@ namespace Endurance_Testing
             btnStop.Enabled = false;
         }
 
-        private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url)
+        private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url, int round)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -218,7 +212,13 @@ namespace Endurance_Testing
                 {
                     StatusCode = response.StatusCode,
                     ReasonPhrase = response.ReasonPhrase,
-                    ResponseTime = responseTime
+                    ResponseTime = responseTime,
+                    Round = round,
+                    CpuUsage = 0,
+                    RamUsage = 0,
+                    SuccessfulRequests = response.StatusCode == System.Net.HttpStatusCode.OK ? 1 : 0,
+                    FailedRequests = response.StatusCode != System.Net.HttpStatusCode.OK ? 1 : 0,
+                    AverageResponseTime = (float)responseTime.TotalMilliseconds
                 };
             }
             catch (Exception ex)
@@ -227,7 +227,13 @@ namespace Endurance_Testing
                 {
                     StatusCode = System.Net.HttpStatusCode.InternalServerError,
                     ReasonPhrase = ex.Message,
-                    ResponseTime = stopwatch.Elapsed
+                    ResponseTime = stopwatch.Elapsed,
+                    Round = round,
+                    CpuUsage = 0,
+                    RamUsage = 0,
+                    SuccessfulRequests = 0,
+                    FailedRequests = 1,
+                    AverageResponseTime = (float)stopwatch.Elapsed.TotalMilliseconds
                 };
             }
             finally
@@ -245,7 +251,6 @@ namespace Endurance_Testing
 
         private void DisplayRoundStatistics(float currentCpuUsage, float currentRamUsage, int roundSuccessfulRequests, int roundFailedRequests, float averageRoundResponseTime)
         {
-            // Tampilkan statistik untuk putaran saat ini
             string roundStats = $"Round {currentRound} Statistics:{Environment.NewLine}" +
                                 $"CPU Usage: {currentCpuUsage:F2}%{Environment.NewLine}" +
                                 $"RAM Usage: {currentRamUsage:F2} MB{Environment.NewLine}" +
@@ -260,14 +265,11 @@ namespace Endurance_Testing
 
         private void ShowSummary()
         {
-            // Hitung rata-rata penggunaan CPU dan RAM
-            float averageCpuUsage = totalCpuUsage / currentRound;
-            float averageRamUsage = totalRamUsage / currentRound;
+            float averageCpuUsage = currentRound > 0 ? totalCpuUsage / currentRound : 0;
+            float averageRamUsage = currentRound > 0 ? totalRamUsage / currentRound : 0;
 
-            // Hitung rata-rata waktu respons keseluruhan
             float averageResponseTime = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
 
-            // Tampilkan ringkasan di output
             string summaryMessage = $"Summary:{Environment.NewLine}" +
                                     $"Total Requests: {totalRequests * currentRound}{Environment.NewLine}" +
                                     $"Successful Requests: {totalSuccessfulRequests}{Environment.NewLine}" +
@@ -282,16 +284,16 @@ namespace Endurance_Testing
 
         private float GetCpuUsage()
         {
-            // Menggunakan PerformanceCounter untuk mendapatkan penggunaan CPU
             using (var cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total"))
             {
+                cpuCounter.NextValue();
+                Thread.Sleep(1000);
                 return cpuCounter.NextValue();
             }
         }
 
         private float GetRamUsage()
         {
-            // Menggunakan PerformanceCounter untuk mendapatkan penggunaan RAM
             using (var ramCounter = new PerformanceCounter("Memory", "Available MBytes"))
             {
                 return ramCounter.NextValue();
@@ -361,9 +363,98 @@ namespace Endurance_Testing
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            // Implementasi ekspor hasil ke file CSV atau Excel
-            // Anda dapat menggunakan library seperti EPPlus atau CsvHelper untuk ekspor
-            MessageBox.Show("Export functionality is not implemented yet.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string url = textBoxInputUrl.Text;
+            ExportToExcel(url);
+        }
+
+        private void ExportToExcel(string url)
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Endurance Test Results");
+
+                worksheet.Cell(1, 1).Value = $"Endurance Testing Results from URL: {url}";
+                worksheet.Cell(1, 1).Style.Font.Bold = true;
+                worksheet.Cell(1, 1).Style.Font.FontSize = 14;
+                worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range("A1:J1").Merge();
+
+                worksheet.Cell(2, 1).Value = "Round";
+                worksheet.Cell(2, 2).Value = "Status";
+                worksheet.Cell(2, 3).Value = "Reason";
+                worksheet.Cell(2, 4).Value = "Response Time (ms)";
+                worksheet.Cell(2, 5).Value = "CPU Usage (%)";
+                worksheet.Cell(2, 6).Value = "RAM Usage (MB)";
+                worksheet.Cell(2, 7).Value = "Total Requests";
+                worksheet.Cell(2, 8).Value = "Successful Requests";
+                worksheet.Cell(2, 9).Value = "Failed Requests";
+                worksheet.Cell(2, 10).Value = "Average Response Time (ms)";
+
+                int row = 3;
+                foreach (var result in enduranceTestResults)
+                {
+                    worksheet.Cell(row, 1).Value = result.Round;
+                    worksheet.Cell(row, 2).Value = result.StatusCode.ToString();
+                    worksheet.Cell(row, 3).Value = result.ReasonPhrase;
+                    worksheet.Cell(row, 4).Value = result.ResponseTime.TotalMilliseconds;
+                    worksheet.Cell(row, 5).Value = result.CpuUsage;
+                    worksheet.Cell(row, 6).Value = result.RamUsage;
+                    worksheet.Cell(row, 7).Value = totalRequests;
+                    worksheet.Cell(row, 8).Value = result.SuccessfulRequests;
+                    worksheet.Cell(row, 9).Value = result.FailedRequests;
+                    worksheet.Cell(row, 10).Value = result.AverageResponseTime;
+                    row++;
+                }
+
+                row += 2;
+                worksheet.Cell(row, 1).Value = "Overall Summary";
+                worksheet.Cell(row, 1).Style.Font.Bold = true;
+                worksheet.Cell(row, 1).Style.Font.FontSize = 14;
+
+                int totalRequestsOverall = totalRequests * currentRound;
+                int totalSuccessfulRequestsOverall = totalSuccessfulRequests;
+                int totalFailedRequestsOverall = totalFailedRequests;
+                float averageCpuUsageOverall = currentRound > 0 ? totalCpuUsage / currentRound : 0;
+                float averageRamUsageOverall = currentRound > 0 ? totalRamUsage / currentRound : 0;
+                float averageResponseTimeOverall = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
+
+                row++;
+                worksheet.Cell(row, 1).Value = "Total Requests:";
+                worksheet.Cell(row, 2).Value = totalRequestsOverall;
+
+                row++;
+                worksheet.Cell(row, 1).Value = "Successful Requests:";
+                worksheet.Cell(row, 2).Value = totalSuccessfulRequestsOverall;
+
+                row++;
+                worksheet.Cell(row, 1).Value = "Failed Requests:";
+                worksheet.Cell(row, 2).Value = totalFailedRequestsOverall;
+
+                row++;
+                worksheet.Cell(row, 1).Value = "Average CPU Usage:";
+                worksheet.Cell(row, 2).Value = averageCpuUsageOverall.ToString("F2") + "%";
+
+                row++;
+                worksheet.Cell(row, 1).Value = "Average RAM Usage:";
+                worksheet.Cell(row, 2).Value = averageRamUsageOverall.ToString("F2") + " MB";
+
+                row++;
+                worksheet.Cell(row, 1).Value = "Average Response Time:";
+                worksheet.Cell(row, 2).Value = averageResponseTimeOverall.ToString("F2") + " ms";
+
+                using (var saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "Excel Files|*.xlsx";
+                    saveFileDialog.Title = "Save an Excel File";
+                    saveFileDialog.FileName = "EnduranceTestResults.xlsx";
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        workbook.SaveAs(saveFileDialog.FileName);
+                        MessageBox.Show("Export successful!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
         }
     }
 
@@ -372,5 +463,11 @@ namespace Endurance_Testing
         public System.Net.HttpStatusCode StatusCode { get; set; }
         public string ReasonPhrase { get; set; }
         public TimeSpan ResponseTime { get; set; }
+        public int Round { get; set; }
+        public float CpuUsage { get; set; }
+        public float RamUsage { get; set; }
+        public int SuccessfulRequests { get; set; }
+        public int FailedRequests { get; set; }
+        public float AverageResponseTime { get; set; }
     }
 }
