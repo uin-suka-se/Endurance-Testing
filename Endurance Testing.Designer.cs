@@ -141,6 +141,7 @@
             textBoxInputRequest.Name = "textBoxInputRequest";
             textBoxInputRequest.Size = new System.Drawing.Size(348, 37);
             textBoxInputRequest.TabIndex = 2;
+            textBoxInputRequest.TextChanged += textBoxInputRequest_TextChanged;
             // 
             // lblInputNumberOfRequest
             // 
@@ -161,6 +162,7 @@
             textBoxTime.Name = "textBoxTime";
             textBoxTime.Size = new System.Drawing.Size(348, 37);
             textBoxTime.TabIndex = 3;
+            textBoxTime.TextChanged += textBoxTime_TextChanged;
             // 
             // lblTime
             // 

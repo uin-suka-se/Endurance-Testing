@@ -47,6 +47,26 @@ namespace Endurance_Testing
             }
         }
 
+        private void textBoxInputRequest_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxInputRequest.Text.Length > 8)
+            {
+                MessageBox.Show("Input request should be limited to 8 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBoxInputRequest.Text = textBoxInputRequest.Text.Substring(0, 8);
+                textBoxInputRequest.SelectionStart = textBoxInputRequest.Text.Length;
+            }
+        }
+
+        private void textBoxTime_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxTime.Text.Length > 8)
+            {
+                MessageBox.Show("Input time in period should be limited to 8 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBoxTime.Text = textBoxTime.Text.Substring(0, 8);
+                textBoxTime.SelectionStart = textBoxTime.Text.Length;
+            }
+        }
+
         private async void btnStart_Click(object sender, EventArgs e)
         {
             string url = textBoxInputUrl.Text;
