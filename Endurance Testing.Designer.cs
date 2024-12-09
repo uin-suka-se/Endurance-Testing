@@ -200,11 +200,11 @@
             // 
             lblTimeLeft.AutoSize = true;
             lblTimeLeft.Font = new System.Drawing.Font("Segoe UI", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblTimeLeft.Location = new System.Drawing.Point(531, 295);
+            lblTimeLeft.Location = new System.Drawing.Point(511, 295);
             lblTimeLeft.Name = "lblTimeLeft";
-            lblTimeLeft.Size = new System.Drawing.Size(136, 45);
+            lblTimeLeft.Size = new System.Drawing.Size(177, 45);
             lblTimeLeft.TabIndex = 0;
-            lblTimeLeft.Text = "00:00:00";
+            lblTimeLeft.Text = "00:00:00:00";
             // 
             // lblOutput
             // 

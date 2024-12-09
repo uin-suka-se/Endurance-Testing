@@ -7,12 +7,8 @@
       "RelativeMoniker": "D:0:0:{A706F31A-D6F4-480D-8C17-B1E48CA35049}|Endurance Testing.csproj|solutionrelative:endurance testing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A706F31A-D6F4-480D-8C17-B1E48CA35049}|Endurance Testing.csproj|c:\\users\\acer\\documents\\semester 8\\pppl\\versi 1\\endurance testing\\endurance testing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{A706F31A-D6F4-480D-8C17-B1E48CA35049}|Endurance Testing.csproj|C:\\Users\\acer\\Documents\\Semester 8\\PPPL\\Versi 1\\Endurance Testing\\endurance testing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{A706F31A-D6F4-480D-8C17-B1E48CA35049}|Endurance Testing.csproj|solutionrelative:endurance testing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A706F31A-D6F4-480D-8C17-B1E48CA35049}|Endurance Testing.csproj|c:\\users\\acer\\documents\\semester 8\\pppl\\versi 1\\endurance testing\\endurance testing.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
-      "RelativeMoniker": "D:0:0:{A706F31A-D6F4-480D-8C17-B1E48CA35049}|Endurance Testing.csproj|solutionrelative:endurance testing.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,22 +26,15 @@
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Endurance Testing",
-              "DocumentMoniker": "C:\\Users\\acer\\Documents\\Semester 8\\PPPL\\Versi 1\\Endurance Testing\\Endurance Testing.csproj",
-              "RelativeDocumentMoniker": "Endurance Testing.csproj",
-              "ToolTip": "C:\\Users\\acer\\Documents\\Semester 8\\PPPL\\Versi 1\\Endurance Testing\\Endurance Testing.csproj",
-              "RelativeToolTip": "Endurance Testing.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-12-08T11:14:35.75Z"
             },
             {
               "$type": "Document",
@@ -55,7 +44,7 @@
               "RelativeDocumentMoniker": "Endurance Testing.cs",
               "ToolTip": "C:\\Users\\acer\\Documents\\Semester 8\\PPPL\\Versi 1\\Endurance Testing\\Endurance Testing.cs",
               "RelativeToolTip": "Endurance Testing.cs",
-              "ViewState": "AgIAAGMBAAAAAAAAAAAQwIABAABMAAAAAAAAAA==",
+              "ViewState": "AgIAAOYAAAAAAAAAAADwv5MBAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-08T02:09:32.517Z",
               "EditorCaption": ""

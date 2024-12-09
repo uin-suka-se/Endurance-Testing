@@ -82,7 +82,15 @@ namespace Endurance_Testing
                 return;
             }
 
+            long maxDurationInSeconds = 86400 * 365;
+            if (durationInSeconds > maxDurationInSeconds)
+            {
+                MessageBox.Show("Duration exceeds the maximum limit of 1 year (which is 8760 hours, 525600 minutes, or 31536000 seconds).");
+                return;
+            }
+
             textBoxOutput.Clear();
+            lblTimeLeft.Text = "00:00:00:00";
 
             enduranceTestResults.Clear();
 
@@ -122,11 +130,11 @@ namespace Endurance_Testing
                 }
 
                 TimeSpan timeLeft = TimeSpan.FromSeconds(i);
-                lblTimeLeft.Text = $"{timeLeft:hh\\:mm\\:ss}";
+                lblTimeLeft.Text = $"{(int)timeLeft.TotalDays}:{timeLeft.Hours:D2}:{timeLeft.Minutes:D2}:{timeLeft.Seconds:D2}";
                 await Task.Delay(1000);
             }
 
-            lblTimeLeft.Text = "00:00:00";
+            lblTimeLeft.Text = "00:00:00:00";
 
             cancellationTokenSource.Cancel();
         }
@@ -341,8 +349,8 @@ namespace Endurance_Testing
             helpMessage.AppendLine("   a. Total Requests.");
             helpMessage.AppendLine("   b. Successful Requests.");
             helpMessage.AppendLine("   c. Failed Requests.");
-            helpMessage.AppendLine("   d. Average CPU Usage (in percentage).");
-            helpMessage.AppendLine("   e. Average RAM Usage (in megabytes).");
+            helpMessage.AppendLine("   d. Average Computer's CPU Usage (in percentage).");
+            helpMessage.AppendLine("   e. Average Computer's RAM Usage (in megabytes).");
             helpMessage.AppendLine("   f. Average Response Time (in milliseconds).");
             helpMessage.AppendLine("8. Optionally, export the endurance testing results to an Excel file using the 'Export' button.");
             helpMessage.AppendLine("9. Click the 'Clear' button to reset the input fields and output area.");
@@ -412,7 +420,7 @@ namespace Endurance_Testing
             textBoxInputUrl.Clear();
             textBoxInputRequest.Clear();
             textBoxTime.Clear();
-            lblTimeLeft.Text = "00:00:00";
+            lblTimeLeft.Text = "00:00:00:00";
             textBoxOutput.Clear();
             enduranceTestResults.Clear();
             totalRequests = 0;
@@ -506,6 +514,8 @@ namespace Endurance_Testing
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Response Time:";
                 worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageResponseTimeOverall.ToString("F2") + " ms";
 
+                worksheet.Columns().AdjustToContents();
+
                 using (var saveFileDialog = new SaveFileDialog())
                 {
                     saveFileDialog.Filter = "Excel Files|*.xlsx";
@@ -518,8 +528,6 @@ namespace Endurance_Testing
                         MessageBox.Show("Export successful!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
-
-                worksheet.Columns().AdjustToContents();
             }
         }
     }
