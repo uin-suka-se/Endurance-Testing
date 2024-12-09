@@ -87,55 +87,55 @@
             panelPeriod.Controls.Add(radioButtonHour);
             panelPeriod.Controls.Add(radioButtonMinute);
             panelPeriod.Controls.Add(radioButtonSecond);
-            panelPeriod.Location = new System.Drawing.Point(1085, 105);
+            panelPeriod.Location = new System.Drawing.Point(1080, 105);
             panelPeriod.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             panelPeriod.Name = "panelPeriod";
-            panelPeriod.Size = new System.Drawing.Size(86, 87);
+            panelPeriod.Size = new System.Drawing.Size(90, 83);
             panelPeriod.TabIndex = 4;
             // 
             // radioButtonHour
             // 
             radioButtonHour.AutoSize = true;
-            radioButtonHour.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            radioButtonHour.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             radioButtonHour.Location = new System.Drawing.Point(3, 60);
             radioButtonHour.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             radioButtonHour.Name = "radioButtonHour";
-            radioButtonHour.Size = new System.Drawing.Size(66, 25);
+            radioButtonHour.Size = new System.Drawing.Size(72, 21);
             radioButtonHour.TabIndex = 6;
             radioButtonHour.TabStop = true;
-            radioButtonHour.Text = "Hour";
+            radioButtonHour.Text = "Hour(s)";
             radioButtonHour.UseVisualStyleBackColor = true;
             // 
             // radioButtonMinute
             // 
             radioButtonMinute.AutoSize = true;
-            radioButtonMinute.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            radioButtonMinute.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             radioButtonMinute.Location = new System.Drawing.Point(3, 32);
             radioButtonMinute.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             radioButtonMinute.Name = "radioButtonMinute";
-            radioButtonMinute.Size = new System.Drawing.Size(80, 25);
+            radioButtonMinute.Size = new System.Drawing.Size(83, 21);
             radioButtonMinute.TabIndex = 5;
             radioButtonMinute.TabStop = true;
-            radioButtonMinute.Text = "Minute";
+            radioButtonMinute.Text = "Minute(s)";
             radioButtonMinute.UseVisualStyleBackColor = true;
             // 
             // radioButtonSecond
             // 
             radioButtonSecond.AutoSize = true;
-            radioButtonSecond.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            radioButtonSecond.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             radioButtonSecond.Location = new System.Drawing.Point(3, 4);
             radioButtonSecond.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             radioButtonSecond.Name = "radioButtonSecond";
-            radioButtonSecond.Size = new System.Drawing.Size(82, 25);
+            radioButtonSecond.Size = new System.Drawing.Size(86, 21);
             radioButtonSecond.TabIndex = 4;
             radioButtonSecond.TabStop = true;
-            radioButtonSecond.Text = "Second";
+            radioButtonSecond.Text = "Second(s)";
             radioButtonSecond.UseVisualStyleBackColor = true;
             // 
             // textBoxInputRequest
             // 
             textBoxInputRequest.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxInputRequest.Location = new System.Drawing.Point(374, 151);
+            textBoxInputRequest.Location = new System.Drawing.Point(369, 151);
             textBoxInputRequest.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxInputRequest.MaxLength = 999999999;
             textBoxInputRequest.Name = "textBoxInputRequest";
@@ -146,7 +146,7 @@
             // 
             lblInputNumberOfRequest.AutoSize = true;
             lblInputNumberOfRequest.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblInputNumberOfRequest.Location = new System.Drawing.Point(374, 105);
+            lblInputNumberOfRequest.Location = new System.Drawing.Point(369, 105);
             lblInputNumberOfRequest.Name = "lblInputNumberOfRequest";
             lblInputNumberOfRequest.Size = new System.Drawing.Size(302, 35);
             lblInputNumberOfRequest.TabIndex = 0;
@@ -155,7 +155,7 @@
             // textBoxTime
             // 
             textBoxTime.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxTime.Location = new System.Drawing.Point(734, 151);
+            textBoxTime.Location = new System.Drawing.Point(726, 151);
             textBoxTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxTime.MaxLength = 999999999;
             textBoxTime.Name = "textBoxTime";
@@ -166,7 +166,7 @@
             // 
             lblTime.AutoSize = true;
             lblTime.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblTime.Location = new System.Drawing.Point(734, 105);
+            lblTime.Location = new System.Drawing.Point(726, 105);
             lblTime.Name = "lblTime";
             lblTime.Size = new System.Drawing.Size(244, 35);
             lblTime.TabIndex = 0;
