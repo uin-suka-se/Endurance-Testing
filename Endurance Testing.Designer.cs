@@ -81,6 +81,7 @@
             textBoxInputUrl.Name = "textBoxInputUrl";
             textBoxInputUrl.Size = new System.Drawing.Size(348, 37);
             textBoxInputUrl.TabIndex = 1;
+            textBoxInputUrl.TextChanged += textBoxInputUrl_TextChanged;
             // 
             // panelPeriod
             // 

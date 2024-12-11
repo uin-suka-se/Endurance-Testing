@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text;
+using DocumentFormat.OpenXml.Office2021.DocumentTasks;
 
 namespace Endurance_Testing
 {
@@ -25,6 +26,7 @@ namespace Endurance_Testing
         private float totalResponseTime;
         private int totalResponses;
         private float totalThroughput;
+        private bool isRunning = false;
 
         public EnduranceTesting()
         {
@@ -36,7 +38,6 @@ namespace Endurance_Testing
 
         private void EnduranceTesting_Load(object sender, EventArgs e)
         {
-            // Inisialisasi jika diperlukan
             textBoxInputUrl.Text = "https://example.com";
             btnStop.Enabled = false;
             btnExport.Enabled = false;
@@ -50,8 +51,21 @@ namespace Endurance_Testing
             }
         }
 
+        private void textBoxInputUrl_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxInputUrl.Text.Length > 0 && !isRunning)
+            {
+                btnClear.Enabled = true;
+            }
+        }
+
         private void textBoxInputRequest_TextChanged(object sender, EventArgs e)
         {
+            if (textBoxInputRequest.Text.Length > 0 && !isRunning)
+            {
+                btnClear.Enabled = true;
+            }
+
             if (textBoxInputRequest.Text.Length > 8)
             {
                 MessageBox.Show("Input request should be limited to 8 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -62,6 +76,11 @@ namespace Endurance_Testing
 
         private void textBoxTime_TextChanged(object sender, EventArgs e)
         {
+            if (textBoxTime.Text.Length > 0 && !isRunning)
+            {
+                btnClear.Enabled = true;
+            }
+
             if (textBoxTime.Text.Length > 8)
             {
                 MessageBox.Show("Input time in period should be limited to 8 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -80,22 +99,27 @@ namespace Endurance_Testing
 
         private async void btnStart_Click(object sender, EventArgs e)
         {
+            isRunning = true;
+
             string url = textBoxInputUrl.Text;
             if (string.IsNullOrWhiteSpace(url) || !IsValidUrl(url))
             {
                 MessageBox.Show("Please enter a valid URL.");
+                isRunning = false;
                 return;
             }
 
             if (!int.TryParse(textBoxInputRequest.Text, out totalRequests) || totalRequests <= 0)
             {
                 MessageBox.Show("Please enter a valid number of requests.");
+                isRunning = false;
                 return;
             }
 
             if (!long.TryParse(textBoxTime.Text, out durationInSeconds) || durationInSeconds <= 0)
             {
                 MessageBox.Show("Please enter a valid duration.");
+                isRunning = false;
                 return;
             }
 
@@ -110,6 +134,7 @@ namespace Endurance_Testing
             else if (!radioButtonSecond.Checked)
             {
                 MessageBox.Show("Please select a time period (seconds, minutes, or hours).");
+                isRunning = false;
                 return;
             }
 
@@ -117,6 +142,7 @@ namespace Endurance_Testing
             if (durationInSeconds > maxDurationInSeconds)
             {
                 MessageBox.Show("Duration exceeds the maximum limit of 1 year (which is 8760 hours, 525600 minutes, or 31536000 seconds).");
+                isRunning = false;
                 return;
             }
 
@@ -147,13 +173,15 @@ namespace Endurance_Testing
 
             await countdownTask;
 
+            isRunning = false;
+
             btnClear.Enabled = true;
             btnExport.Enabled = true;
 
             ShowSummary();
         }
 
-        private async Task StartCountdown(long durationInSeconds, CancellationToken cancellationToken)
+        private async System.Threading.Tasks.Task StartCountdown(long durationInSeconds, CancellationToken cancellationToken)
         {
             for (long i = durationInSeconds; i > 0; i--)
             {
@@ -164,7 +192,7 @@ namespace Endurance_Testing
 
                 TimeSpan timeLeft = TimeSpan.FromSeconds(i);
                 lblTimeLeft.Text = $"{(int)timeLeft.TotalDays}:{timeLeft.Hours:D2}:{timeLeft.Minutes:D2}:{timeLeft.Seconds:D2}";
-                await Task.Delay(1000);
+                await System.Threading.Tasks.Task.Delay(1000);
             }
 
             lblTimeLeft.Text = "00:00:00:00";
@@ -172,11 +200,13 @@ namespace Endurance_Testing
             cancellationTokenSource.Cancel();
         }
 
-        private async Task RunEnduranceTest(string url, CancellationToken cancellationToken)
+        private async System.Threading.Tasks.Task RunEnduranceTest(string url, CancellationToken cancellationToken)
         {
             HttpClient httpClient = new HttpClient();
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+
+            var tasks = new List<Task<EnduranceTestResult>>();
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -185,15 +215,13 @@ namespace Endurance_Testing
                 int roundSuccessfulRequests = 0;
                 int roundFailedRequests = 0;
                 float roundResponseTime = 0;
-                float roundLatency = 0;
 
-                var tasks = new List<Task<EnduranceTestResult>>();
                 for (int i = 0; i < totalRequests; i++)
                 {
-                    tasks.Add(SendHttpRequest(httpClient, url, currentRound));
+                    tasks.Add(SendHttpRequest(httpClient, url, currentRound, cancellationToken));
                 }
 
-                var results = await Task.WhenAll(tasks);
+                var results = await System.Threading.Tasks.Task.WhenAll(tasks);
                 enduranceTestResults.AddRange(results);
 
                 float roundCpuUsage = GetCpuUsage();
@@ -243,7 +271,33 @@ namespace Endurance_Testing
                     DisplayRoundStatistics(roundCpuUsage, roundRamUsage, roundSuccessfulRequests, roundFailedRequests, averageRoundResponseTime, throughput, errorRate);
                 }
 
-                await Task.Delay(1000);
+                if (stopwatch.Elapsed.TotalSeconds >= durationInSeconds)
+                {
+                    cancellationTokenSource.Cancel();
+                    break;
+                }
+
+                await System.Threading.Tasks.Task.Delay(1000);
+            }
+
+            foreach (var task in tasks)
+            {
+                if (task.Status == TaskStatus.Running)
+                {
+                    var result = new EnduranceTestResult
+                    {
+                        StatusCode = System.Net.HttpStatusCode.RequestTimeout,
+                        ReasonPhrase = "Request Timeout - The request was canceled due to timeout.",
+                        ResponseTime = TimeSpan.Zero,
+                        Round = currentRound,
+                        CpuUsage = 0,
+                        RamUsage = 0,
+                        SuccessfulRequests = 0,
+                        FailedRequests = 1,
+                        AverageResponseTime = 0
+                    };
+                    enduranceTestResults.Add(result);
+                }
             }
 
             stopwatch.Stop();
@@ -251,14 +305,14 @@ namespace Endurance_Testing
             btnStop.Enabled = false;
         }
 
-        private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url, int round)
+        private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url, int round, CancellationToken cancellationToken)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
             try
             {
-                HttpResponseMessage response = await httpClient.GetAsync(url);
+                HttpResponseMessage response = await httpClient.GetAsync(url, cancellationToken);
                 TimeSpan responseTime = stopwatch.Elapsed;
 
                 return new EnduranceTestResult
@@ -272,6 +326,21 @@ namespace Endurance_Testing
                     SuccessfulRequests = response.StatusCode == System.Net.HttpStatusCode.OK ? 1 : 0,
                     FailedRequests = response.StatusCode != System.Net.HttpStatusCode.OK ? 1 : 0,
                     AverageResponseTime = (float)responseTime.TotalMilliseconds
+                };
+            }
+            catch (TaskCanceledException)
+            {
+                return new EnduranceTestResult
+                {
+                    StatusCode = System.Net.HttpStatusCode.RequestTimeout,
+                    ReasonPhrase = "Request Timeout - The request was canceled due to timeout",
+                    ResponseTime = stopwatch.Elapsed,
+                    Round = round,
+                    CpuUsage = 0,
+                    RamUsage = 0,
+                    SuccessfulRequests = 0,
+                    FailedRequests = 1,
+                    AverageResponseTime = 0
                 };
             }
             catch (Exception ex)
@@ -361,6 +430,7 @@ namespace Endurance_Testing
         private void btnStop_Click(object sender, EventArgs e)
         {
             cancellationTokenSource.Cancel();
+            isRunning = false;
             btnStart.Enabled = true;
             btnStop.Enabled = false;
             btnClear.Enabled = true;
