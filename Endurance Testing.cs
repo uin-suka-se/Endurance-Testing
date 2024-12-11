@@ -67,10 +67,18 @@ namespace Endurance_Testing
             }
         }
 
+        private bool IsValidUrl(string url)
+        {
+            Uri uriResult;
+            bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult)
+                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            return result;
+        }
+
         private async void btnStart_Click(object sender, EventArgs e)
         {
             string url = textBoxInputUrl.Text;
-            if (string.IsNullOrWhiteSpace(url))
+            if (string.IsNullOrWhiteSpace(url) || !IsValidUrl(url))
             {
                 MessageBox.Show("Please enter a valid URL.");
                 return;
