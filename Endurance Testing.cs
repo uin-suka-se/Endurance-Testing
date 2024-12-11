@@ -32,13 +32,14 @@ namespace Endurance_Testing
             this.Load += EnduranceTesting_Load;
             textBoxInputRequest.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
             textBoxTime.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
-
-            btnStop.Enabled = false;
         }
 
         private void EnduranceTesting_Load(object sender, EventArgs e)
         {
             // Inisialisasi jika diperlukan
+            textBoxInputUrl.Text = "https://example.com";
+            btnStop.Enabled = false;
+            btnExport.Enabled = false;
         }
 
         private void textBoxOnlyNumber_KeyPress(object sender, KeyPressEventArgs e)
@@ -333,7 +334,7 @@ namespace Endurance_Testing
                                     $"Average Computer's RAM Usage: {averageRamUsage} MB{Environment.NewLine}" +
                                     $"Average Response Time: {averageResponseTime} ms{Environment.NewLine}" +
                                     $"Average Throughput: {averageThroughput} requests/second{Environment.NewLine}" +
-                                    $"Error Rate: {(totalFailedRequests / (float)(totalRequests * currentRound)) * 100:F2}%{Environment.NewLine}";
+                                    $"Error Rate: {(totalFailedRequests / (float)(totalRequests * currentRound)) * 100}%{Environment.NewLine}";
 
             textBoxOutput.AppendText(summaryMessage);
             textBoxOutput.ScrollToCaret();
@@ -388,7 +389,7 @@ namespace Endurance_Testing
             helpMessage.AppendLine("3. Enter the duration for the endurance test in the Time column (in seconds, minutes, or hours).");
             helpMessage.AppendLine("4. Select the time period (seconds, minutes, or hours) using the radio buttons.");
             helpMessage.AppendLine("5. Click the 'Start' button to begin the endurance testing.");
-            helpMessage.AppendLine("6. Monitor the results in the output area in real-time.");
+            helpMessage.AppendLine("6. Monitor the results in the output area and time left in real-time.");
             helpMessage.AppendLine("7. After the test, the output will display:");
             helpMessage.AppendLine("   a. Total Requests.");
             helpMessage.AppendLine("   b. Successful Requests.");
@@ -396,6 +397,8 @@ namespace Endurance_Testing
             helpMessage.AppendLine("   d. Average Computer's CPU Usage (in percentage).");
             helpMessage.AppendLine("   e. Average Computer's RAM Usage (in megabytes).");
             helpMessage.AppendLine("   f. Average Response Time (in milliseconds).");
+            helpMessage.AppendLine("   g. Throughput (requests per second).");
+            helpMessage.AppendLine("   h. Error Rate (in percentage).");
             helpMessage.AppendLine("8. Optionally, export the endurance testing results to an Excel file using the 'Export' button.");
             helpMessage.AppendLine("9. Click the 'Clear' button to reset the input fields and output area.");
             helpMessage.AppendLine();
@@ -421,7 +424,7 @@ namespace Endurance_Testing
             infoMessage.AppendLine("Endurance Testing:");
             infoMessage.AppendLine();
             infoMessage.AppendLine("\"Endurance testing, also known as soak testing, involves subjecting an application to a sustained load for an extended period. This methodology helps uncover memory leaks, resource depletion, and other performance degradation issues that might only surface after prolonged usage.\"[1]");
-            infoMessage.AppendLine("[1]\tS. Pargaonkar, \"A Comprehensive Review of Performance Testing Methodologies and Best Practices: Software Quality Engineering,\" International Journal of Science and Research (IJSR), vol. 12, no. 8, pp. 2008-2014, August 2023.");
+            infoMessage.AppendLine("[1] S. Pargaonkar, \"A Comprehensive Review of Performance Testing Methodologies and Best Practices: Software Quality Engineering,\" International Journal of Science and Research (IJSR), vol. 12, no. 8, pp. 2008-2014, August 2023.");
             infoMessage.AppendLine();
             infoMessage.AppendLine("Metrics:");
             infoMessage.AppendLine();
@@ -455,6 +458,16 @@ namespace Endurance_Testing
             infoMessage.AppendLine("        Average Response Time represents the mean response time per request during the endurance testing.");
             infoMessage.AppendLine("    b. Formula:");
             infoMessage.AppendLine("        Average Response Time = Total Response Time / Total Requests");
+            infoMessage.AppendLine("7. Throughput:");
+            infoMessage.AppendLine("    a. Description:");
+            infoMessage.AppendLine("        Throughput measures the number of successful requests processed per second during the endurance testing.");
+            infoMessage.AppendLine("    b. Formula:");
+            infoMessage.AppendLine("        Throughput = Successful Requests / Total Time Taken (in seconds)");
+            infoMessage.AppendLine("8. Error Rate:");
+            infoMessage.AppendLine("    a. Description:");
+            infoMessage.AppendLine("        Error Rate indicates the percentage of requests that failed during the endurance testing.");
+            infoMessage.AppendLine("    b. Formula:");
+            infoMessage.AppendLine("        Error Rate = (Failed Requests / Total Requests) * 100");
 
             return infoMessage.ToString();
         }
