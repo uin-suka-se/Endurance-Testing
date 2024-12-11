@@ -19,10 +19,12 @@ namespace Endurance_Testing
         private int currentRound;
         private int totalSuccessfulRequests;
         private int totalFailedRequests;
+        private int totalErrors;
         private float totalCpuUsage;
         private float totalRamUsage;
         private float totalResponseTime;
         private int totalResponses;
+        private float totalThroughput;
 
         public EnduranceTesting()
         {
@@ -135,6 +137,8 @@ namespace Endurance_Testing
             totalRamUsage = 0;
             totalResponseTime = 0;
             totalResponses = 0;
+            totalErrors = 0;
+            totalThroughput = 0;
 
             var countdownTask = StartCountdown(durationInSeconds, cancellationTokenSource.Token);
 
@@ -180,6 +184,7 @@ namespace Endurance_Testing
                 int roundSuccessfulRequests = 0;
                 int roundFailedRequests = 0;
                 float roundResponseTime = 0;
+                float roundLatency = 0;
 
                 var tasks = new List<Task<EnduranceTestResult>>();
                 for (int i = 0; i < totalRequests; i++)
@@ -207,12 +212,16 @@ namespace Endurance_Testing
                     {
                         roundFailedRequests++;
                         totalFailedRequests++;
+                        totalErrors++;
                     }
                 }
 
                 if (totalRequests > 0)
                 {
                     float averageRoundResponseTime = roundResponseTime / totalRequests;
+                    float throughput = (float)roundSuccessfulRequests / (float)(stopwatch.Elapsed.TotalSeconds);
+                    totalThroughput += throughput;
+                    float errorRate = (float)roundFailedRequests / (float)totalRequests * 100;
 
                     foreach (var result in results)
                     {
@@ -221,6 +230,8 @@ namespace Endurance_Testing
                         result.SuccessfulRequests = roundSuccessfulRequests;
                         result.FailedRequests = roundFailedRequests;
                         result.AverageResponseTime = averageRoundResponseTime;
+                        result.Throughput = throughput;
+                        result.ErrorRate = errorRate;
                     }
 
                     totalCpuUsage += roundCpuUsage;
@@ -228,7 +239,7 @@ namespace Endurance_Testing
                     totalResponseTime += roundResponseTime;
                     totalResponses += totalRequests;
 
-                    DisplayRoundStatistics(roundCpuUsage, roundRamUsage, roundSuccessfulRequests, roundFailedRequests, averageRoundResponseTime);
+                    DisplayRoundStatistics(roundCpuUsage, roundRamUsage, roundSuccessfulRequests, roundFailedRequests, averageRoundResponseTime, throughput, errorRate);
                 }
 
                 await Task.Delay(1000);
@@ -290,15 +301,17 @@ namespace Endurance_Testing
             textBoxOutput.ScrollToCaret();
         }
 
-        private void DisplayRoundStatistics(float currentCpuUsage, float currentRamUsage, int roundSuccessfulRequests, int roundFailedRequests, float averageRoundResponseTime)
+        private void DisplayRoundStatistics(float currentCpuUsage, float currentRamUsage, int roundSuccessfulRequests, int roundFailedRequests, float averageRoundResponseTime, float throughput, float errorRate)
         {
             string roundStats = $"Round {currentRound} Statistics:{Environment.NewLine}" +
-                                $"Computer's CPU Usage: {currentCpuUsage:F2}%{Environment.NewLine}" +
-                                $"Computer's RAM Usage: {currentRamUsage:F2} MB{Environment.NewLine}" +
+                                $"Computer's CPU Usage: {currentCpuUsage}%{Environment.NewLine}" +
+                                $"Computer's RAM Usage: {currentRamUsage} MB{Environment.NewLine}" +
                                 $"Total Requests: {totalRequests}{Environment.NewLine}" +
                                 $"Successful Requests: {roundSuccessfulRequests}{Environment.NewLine}" +
                                 $"Failed Requests: {roundFailedRequests}{Environment.NewLine}" +
-                                $"Average Response Time: {averageRoundResponseTime:F2} ms{Environment.NewLine}{Environment.NewLine}";
+                                $"Average Response Time: {averageRoundResponseTime} ms{Environment.NewLine}" +
+                                $"Throughput: {throughput} requests/second{Environment.NewLine}" +
+                                $"Error Rate: {errorRate}%{Environment.NewLine}{Environment.NewLine}";
 
             textBoxOutput.AppendText(roundStats);
             textBoxOutput.ScrollToCaret();
@@ -310,14 +323,17 @@ namespace Endurance_Testing
             float averageRamUsage = currentRound > 0 ? totalRamUsage / currentRound : 0;
 
             float averageResponseTime = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
+            float averageThroughput = totalResponses > 0 ? totalThroughput / currentRound : 0;
 
             string summaryMessage = $"Summary:{Environment.NewLine}" +
                                     $"Total Requests: {totalRequests * currentRound}{Environment.NewLine}" +
                                     $"Successful Requests: {totalSuccessfulRequests}{Environment.NewLine}" +
                                     $"Failed Requests: {totalFailedRequests}{Environment.NewLine}" +
-                                    $"Average Computer's CPU Usage: {averageCpuUsage:F2}%{Environment.NewLine}" +
-                                    $"Average Computer's RAM Usage: {averageRamUsage:F2} MB{Environment.NewLine}" +
-                                    $"Average Response Time: {averageResponseTime:F2} ms{Environment.NewLine}";
+                                    $"Average Computer's CPU Usage: {averageCpuUsage}%{Environment.NewLine}" +
+                                    $"Average Computer's RAM Usage: {averageRamUsage} MB{Environment.NewLine}" +
+                                    $"Average Response Time: {averageResponseTime} ms{Environment.NewLine}" +
+                                    $"Average Throughput: {averageThroughput} requests/second{Environment.NewLine}" +
+                                    $"Error Rate: {(totalFailedRequests / (float)(totalRequests * currentRound)) * 100:F2}%{Environment.NewLine}";
 
             textBoxOutput.AppendText(summaryMessage);
             textBoxOutput.ScrollToCaret();
@@ -475,7 +491,7 @@ namespace Endurance_Testing
                 worksheet.Cell(1, 1).Style.Font.Bold = true;
                 worksheet.Cell(1, 1).Style.Font.FontSize = 14;
                 worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                worksheet.Range("A1:J1").Merge();
+                worksheet.Range("A1:L1").Merge();
 
                 worksheet.Cell(2, 1).Value = "Round";
                 worksheet.Cell(2, 2).Value = "Status";
@@ -487,6 +503,8 @@ namespace Endurance_Testing
                 worksheet.Cell(2, 8).Value = "Successful Requests";
                 worksheet.Cell(2, 9).Value = "Failed Requests";
                 worksheet.Cell(2, 10).Value = "Average Response Time (ms)";
+                worksheet.Cell(2, 11).Value = "Throughput (requests/sec)";
+                worksheet.Cell(2, 12).Value = "Error Rate (%)";
 
                 int row = 3;
                 foreach (var result in enduranceTestResults)
@@ -501,15 +519,19 @@ namespace Endurance_Testing
                     worksheet.Cell(row, 8).Value = result.SuccessfulRequests;
                     worksheet.Cell(row, 9).Value = result.FailedRequests;
                     worksheet.Cell(row, 10).Value = result.AverageResponseTime;
+                    worksheet.Cell(row, 11).Value = result.Throughput;
+                    worksheet.Cell(row, 12).Value = result.ErrorRate;
                     row++;
                 }
 
                 int summaryStartRow = 1;
-                int summaryStartColumn = 12;
+                int summaryStartColumn = 14;
 
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Overall Summary";
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Style.Font.Bold = true;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Style.Font.FontSize = 14;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range("N1:O1").Merge();
 
                 int totalRequestsOverall = totalRequests * currentRound;
                 int totalSuccessfulRequestsOverall = totalSuccessfulRequests;
@@ -517,6 +539,8 @@ namespace Endurance_Testing
                 float averageCpuUsageOverall = currentRound > 0 ? totalCpuUsage / currentRound : 0;
                 float averageRamUsageOverall = currentRound > 0 ? totalRamUsage / currentRound : 0;
                 float averageResponseTimeOverall = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
+                float averageThroughputOverall = totalResponses > 0 ? totalThroughput / currentRound : 0;
+                float averageErrorRateOverall = totalResponses > 0 ? (totalFailedRequests / (float)totalRequestsOverall) * 100 : 0;
 
                 summaryStartRow++;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Total Requests:";
@@ -532,15 +556,23 @@ namespace Endurance_Testing
 
                 summaryStartRow++;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average CPU Usage:";
-                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageCpuUsageOverall.ToString("F2") + "%";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageCpuUsageOverall.ToString() + "%";
 
                 summaryStartRow++;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average RAM Usage:";
-                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageRamUsageOverall.ToString("F2") + " MB";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageRamUsageOverall.ToString() + " MB";
 
                 summaryStartRow++;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Response Time:";
-                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageResponseTimeOverall.ToString("F2") + " ms";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageResponseTimeOverall.ToString() + " ms";
+
+                summaryStartRow++;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Throughput:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageThroughputOverall.ToString() + " requests/sec";
+
+                summaryStartRow++;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Error Rate:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageErrorRateOverall.ToString() + "%";
 
                 worksheet.Columns().AdjustToContents();
 
@@ -571,5 +603,7 @@ namespace Endurance_Testing
         public int SuccessfulRequests { get; set; }
         public int FailedRequests { get; set; }
         public float AverageResponseTime { get; set; }
+        public float Throughput { get; set; }
+        public float ErrorRate { get; set; }
     }
 }
