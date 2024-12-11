@@ -49,6 +49,7 @@
             btnInfo = new System.Windows.Forms.Button();
             btnClear = new System.Windows.Forms.Button();
             btnExport = new System.Windows.Forms.Button();
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             panelPeriod.SuspendLayout();
             SuspendLayout();
             // 
@@ -221,7 +222,7 @@
             // 
             // textBoxOutput
             // 
-            textBoxOutput.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            textBoxOutput.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             textBoxOutput.Location = new System.Drawing.Point(13, 407);
             textBoxOutput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxOutput.MaxLength = 999999999;
@@ -229,7 +230,7 @@
             textBoxOutput.Name = "textBoxOutput";
             textBoxOutput.ReadOnly = true;
             textBoxOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            textBoxOutput.Size = new System.Drawing.Size(1009, 307);
+            textBoxOutput.Size = new System.Drawing.Size(1029, 307);
             textBoxOutput.TabIndex = 9;
             // 
             // btnHelp
@@ -338,6 +339,7 @@
         private System.Windows.Forms.Button btnInfo;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnExport;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 

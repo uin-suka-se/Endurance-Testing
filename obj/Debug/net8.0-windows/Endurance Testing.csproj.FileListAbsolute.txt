@@ -25,3 +25,7 @@ C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8
 C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\System.IO.Packaging.dll
 C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Endurance Testing.csproj.AssemblyReference.cache
 C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\obj\Debug\net8.0-windows\Enduranc.1096B986.Up2Date
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\System.Drawing.Common.dll
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\System.Private.Windows.Core.dll
+C:\Users\acer\Documents\Semester 8\PPPL\Versi 1\Endurance Testing\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll

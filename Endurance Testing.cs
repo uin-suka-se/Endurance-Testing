@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text;
-using DocumentFormat.OpenXml.Office2021.DocumentTasks;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace Endurance_Testing
 {
@@ -154,6 +154,7 @@ namespace Endurance_Testing
             btnStart.Enabled = false;
             btnStop.Enabled = true;
             btnClear.Enabled = false;
+            btnClear.Enabled = false;
             btnExport.Enabled = false;
 
             cancellationTokenSource = new CancellationTokenSource();
@@ -181,32 +182,32 @@ namespace Endurance_Testing
             ShowSummary();
         }
 
-        private async System.Threading.Tasks.Task StartCountdown(long durationInSeconds, CancellationToken cancellationToken)
+        private async Task StartCountdown(long durationInSeconds, CancellationToken cancellationToken)
         {
-            for (long i = durationInSeconds; i > 0; i--)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return;
-                }
+            long remainingTime = durationInSeconds;
 
-                TimeSpan timeLeft = TimeSpan.FromSeconds(i);
+            while (remainingTime > 0 && !cancellationToken.IsCancellationRequested)
+            {
+                TimeSpan timeLeft = TimeSpan.FromSeconds(remainingTime);
                 lblTimeLeft.Text = $"{(int)timeLeft.TotalDays}:{timeLeft.Hours:D2}:{timeLeft.Minutes:D2}:{timeLeft.Seconds:D2}";
-                await System.Threading.Tasks.Task.Delay(1000);
+
+                await Task.Delay(1000);
+                remainingTime--;
             }
 
             lblTimeLeft.Text = "00:00:00:00";
 
-            cancellationTokenSource.Cancel();
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                cancellationTokenSource.Cancel();
+            }
         }
 
-        private async System.Threading.Tasks.Task RunEnduranceTest(string url, CancellationToken cancellationToken)
+        private async Task RunEnduranceTest(string url, CancellationToken cancellationToken)
         {
             HttpClient httpClient = new HttpClient();
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-
-            var tasks = new List<Task<EnduranceTestResult>>();
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -215,13 +216,15 @@ namespace Endurance_Testing
                 int roundSuccessfulRequests = 0;
                 int roundFailedRequests = 0;
                 float roundResponseTime = 0;
+                float roundLatency = 0;
 
+                var tasks = new List<Task<EnduranceTestResult>>();
                 for (int i = 0; i < totalRequests; i++)
                 {
                     tasks.Add(SendHttpRequest(httpClient, url, currentRound, cancellationToken));
                 }
 
-                var results = await System.Threading.Tasks.Task.WhenAll(tasks);
+                var results = await Task.WhenAll(tasks);
                 enduranceTestResults.AddRange(results);
 
                 float roundCpuUsage = GetCpuUsage();
@@ -277,27 +280,7 @@ namespace Endurance_Testing
                     break;
                 }
 
-                await System.Threading.Tasks.Task.Delay(1000);
-            }
-
-            foreach (var task in tasks)
-            {
-                if (task.Status == TaskStatus.Running)
-                {
-                    var result = new EnduranceTestResult
-                    {
-                        StatusCode = System.Net.HttpStatusCode.RequestTimeout,
-                        ReasonPhrase = "Request Timeout - The request was canceled due to timeout.",
-                        ResponseTime = TimeSpan.Zero,
-                        Round = currentRound,
-                        CpuUsage = 0,
-                        RamUsage = 0,
-                        SuccessfulRequests = 0,
-                        FailedRequests = 1,
-                        AverageResponseTime = 0
-                    };
-                    enduranceTestResults.Add(result);
-                }
+                await Task.Delay(1000);
             }
 
             stopwatch.Stop();
