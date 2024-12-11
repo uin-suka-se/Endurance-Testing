@@ -455,7 +455,10 @@ namespace Endurance_Testing
             helpMessage.AppendLine("8. Optionally, export the endurance testing results to an Excel file using the 'Export' button.");
             helpMessage.AppendLine("9. Click the 'Clear' button to reset the input fields and output area.");
             helpMessage.AppendLine();
-            helpMessage.AppendLine("Note: Ensure that your internet connection is stable and reliable for conducting this test.");
+            helpMessage.AppendLine("Note:");
+            helpMessage.AppendLine("1. Ensure that your internet connection is stable and reliable for conducting this test.");
+            helpMessage.AppendLine("2. Be aware that the device may become slower during the testing process, so ensure that your device specifications are adequate.");
+            helpMessage.AppendLine("3. Additionally, the total duration of the test may not match the input time in the Time column due to processing time required for handling requests and responses.");
 
             return helpMessage.ToString();
         }
