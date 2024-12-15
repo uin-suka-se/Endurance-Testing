@@ -1,0 +1,67 @@
+# Visual Studio
+.vs/
+*.sln.ide
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bin/
+obj/
+out/
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*~
+
+# User-specific files
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pdb
+*.mdb
+*.cache
+*.ilk
+*.idb
+*.ipch/
+*.aps
+*.pch
+*.pdb
+*.obj
+*.exe
+*.dll
+*.appx
+*.appxbundle
+*.appxupload
+*.appxmanifest
+
+# Publish folder
+publish/
+
+# Other
+*.vsix
+*.vssscc
+*.vsscc
+*.scc
