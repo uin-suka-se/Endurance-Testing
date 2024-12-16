@@ -99,6 +99,19 @@ namespace Endurance_Testing
 
         private async void btnStart_Click(object sender, EventArgs e)
         {
+            if (!string.IsNullOrWhiteSpace(textBoxOutput.Text))
+            {
+                var result = MessageBox.Show("There are unsaved results in the output. Do you want to continue?",
+                                               "Warning",
+                                               MessageBoxButtons.YesNo,
+                                               MessageBoxIcon.Warning);
+
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
             isRunning = true;
 
             string url = textBoxInputUrl.Text;
@@ -566,8 +579,8 @@ namespace Endurance_Testing
                 worksheet.Cell(2, 2).Value = "Status";
                 worksheet.Cell(2, 3).Value = "Reason";
                 worksheet.Cell(2, 4).Value = "Response Time (ms)";
-                worksheet.Cell(2, 5).Value = "CPU Usage (%)";
-                worksheet.Cell(2, 6).Value = "RAM Usage (MB)";
+                worksheet.Cell(2, 5).Value = "Computer's CPU Usage (%)";
+                worksheet.Cell(2, 6).Value = "Computer's RAM Usage (MB)";
                 worksheet.Cell(2, 7).Value = "Total Requests";
                 worksheet.Cell(2, 8).Value = "Successful Requests";
                 worksheet.Cell(2, 9).Value = "Failed Requests";
@@ -624,11 +637,11 @@ namespace Endurance_Testing
                 worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = totalFailedRequestsOverall;
 
                 summaryStartRow++;
-                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average CPU Usage:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Computer's CPU Usage:";
                 worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageCpuUsageOverall.ToString() + "%";
 
                 summaryStartRow++;
-                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average RAM Usage:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Computer's RAM Usage:";
                 worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageRamUsageOverall.ToString() + " MB";
 
                 summaryStartRow++;
