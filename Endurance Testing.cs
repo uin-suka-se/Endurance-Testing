@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text;
-using DocumentFormat.OpenXml.Drawing;
 
 namespace Endurance_Testing
 {
@@ -28,6 +27,7 @@ namespace Endurance_Testing
         private int totalResponses;
         private float totalThroughput;
         private bool isRunning = false;
+        private string selectedTimePeriod;
 
         public EnduranceTesting()
         {
@@ -48,7 +48,7 @@ namespace Endurance_Testing
 
             if (result == DialogResult.No)
             {
-                e.Cancel = true; // Batalkan penutupan form jika pengguna memilih "No"
+                e.Cancel = true;
             }
         }
 
@@ -57,6 +57,7 @@ namespace Endurance_Testing
             textBoxInputUrl.Text = "https://example.com";
             btnStop.Enabled = false;
             btnExport.Enabled = false;
+            selectedTimePeriod = "second(s)";
         }
 
         private void textBoxOnlyNumber_KeyPress(object sender, KeyPressEventArgs e)
@@ -178,10 +179,16 @@ namespace Endurance_Testing
             if (radioButtonMinute.Checked)
             {
                 durationInSeconds *= 60;
+                selectedTimePeriod = "minute(s)";
             }
             else if (radioButtonHour.Checked)
             {
                 durationInSeconds *= 3600;
+                selectedTimePeriod = "hour(s)";
+            }
+            else if (radioButtonSecond.Checked)
+            {
+                selectedTimePeriod = "second(s)";
             }
             else if (!radioButtonSecond.Checked)
             {
@@ -332,7 +339,7 @@ namespace Endurance_Testing
                         break;
                     }
 
-                    await Task.Delay(timeoutInSeconds * 1000); // delay per round
+                    await Task.Delay(timeoutInSeconds * 1000);
                 }
 
                 stopwatch.Stop();
@@ -723,6 +730,31 @@ namespace Endurance_Testing
                 summaryStartRow++;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Error Rate:";
                 worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageErrorRateOverall.ToString() + "%";
+
+                int paramStartRow = 1;
+                int paramStartColumn = 17;
+
+                worksheet.Cell(paramStartRow, paramStartColumn).Value = "Test Parameter";
+                worksheet.Cell(paramStartRow, paramStartColumn).Style.Font.Bold = true;
+                worksheet.Cell(paramStartRow, paramStartColumn).Style.Font.FontSize = 14;
+                worksheet.Cell(paramStartRow, paramStartColumn).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range("Q1:R1").Merge();
+
+                paramStartRow++;
+                worksheet.Cell(paramStartRow, paramStartColumn).Value = "URL:";
+                worksheet.Cell(paramStartRow, paramStartColumn + 1).Value = url;
+
+                paramStartRow++;
+                worksheet.Cell(paramStartRow, paramStartColumn).Value = "Number of Requests:";
+                worksheet.Cell(paramStartRow, paramStartColumn + 1).Value = totalRequests;
+
+                paramStartRow++;
+                worksheet.Cell(paramStartRow, paramStartColumn).Value = "Timeout Per Round:";
+                worksheet.Cell(paramStartRow, paramStartColumn + 1).Value = timeoutInSeconds + " second(s)";
+
+                paramStartRow++;
+                worksheet.Cell(paramStartRow, paramStartColumn).Value = "Time in Period:";
+                worksheet.Cell(paramStartRow, paramStartColumn + 1).Value = durationInSeconds + " " + selectedTimePeriod;
 
                 worksheet.Columns().AdjustToContents();
 
