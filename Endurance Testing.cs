@@ -439,6 +439,16 @@ namespace Endurance_Testing
 
         private void btnStop_Click(object sender, EventArgs e)
         {
+            var result = MessageBox.Show("Are you sure you want to stop the endurance test?",
+                                           "Confirm Stop",
+                                           MessageBoxButtons.YesNo,
+                                           MessageBoxIcon.Warning);
+
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+
             cancellationTokenSource.Cancel();
             isRunning = false;
             btnStart.Enabled = true;
