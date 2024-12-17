@@ -17,6 +17,7 @@ namespace Endurance_Testing
         private List<EnduranceTestResult> enduranceTestResults = new List<EnduranceTestResult>();
         private int totalRequests;
         private long durationInSeconds;
+        private int timeoutInSeconds;
         private int currentRound;
         private int totalSuccessfulRequests;
         private int totalFailedRequests;
@@ -34,6 +35,7 @@ namespace Endurance_Testing
             this.Load += EnduranceTesting_Load;
             this.FormClosing += EnduranceTesting_FormClosing;
             textBoxInputRequest.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
+            textBoxTimeout.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
             textBoxTime.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
         }
 
@@ -88,6 +90,22 @@ namespace Endurance_Testing
             }
         }
 
+        private void textBoxTimeout_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxTimeout.Text.Length > 0 && !isRunning)
+            {
+                btnClear.Enabled = true;
+            }
+
+            if (textBoxTimeout.Text.Length > 8)
+            {
+                MessageBox.Show("Input timeout should be limited to 8 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBoxTimeout.Text = textBoxTimeout.Text.Substring(0, 8);
+                textBoxTimeout.SelectionStart = textBoxTimeout.Text.Length;
+            }
+
+        }
+
         private void textBoxTime_TextChanged(object sender, EventArgs e)
         {
             if (textBoxTime.Text.Length > 0 && !isRunning)
@@ -139,6 +157,13 @@ namespace Endurance_Testing
             if (!int.TryParse(textBoxInputRequest.Text, out totalRequests) || totalRequests <= 0)
             {
                 MessageBox.Show("Please enter a valid number of requests.");
+                isRunning = false;
+                return;
+            }
+
+            if (!int.TryParse(textBoxTimeout.Text, out timeoutInSeconds) || timeoutInSeconds <= 0)
+            {
+                MessageBox.Show("Please enter a valid timeout.");
                 isRunning = false;
                 return;
             }
@@ -232,87 +257,88 @@ namespace Endurance_Testing
 
         private async Task RunEnduranceTest(string url, CancellationToken cancellationToken)
         {
-            HttpClient httpClient = new HttpClient();
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            while (!cancellationToken.IsCancellationRequested)
+            using (HttpClient httpClient = new HttpClient())
             {
-                currentRound++;
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
 
-                int roundSuccessfulRequests = 0;
-                int roundFailedRequests = 0;
-                float roundResponseTime = 0;
-                float roundLatency = 0;
-
-                var tasks = new List<Task<EnduranceTestResult>>();
-                for (int i = 0; i < totalRequests; i++)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    tasks.Add(SendHttpRequest(httpClient, url, currentRound, cancellationToken));
-                }
+                    currentRound++;
+                    int roundSuccessfulRequests = 0;
+                    int roundFailedRequests = 0;
+                    float roundResponseTime = 0;
 
-                var results = await Task.WhenAll(tasks);
-                enduranceTestResults.AddRange(results);
-
-                float roundCpuUsage = GetCpuUsage();
-                float roundRamUsage = GetRamUsage();
-
-                foreach (var result in results)
-                {
-                    DisplayResult(result, currentRound);
-                    roundResponseTime += (float)result.ResponseTime.TotalMilliseconds;
-
-                    if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                    var tasks = new List<Task<EnduranceTestResult>>();
+                    for (int i = 0; i < totalRequests; i++)
                     {
-                        roundSuccessfulRequests++;
-                        totalSuccessfulRequests++;
+                        tasks.Add(SendHttpRequest(httpClient, url, currentRound, cancellationToken));
                     }
-                    else
-                    {
-                        roundFailedRequests++;
-                        totalFailedRequests++;
-                        totalErrors++;
-                    }
-                }
 
-                if (totalRequests > 0)
-                {
-                    float averageRoundResponseTime = roundResponseTime / totalRequests;
-                    float throughput = (float)roundSuccessfulRequests / (float)(stopwatch.Elapsed.TotalSeconds);
-                    totalThroughput += throughput;
-                    float errorRate = (float)roundFailedRequests / (float)totalRequests * 100;
+                    var results = await Task.WhenAll(tasks);
+                    enduranceTestResults.AddRange(results);
+
+                    float roundCpuUsage = GetCpuUsage();
+                    float roundRamUsage = GetRamUsage();
 
                     foreach (var result in results)
                     {
-                        result.CpuUsage = roundCpuUsage;
-                        result.RamUsage = roundRamUsage;
-                        result.SuccessfulRequests = roundSuccessfulRequests;
-                        result.FailedRequests = roundFailedRequests;
-                        result.AverageResponseTime = averageRoundResponseTime;
-                        result.Throughput = throughput;
-                        result.ErrorRate = errorRate;
+                        DisplayResult(result, currentRound);
+                        roundResponseTime += (float)result.ResponseTime.TotalMilliseconds;
+
+                        if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            roundSuccessfulRequests++;
+                            totalSuccessfulRequests++;
+                        }
+                        else
+                        {
+                            roundFailedRequests++;
+                            totalFailedRequests++;
+                            totalErrors++;
+                        }
                     }
 
-                    totalCpuUsage += roundCpuUsage;
-                    totalRamUsage += roundRamUsage;
-                    totalResponseTime += roundResponseTime;
-                    totalResponses += totalRequests;
 
-                    DisplayRoundStatistics(roundCpuUsage, roundRamUsage, roundSuccessfulRequests, roundFailedRequests, averageRoundResponseTime, throughput, errorRate);
+                    if (totalRequests > 0)
+                    {
+                        float averageRoundResponseTime = roundResponseTime / totalRequests;
+                        float throughput = (float)roundSuccessfulRequests / timeoutInSeconds;
+                        totalThroughput += throughput;
+                        float errorRate = (float)roundFailedRequests / (float)totalRequests * 100;
+
+                        foreach (var result in results)
+                        {
+                            result.CpuUsage = roundCpuUsage;
+                            result.RamUsage = roundRamUsage;
+                            result.SuccessfulRequests = roundSuccessfulRequests;
+                            result.FailedRequests = roundFailedRequests;
+                            result.AverageResponseTime = averageRoundResponseTime;
+                            result.Throughput = throughput;
+                            result.ErrorRate = errorRate;
+                        }
+
+                        totalCpuUsage += roundCpuUsage;
+                        totalRamUsage += roundRamUsage;
+                        totalResponseTime += roundResponseTime;
+                        totalResponses += totalRequests;
+
+                        DisplayRoundStatistics(roundCpuUsage, roundRamUsage, roundSuccessfulRequests, roundFailedRequests, averageRoundResponseTime, throughput, errorRate);
+                    }
+
+                    if (stopwatch.Elapsed.TotalSeconds >= durationInSeconds)
+                    {
+                        cancellationTokenSource.Cancel();
+                        break;
+                    }
+
+                    await Task.Delay(timeoutInSeconds * 1000); // delay per round
                 }
 
-                if (stopwatch.Elapsed.TotalSeconds >= durationInSeconds)
-                {
-                    cancellationTokenSource.Cancel();
-                    break;
-                }
-
-                await Task.Delay(1000);
+                stopwatch.Stop();
+                btnStart.Enabled = true;
+                btnStop.Enabled = false;
             }
-
-            stopwatch.Stop();
-            btnStart.Enabled = true;
-            btnStop.Enabled = false;
         }
 
         private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url, int round, CancellationToken cancellationToken)
@@ -322,23 +348,29 @@ namespace Endurance_Testing
 
             try
             {
-                HttpResponseMessage response = await httpClient.GetAsync(url, cancellationToken);
-                TimeSpan responseTime = stopwatch.Elapsed;
-
-                return new EnduranceTestResult
+                using (var requestTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutInSeconds)))
                 {
-                    StatusCode = response.StatusCode,
-                    ReasonPhrase = response.ReasonPhrase,
-                    ResponseTime = responseTime,
-                    Round = round,
-                    CpuUsage = 0,
-                    RamUsage = 0,
-                    SuccessfulRequests = response.StatusCode == System.Net.HttpStatusCode.OK ? 1 : 0,
-                    FailedRequests = response.StatusCode != System.Net.HttpStatusCode.OK ? 1 : 0,
-                    AverageResponseTime = (float)responseTime.TotalMilliseconds
-                };
+                    using (var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, requestTimeout.Token))
+                    {
+                        HttpResponseMessage response = await httpClient.GetAsync(url, combinedToken.Token);
+                        TimeSpan responseTime = stopwatch.Elapsed;
+
+                        return new EnduranceTestResult
+                        {
+                            StatusCode = response.StatusCode,
+                            ReasonPhrase = response.ReasonPhrase,
+                            ResponseTime = responseTime,
+                            Round = round,
+                            CpuUsage = 0,
+                            RamUsage = 0,
+                            SuccessfulRequests = response.StatusCode == System.Net.HttpStatusCode.OK ? 1 : 0,
+                            FailedRequests = response.StatusCode != System.Net.HttpStatusCode.OK ? 1 : 0,
+                            AverageResponseTime = (float)responseTime.TotalMilliseconds
+                        };
+                    }
+                }
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
                 return new EnduranceTestResult
                 {
@@ -478,9 +510,10 @@ namespace Endurance_Testing
             helpMessage.AppendLine("2. Enter the number of requests in the Requests column (maximum 8 digits).");
             helpMessage.AppendLine("3. Enter the duration for the endurance test in the Time column (in seconds, minutes, or hours).");
             helpMessage.AppendLine("4. Select the time period (seconds, minutes, or hours) using the radio buttons.");
-            helpMessage.AppendLine("5. Click the 'Start' button to begin the endurance testing.");
-            helpMessage.AppendLine("6. Monitor the results in the output area and time left in real-time.");
-            helpMessage.AppendLine("7. After the test, the output will display:");
+            helpMessage.AppendLine("5. Enter the timeout per round in the Timeout column (in seconds).");
+            helpMessage.AppendLine("6. Click the 'Start' button to begin the endurance testing.");
+            helpMessage.AppendLine("7. Monitor the results in the output area and time left in real-time.");
+            helpMessage.AppendLine("8. After the test, the output will display:");
             helpMessage.AppendLine("   a. Total Requests.");
             helpMessage.AppendLine("   b. Successful Requests.");
             helpMessage.AppendLine("   c. Failed Requests.");
@@ -489,8 +522,8 @@ namespace Endurance_Testing
             helpMessage.AppendLine("   f. Average Response Time (in milliseconds).");
             helpMessage.AppendLine("   g. Throughput (requests per second).");
             helpMessage.AppendLine("   h. Error Rate (in percentage).");
-            helpMessage.AppendLine("8. Optionally, export the endurance testing results to an Excel file using the 'Export' button.");
-            helpMessage.AppendLine("9. Click the 'Clear' button to reset the input fields and output area.");
+            helpMessage.AppendLine("9. Optionally, export the endurance testing results to an Excel file using the 'Export' button.");
+            helpMessage.AppendLine("10.Click the 'Clear' button to reset the input fields and output area.");
             helpMessage.AppendLine();
             helpMessage.AppendLine("Note:");
             helpMessage.AppendLine("1. Ensure that your internet connection is stable and reliable for conducting this test.");
@@ -574,12 +607,13 @@ namespace Endurance_Testing
 
             if (result == DialogResult.No)
             {
-                return; // Jika pengguna memilih "No", keluar dari metode
+                return;
             }
 
             textBoxInputUrl.Clear();
             textBoxInputRequest.Clear();
             textBoxTime.Clear();
+            textBoxTimeout.Clear();
             lblTimeLeft.Text = "00:00:00:00";
             textBoxOutput.Clear();
             enduranceTestResults.Clear();
