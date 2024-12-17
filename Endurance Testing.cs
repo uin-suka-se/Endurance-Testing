@@ -32,8 +32,22 @@ namespace Endurance_Testing
         {
             InitializeComponent();
             this.Load += EnduranceTesting_Load;
+            this.FormClosing += EnduranceTesting_FormClosing;
             textBoxInputRequest.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
             textBoxTime.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
+        }
+
+        private void EnduranceTesting_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var result = MessageBox.Show("Are you sure you want to exit the application?",
+                                           "Confirm Exit",
+                                           MessageBoxButtons.YesNo,
+                                           MessageBoxIcon.Warning);
+
+            if (result == DialogResult.No)
+            {
+                e.Cancel = true; // Batalkan penutupan form jika pengguna memilih "No"
+            }
         }
 
         private void EnduranceTesting_Load(object sender, EventArgs e)
@@ -101,7 +115,7 @@ namespace Endurance_Testing
         {
             if (!string.IsNullOrWhiteSpace(textBoxOutput.Text))
             {
-                var result = MessageBox.Show("There are unsaved results in the output. Do you want to continue?",
+                var result = MessageBox.Show("There are results in the output. If you continue, the current results will be cleared. Do you want to continue?",
                                                "Warning",
                                                MessageBoxButtons.YesNo,
                                                MessageBoxIcon.Warning);
@@ -543,6 +557,16 @@ namespace Endurance_Testing
 
         private void btnClear_Click(object sender, EventArgs e)
         {
+            var result = MessageBox.Show("Are you sure you want to clear all inputs and results? This action cannot be undone.",
+                                           "Confirm Clear",
+                                           MessageBoxButtons.YesNo,
+                                           MessageBoxIcon.Warning);
+
+            if (result == DialogResult.No)
+            {
+                return; // Jika pengguna memilih "No", keluar dari metode
+            }
+
             textBoxInputUrl.Clear();
             textBoxInputRequest.Clear();
             textBoxTime.Clear();
