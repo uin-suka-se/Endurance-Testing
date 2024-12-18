@@ -535,7 +535,6 @@ namespace Endurance_Testing
             helpMessage.AppendLine("   f. Average Response Time (in milliseconds).");
             helpMessage.AppendLine("   g. Throughput (requests per second).");
             helpMessage.AppendLine("   h. Error Rate (in percentage).");
-            helpMessage.AppendLine("   i. Round Duration (in seconds).");
             helpMessage.AppendLine("9. Optionally, export the endurance testing results to an Excel file using the 'Export' button.");
             helpMessage.AppendLine("10.Click the 'Clear' button to reset the input fields and output area.");
             helpMessage.AppendLine();
@@ -608,11 +607,6 @@ namespace Endurance_Testing
             infoMessage.AppendLine("        Error Rate indicates the percentage of requests that failed during the endurance testing.");
             infoMessage.AppendLine("    b. Formula:");
             infoMessage.AppendLine("        Error Rate = (Failed Requests / Total Requests) * 100");
-            infoMessage.AppendLine("9. Round Duration:");
-            infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        Round Duration is the time taken to execute a round (in seconds), with a maximum value defined by Timeout.");
-            infoMessage.AppendLine("    b. Formula:");
-            infoMessage.AppendLine("        Round Duration = Actual time taken by a round (with a maximum value of Timeout)");
 
             return infoMessage.ToString();
         }
@@ -660,7 +654,7 @@ namespace Endurance_Testing
                 worksheet.Cell(1, 1).Style.Font.Bold = true;
                 worksheet.Cell(1, 1).Style.Font.FontSize = 14;
                 worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                worksheet.Range("A1:M1").Merge();
+                worksheet.Range("A1:L1").Merge();
 
                 worksheet.Cell(2, 1).Value = "Round";
                 worksheet.Cell(2, 2).Value = "Status";
