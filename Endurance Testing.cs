@@ -704,6 +704,14 @@ namespace Endurance_Testing
                 float averageResponseTimeOverall = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
                 float averageThroughputOverall = totalResponses > 0 ? totalThroughput / currentRound : 0;
                 float averageErrorRateOverall = totalResponses > 0 ? (totalFailedRequests / (float)totalRequestsOverall) * 100 : 0;
+                long durationTimePeriod = 0;
+
+                if (selectedTimePeriod == "hour(s)")
+                    durationTimePeriod = durationInSeconds / 3600;
+                else if (selectedTimePeriod == "minute(s)")
+                    durationTimePeriod = durationInSeconds / 60;
+                else if (selectedTimePeriod == "second(s)")
+                    durationTimePeriod = durationInSeconds;
 
                 summaryStartRow++;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Total Requests:";
@@ -760,7 +768,7 @@ namespace Endurance_Testing
 
                 paramStartRow++;
                 worksheet.Cell(paramStartRow, paramStartColumn).Value = "Time in Period:";
-                worksheet.Cell(paramStartRow, paramStartColumn + 1).Value = durationInSeconds + " " + selectedTimePeriod;
+                worksheet.Cell(paramStartRow, paramStartColumn + 1).Value = durationTimePeriod + " " + selectedTimePeriod;
 
                 worksheet.Columns().AdjustToContents();
 
