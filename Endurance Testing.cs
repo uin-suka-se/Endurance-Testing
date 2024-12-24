@@ -345,7 +345,14 @@ namespace Endurance_Testing
                     {
                         case "Progressive":
                             double progress = stopwatchTotal.Elapsed.TotalSeconds / durationInSeconds;
-                            currentRequests = (int)(totalRequests + (maxRequests - totalRequests) * progress);
+                            if (progress >= 1.0)
+                            {
+                                currentRequests = maxRequests;
+                            }
+                            else
+                            {
+                                currentRequests = (int)(totalRequests + (maxRequests - totalRequests) * progress);
+                            }
                             break;
 
                         case "Fluctuative":
