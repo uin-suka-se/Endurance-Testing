@@ -748,13 +748,13 @@ namespace Endurance_Testing
 
             textBoxInputUrl.Clear();
             textBoxInputRequest.Clear();
+            textBoxInputMaxRequest.Clear();
             textBoxTime.Clear();
             textBoxTimeout.Clear();
             lblTimeLeft.Text = "00:00:00:00";
             textBoxOutput.Clear();
             enduranceTestResults.Clear();
             totalRequests = 0;
-            maxRequests = 0;
             totalRequestsProcessed = 0;
             durationInSeconds = 0;
             btnStart.Enabled = true;
