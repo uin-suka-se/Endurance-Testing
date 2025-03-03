@@ -287,36 +287,76 @@ namespace Endurance_Testing
 
             var countdownTask = StartCountdown(durationInSeconds, cancellationTokenSource.Token);
 
-            await RunEnduranceTest(url, cancellationTokenSource.Token);
+            try
+            {
+                await RunEnduranceTest(url, cancellationTokenSource.Token);
 
-            await countdownTask;
+                try
+                {
+                    await countdownTask;
+                }
+                catch (TaskCanceledException)
+                {
+                    
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occured: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                isRunning = false;
+                btnClear.Enabled = true;
+                btnExport.Enabled = true;
 
-            isRunning = false;
-
-            btnClear.Enabled = true;
-            btnExport.Enabled = true;
-
-            ShowSummary();
+                if (currentRound > 0)
+                {
+                    ShowSummary();
+                }
+            }
         }
 
         private async Task StartCountdown(long durationInSeconds, CancellationToken cancellationToken)
         {
-            long remainingTime = durationInSeconds;
+            DateTime endTime = DateTime.Now.AddSeconds(durationInSeconds);
 
-            while (remainingTime > 0 && !cancellationToken.IsCancellationRequested)
+            try
             {
-                TimeSpan timeLeft = TimeSpan.FromSeconds(remainingTime);
-                lblTimeLeft.Text = $"{(int)timeLeft.TotalDays}:{timeLeft.Hours:D2}:{timeLeft.Minutes:D2}:{timeLeft.Seconds:D2}";
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    TimeSpan remainingTime = endTime - DateTime.Now;
 
-                await Task.Delay(1000);
-                remainingTime--;
+                    if (remainingTime.TotalSeconds <= 0)
+                    {
+                        lblTimeLeft.Text = "00:00:00:00";
+
+                        if (!cancellationToken.IsCancellationRequested)
+                        {
+                            cancellationTokenSource.Cancel();
+                        }
+                        break;
+                    }
+
+                    lblTimeLeft.Text = $"{(int)remainingTime.TotalDays}:{remainingTime.Hours:D2}:{remainingTime.Minutes:D2}:{remainingTime.Seconds:D2}";
+
+                    await Task.Delay(100, cancellationToken);
+                }
             }
-
-            lblTimeLeft.Text = "00:00:00:00";
-
-            if (!cancellationToken.IsCancellationRequested)
+            catch (TaskCanceledException)
             {
-                cancellationTokenSource.Cancel();
+                
+            }
+            finally
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    lblTimeLeft.Text = "00:00:00:00";
+                }
             }
         }
 
@@ -643,6 +683,11 @@ namespace Endurance_Testing
             if (result == DialogResult.No)
             {
                 return;
+            }
+
+            if (cancellationTokenSource != null && !cancellationTokenSource.IsCancellationRequested)
+            {
+                cancellationTokenSource.Cancel();
             }
 
             cancellationTokenSource.Cancel();
