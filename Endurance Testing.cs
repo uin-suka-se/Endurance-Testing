@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text;
 using System.Linq;
-using System.Net.Sockets;
 
 namespace Endurance_Testing
 {
@@ -28,6 +27,7 @@ namespace Endurance_Testing
         private double totalCpuUsage;
         private double totalRamUsage;
         private double totalResponseTime;
+        private double totalWaitTime;
         private int totalResponses;
         private double totalThroughput;
         private bool isRunning = false;
@@ -279,6 +279,7 @@ namespace Endurance_Testing
             totalCpuUsage = 0;
             totalRamUsage = 0;
             totalResponseTime = 0;
+            totalWaitTime = 0;
             totalResponses = 0;
             totalRequestsProcessed = 0;
             totalErrors = 0;
@@ -337,6 +338,7 @@ namespace Endurance_Testing
                     int roundSuccessfulRequests = 0;
                     int roundFailedRequests = 0;
                     double roundResponseTime = 0;
+                    double roundWaitTimeSum = 0;
 
                     Stopwatch stopwatchRound = new Stopwatch();
                     stopwatchRound.Start();
@@ -376,6 +378,7 @@ namespace Endurance_Testing
                     {
                         DisplayResult(result, currentRound);
                         roundResponseTime += (double)result.ResponseTime.TotalMilliseconds;
+                        roundWaitTimeSum += (double)result.WaitTime.TotalMilliseconds;
 
                         if (result.StatusCode == System.Net.HttpStatusCode.OK)
                         {
@@ -399,20 +402,24 @@ namespace Endurance_Testing
                     {
                         double validResponseTimeSum = 0;
                         int validResponseCount = 0;
+                        double validWaitTimeSum = 0;
 
                         foreach (var result in results)
                         {
                             if (result.StatusCode == System.Net.HttpStatusCode.OK)
                             {
                                 validResponseTimeSum += result.ResponseTime.TotalMilliseconds;
+                                validWaitTimeSum += result.WaitTime.TotalMilliseconds;
                                 validResponseCount++;
                             }
                             else
                             {
                                 validResponseTimeSum += result.ResponseTime.TotalMilliseconds;
+                                validWaitTimeSum += result.WaitTime.TotalMilliseconds;
                             }
                         }
                         double averageRoundResponseTime = validResponseCount > 0 ? validResponseTimeSum / currentRequests : 0;
+                        double averageRoundWaitTime = validResponseCount > 0 ? validWaitTimeSum / currentRequests : 0;
                         double throughput = (double)roundSuccessfulRequests / (throughputDuration > 0 ? (double)throughputDuration : 1);
                         totalThroughput += throughput;
                         double errorRate = (double)roundFailedRequests / (double)currentRequests * 100;
@@ -424,6 +431,7 @@ namespace Endurance_Testing
                             result.SuccessfulRequests = roundSuccessfulRequests;
                             result.FailedRequests = roundFailedRequests;
                             result.AverageResponseTime = averageRoundResponseTime;
+                            result.AverageWaitTime = averageRoundWaitTime;
                             result.Throughput = throughput;
                             result.ErrorRate = errorRate;
                             result.RoundDuration = roundDuration;
@@ -432,6 +440,7 @@ namespace Endurance_Testing
                         totalCpuUsage += roundCpuUsage;
                         totalRamUsage += roundRamUsage;
                         totalResponseTime += validResponseTimeSum;
+                        totalWaitTime += validWaitTimeSum;
                         totalResponses += currentRequests;
                         totalRequestsProcessed += currentRequests;
 
@@ -440,6 +449,7 @@ namespace Endurance_Testing
                                                roundSuccessfulRequests,
                                                roundFailedRequests,
                                                averageRoundResponseTime,
+                                               averageRoundWaitTime,
                                                throughput,
                                                errorRate,
                                                roundDuration,
@@ -462,8 +472,12 @@ namespace Endurance_Testing
 
         private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url, int round, CancellationToken cancellationToken,int currentRequests)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
+            Stopwatch totalStopwatch = new Stopwatch();
+            Stopwatch waitTimeStopwatch = new Stopwatch();
+            totalStopwatch.Start();
+            waitTimeStopwatch.Start();
+
+            TimeSpan waitTime = TimeSpan.Zero;
 
             try
             {
@@ -471,22 +485,32 @@ namespace Endurance_Testing
                 {
                     using (var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, requestTimeout.Token))
                     {
-                        HttpResponseMessage response = await httpClient.GetAsync(url, combinedToken.Token);
-                        TimeSpan responseTime = stopwatch.Elapsed;
+                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
 
-                        return new EnduranceTestResult
+                        using (HttpResponseMessage response = await httpClient.SendAsync(request,
+                                HttpCompletionOption.ResponseHeadersRead, combinedToken.Token))
                         {
-                            StatusCode = response.StatusCode,
-                            ReasonPhrase = response.ReasonPhrase,
-                            ResponseTime = responseTime,
-                            Round = round,
-                            CpuUsage = 0,
-                            RamUsage = 0,
-                            SuccessfulRequests = response.StatusCode == System.Net.HttpStatusCode.OK ? 1 : 0,
-                            FailedRequests = response.StatusCode != System.Net.HttpStatusCode.OK ? 1 : 0,
-                            AverageResponseTime = (double)responseTime.TotalMilliseconds,
-                            RequestPerRound = currentRequests
-                        };
+                            waitTime = waitTimeStopwatch.Elapsed;
+
+                            await response.Content.ReadAsStringAsync();
+
+                            TimeSpan responseTime = totalStopwatch.Elapsed;
+
+                            return new EnduranceTestResult
+                            {
+                                StatusCode = response.StatusCode,
+                                ReasonPhrase = response.ReasonPhrase,
+                                ResponseTime = responseTime,
+                                WaitTime = waitTime,
+                                Round = round,
+                                CpuUsage = 0,
+                                RamUsage = 0,
+                                SuccessfulRequests = response.StatusCode == System.Net.HttpStatusCode.OK ? 1 : 0,
+                                FailedRequests = response.StatusCode != System.Net.HttpStatusCode.OK ? 1 : 0,
+                                AverageResponseTime = (double)responseTime.TotalMilliseconds,
+                                RequestPerRound = currentRequests
+                            };
+                        }
                     }
                 }
             }
@@ -496,7 +520,8 @@ namespace Endurance_Testing
                 {
                     StatusCode = System.Net.HttpStatusCode.RequestTimeout,
                     ReasonPhrase = "Request Timeout - The request was canceled due to timeout",
-                    ResponseTime = stopwatch.Elapsed,
+                    ResponseTime = totalStopwatch.Elapsed,
+                    WaitTime = waitTimeStopwatch.Elapsed,
                     Round = round,
                     CpuUsage = 0,
                     RamUsage = 0,
@@ -512,25 +537,27 @@ namespace Endurance_Testing
                 {
                     StatusCode = System.Net.HttpStatusCode.InternalServerError,
                     ReasonPhrase = ex.Message,
-                    ResponseTime = stopwatch.Elapsed,
+                    ResponseTime = totalStopwatch.Elapsed,
+                    WaitTime = waitTimeStopwatch.Elapsed,
                     Round = round,
                     CpuUsage = 0,
                     RamUsage = 0,
                     SuccessfulRequests = 0,
                     FailedRequests = 1,
-                    AverageResponseTime = (double)stopwatch.Elapsed.TotalMilliseconds,
+                    AverageResponseTime = (double)totalStopwatch.Elapsed.TotalMilliseconds,
                     RequestPerRound = currentRequests
                 };
             }
             finally
             {
-                stopwatch.Stop();
+                totalStopwatch.Stop();
+                waitTimeStopwatch.Stop();
             }
         }
 
         private void DisplayResult(EnduranceTestResult result, int round)
         {
-            string resultString = $"Round {round}: Status: {(int)result.StatusCode}, Reason: {result.ReasonPhrase}, Response Time: {result.ResponseTime.TotalMilliseconds} ms";
+            string resultString = $"Round {round}: Status: {(int)result.StatusCode}, Reason: {result.ReasonPhrase}, Wait Time: {result.WaitTime.TotalMilliseconds} ms, Response Time: {result.ResponseTime.TotalMilliseconds} ms";
             textBoxOutput.AppendText(resultString + Environment.NewLine);
             textBoxOutput.ScrollToCaret();
         }
@@ -540,6 +567,7 @@ namespace Endurance_Testing
                                             int roundSuccessfulRequests,
                                             int roundFailedRequests,
                                             double averageRoundResponseTime,
+                                            double averageRoundWaitTime,
                                             double throughput,
                                             double errorRate,
                                             double roundDuration,
@@ -552,6 +580,7 @@ namespace Endurance_Testing
                                 $"Successful Requests: {roundSuccessfulRequests}{Environment.NewLine}" +
                                 $"Failed Requests: {roundFailedRequests}{Environment.NewLine}" +
                                 $"Average Response Time: {averageRoundResponseTime} ms{Environment.NewLine}" +
+                                $"Average Wait Time: {averageRoundWaitTime} ms{Environment.NewLine}" +
                                 $"Throughput: {throughput} requests/second{Environment.NewLine}" +
                                 $"Error Rate: {errorRate}%{Environment.NewLine}" +
                                 $"Round Duration: {roundDuration} seconds{Environment.NewLine}{Environment.NewLine}";
@@ -566,6 +595,7 @@ namespace Endurance_Testing
             double averageRamUsage = currentRound > 0 ? totalRamUsage / currentRound : 0;
 
             double averageResponseTime = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
+            double averageWaitTime = totalResponses > 0 ? totalWaitTime / totalResponses : 0;
             double averageThroughput = totalResponses > 0 ? totalThroughput / currentRound : 0;
             double averageRoundDuration = currentRound > 0 ? enduranceTestResults.Average(result => result.RoundDuration) : 0;
 
@@ -576,6 +606,7 @@ namespace Endurance_Testing
                                     $"Average Computer's CPU Usage: {averageCpuUsage}%{Environment.NewLine}" +
                                     $"Average Computer's RAM Usage: {averageRamUsage} MB{Environment.NewLine}" +
                                     $"Average Response Time: {averageResponseTime} ms{Environment.NewLine}" +
+                                    $"Average Wait Time: {averageWaitTime} ms{Environment.NewLine}" +
                                     $"Average Throughput: {averageThroughput} requests/second{Environment.NewLine}" +
                                     $"Average Error Rate: {(totalFailedRequests / (double)totalRequestsProcessed) * 100}%{Environment.NewLine}" +
                                     $"Average Round Duration: {averageRoundDuration} seconds";
@@ -596,9 +627,9 @@ namespace Endurance_Testing
 
         private double GetRamUsage()
         {
-            using (var ramCounter = new PerformanceCounter("Memory", "Available MBytes"))
+            using (Process currentProcess = Process.GetCurrentProcess())
             {
-                return ramCounter.NextValue();
+                return currentProcess.WorkingSet64 / (1024 * 1024.0);
             }
         }
 
@@ -786,21 +817,23 @@ namespace Endurance_Testing
                 worksheet.Cell(1, 1).Style.Font.Bold = true;
                 worksheet.Cell(1, 1).Style.Font.FontSize = 14;
                 worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                worksheet.Range("A1:M1").Merge();
+                worksheet.Range("A1:O1").Merge();
 
                 worksheet.Cell(2, 1).Value = "Round";
                 worksheet.Cell(2, 2).Value = "Status";
                 worksheet.Cell(2, 3).Value = "Reason";
                 worksheet.Cell(2, 4).Value = "Response Time (ms)";
-                worksheet.Cell(2, 5).Value = "Computer's CPU Usage (%)";
-                worksheet.Cell(2, 6).Value = "Computer's RAM Usage (MB)";
-                worksheet.Cell(2, 7).Value = "Total Requests";
-                worksheet.Cell(2, 8).Value = "Successful Requests";
-                worksheet.Cell(2, 9).Value = "Failed Requests";
-                worksheet.Cell(2, 10).Value = "Average Response Time (ms)";
-                worksheet.Cell(2, 11).Value = "Throughput (requests/sec)";
-                worksheet.Cell(2, 12).Value = "Error Rate (%)";
-                worksheet.Cell(2, 13).Value = "Round Duration (seconds)";
+                worksheet.Cell(2, 5).Value = "Wait Time (ms)";
+                worksheet.Cell(2, 6).Value = "Computer's CPU Usage (%)";
+                worksheet.Cell(2, 7).Value = "Computer's RAM Usage (MB)";
+                worksheet.Cell(2, 8).Value = "Total Requests";
+                worksheet.Cell(2, 9).Value = "Successful Requests";
+                worksheet.Cell(2, 10).Value = "Failed Requests";
+                worksheet.Cell(2, 11).Value = "Average Response Time (ms)";
+                worksheet.Cell(2, 12).Value = "Average Wait Time (ms)";
+                worksheet.Cell(2, 13).Value = "Throughput (requests/sec)";
+                worksheet.Cell(2, 14).Value = "Error Rate (%)";
+                worksheet.Cell(2, 15).Value = "Round Duration (seconds)";
 
                 worksheet.SheetView.Freeze(2, 0);
 
@@ -811,31 +844,34 @@ namespace Endurance_Testing
                     worksheet.Cell(row, 2).Value = (int)result.StatusCode;
                     worksheet.Cell(row, 3).Value = result.ReasonPhrase;
                     worksheet.Cell(row, 4).Value = result.ResponseTime.TotalMilliseconds;
-                    worksheet.Cell(row, 5).Value = result.CpuUsage;
-                    worksheet.Cell(row, 6).Value = result.RamUsage;
-                    worksheet.Cell(row, 7).Value = result.RequestPerRound;
-                    worksheet.Cell(row, 8).Value = result.SuccessfulRequests;
-                    worksheet.Cell(row, 9).Value = result.FailedRequests;
-                    worksheet.Cell(row, 10).Value = result.AverageResponseTime;
-                    worksheet.Cell(row, 11).Value = result.Throughput;
-                    worksheet.Cell(row, 12).Value = result.ErrorRate;
-                    worksheet.Cell(row, 13).Value = result.RoundDuration;
+                    worksheet.Cell(row, 5).Value = result.WaitTime.TotalMilliseconds;
+                    worksheet.Cell(row, 6).Value = result.CpuUsage;
+                    worksheet.Cell(row, 7).Value = result.RamUsage;
+                    worksheet.Cell(row, 8).Value = result.RequestPerRound;
+                    worksheet.Cell(row, 9).Value = result.SuccessfulRequests;
+                    worksheet.Cell(row, 10).Value = result.FailedRequests;
+                    worksheet.Cell(row, 11).Value = result.AverageResponseTime;
+                    worksheet.Cell(row, 12).Value = result.AverageWaitTime;
+                    worksheet.Cell(row, 13).Value = result.Throughput;
+                    worksheet.Cell(row, 14).Value = result.ErrorRate;
+                    worksheet.Cell(row, 15).Value = result.RoundDuration;
                     row++;
                 }
 
                 int summaryStartRow = 1;
-                int summaryStartColumn = 15;
+                int summaryStartColumn = 17;
 
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Overall Summary";
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Style.Font.Bold = true;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Style.Font.FontSize = 14;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                worksheet.Range("O1:P1").Merge();
+                worksheet.Range("Q1:R1").Merge();
 
 
                 double averageCpuUsageOverall = currentRound > 0 ? totalCpuUsage / currentRound : 0;
                 double averageRamUsageOverall = currentRound > 0 ? totalRamUsage / currentRound : 0;
                 double averageResponseTimeOverall = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
+                double averageWaitTimeOverall = totalResponses > 0 ? totalWaitTime / totalResponses : 0;
                 double averageThroughputOverall = totalResponses > 0 ? totalThroughput / currentRound : 0;
                 double averageErrorRateOverall = totalRequestsProcessed > 0 ? (double)totalFailedRequests / totalRequestsProcessed * 100 : 0;
                 double averageRoundDurationOverall = currentRound > 0 ? enduranceTestResults.Average(result => result.RoundDuration) : 0;
@@ -874,6 +910,10 @@ namespace Endurance_Testing
                 worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageResponseTimeOverall.ToString() + " ms";
 
                 summaryStartRow++;
+                worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Wait Time:";
+                worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageWaitTimeOverall.ToString() + " ms";
+
+                summaryStartRow++;
                 worksheet.Cell(summaryStartRow, summaryStartColumn).Value = "Average Throughput:";
                 worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageThroughputOverall.ToString() + " requests/sec";
 
@@ -886,13 +926,13 @@ namespace Endurance_Testing
                 worksheet.Cell(summaryStartRow, summaryStartColumn + 1).Value = averageRoundDurationOverall.ToString() + " seconds";
 
                 int paramStartRow = 1;
-                int paramStartColumn = 18;
+                int paramStartColumn = 20;
 
                 worksheet.Cell(paramStartRow, paramStartColumn).Value = "Test Parameter";
                 worksheet.Cell(paramStartRow, paramStartColumn).Style.Font.Bold = true;
                 worksheet.Cell(paramStartRow, paramStartColumn).Style.Font.FontSize = 14;
                 worksheet.Cell(paramStartRow, paramStartColumn).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                worksheet.Range("R1:S1").Merge();
+                worksheet.Range("T1:U1").Merge();
 
                 paramStartRow++;
                 worksheet.Cell(paramStartRow, paramStartColumn).Value = "URL:";
@@ -954,6 +994,7 @@ namespace Endurance_Testing
         public System.Net.HttpStatusCode StatusCode { get; set; }
         public string ReasonPhrase { get; set; }
         public TimeSpan ResponseTime { get; set; }
+        public TimeSpan WaitTime { get; set; }
         public int Round { get; set; }
         public double CpuUsage { get; set; }
         public double RamUsage { get; set; }
@@ -961,6 +1002,7 @@ namespace Endurance_Testing
         public int SuccessfulRequests { get; set; }
         public int FailedRequests { get; set; }
         public double AverageResponseTime { get; set; }
+        public double AverageWaitTime { get; set; }
         public double Throughput { get; set; }
         public double ErrorRate { get; set; }
         public double RoundDuration { get; set; }
