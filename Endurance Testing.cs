@@ -835,7 +835,7 @@ namespace Endurance_Testing
                 worksheet.Cell(2, 14).Value = "Error Rate (%)";
                 worksheet.Cell(2, 15).Value = "Round Duration (seconds)";
 
-                worksheet.SheetView.Freeze(2, 0);
+                worksheet.SheetView.Freeze(2, 1);
 
                 int row = 3;
                 foreach (var result in enduranceTestResults)
