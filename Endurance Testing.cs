@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ClosedXML.Excel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1254,9 +1255,9 @@ namespace Endurance_Testing
                         // Header
                         htmlBuilder.AppendLine("<h1>Endurance Testing Report</h1>");
                         htmlBuilder.AppendLine($"<p><strong>URL:</strong> {url}</p>");
-                        htmlBuilder.AppendLine($"<p><strong>Test Date:</strong> {DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss")}</p>");
+                        htmlBuilder.AppendLine($"<p><strong>Test Date:</strong> {DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss", new CultureInfo("en-US"))}</p>");
                         htmlBuilder.AppendLine($"<p><strong>Test Mode:</strong> {comboBoxMode.SelectedItem}</p>");
-                        htmlBuilder.AppendLine($"<p><strong>Total Duration:</strong> {durationInSeconds} detik</p>");
+                        htmlBuilder.AppendLine($"<p><strong>Total Duration:</strong> {durationInSeconds} seconds</p>");
 
                         // Tabs for different sections
                         htmlBuilder.AppendLine("<div class='tab'>");
