@@ -74,7 +74,7 @@
             lblInputUrl.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             lblInputUrl.Location = new System.Drawing.Point(18, 63);
             lblInputUrl.Name = "lblInputUrl";
-            lblInputUrl.Size = new System.Drawing.Size(64, 35);
+            lblInputUrl.Size = new System.Drawing.Size(60, 32);
             lblInputUrl.TabIndex = 0;
             lblInputUrl.Text = "URL:";
             // 
@@ -107,7 +107,7 @@
             radioButtonHour.Location = new System.Drawing.Point(3, 60);
             radioButtonHour.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             radioButtonHour.Name = "radioButtonHour";
-            radioButtonHour.Size = new System.Drawing.Size(72, 21);
+            radioButtonHour.Size = new System.Drawing.Size(69, 21);
             radioButtonHour.TabIndex = 10;
             radioButtonHour.TabStop = true;
             radioButtonHour.Text = "Hour(s)";
@@ -120,7 +120,7 @@
             radioButtonMinute.Location = new System.Drawing.Point(3, 32);
             radioButtonMinute.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             radioButtonMinute.Name = "radioButtonMinute";
-            radioButtonMinute.Size = new System.Drawing.Size(83, 21);
+            radioButtonMinute.Size = new System.Drawing.Size(80, 21);
             radioButtonMinute.TabIndex = 9;
             radioButtonMinute.TabStop = true;
             radioButtonMinute.Text = "Minute(s)";
@@ -133,7 +133,7 @@
             radioButtonSecond.Location = new System.Drawing.Point(3, 4);
             radioButtonSecond.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             radioButtonSecond.Name = "radioButtonSecond";
-            radioButtonSecond.Size = new System.Drawing.Size(86, 21);
+            radioButtonSecond.Size = new System.Drawing.Size(83, 21);
             radioButtonSecond.TabIndex = 8;
             radioButtonSecond.TabStop = true;
             radioButtonSecond.Text = "Second(s)";
@@ -156,7 +156,7 @@
             lblInputNumberOfRequest.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             lblInputNumberOfRequest.Location = new System.Drawing.Point(579, 63);
             lblInputNumberOfRequest.Name = "lblInputNumberOfRequest";
-            lblInputNumberOfRequest.Size = new System.Drawing.Size(404, 35);
+            lblInputNumberOfRequest.Size = new System.Drawing.Size(390, 32);
             lblInputNumberOfRequest.TabIndex = 0;
             lblInputNumberOfRequest.Text = "Number of Request (Min and Max):";
             // 
@@ -177,7 +177,7 @@
             lblTime.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             lblTime.Location = new System.Drawing.Point(579, 159);
             lblTime.Name = "lblTime";
-            lblTime.Size = new System.Drawing.Size(179, 35);
+            lblTime.Size = new System.Drawing.Size(173, 32);
             lblTime.TabIndex = 0;
             lblTime.Text = "Time in Period:";
             // 
@@ -221,7 +221,7 @@
             lblOutput.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             lblOutput.Location = new System.Drawing.Point(13, 359);
             lblOutput.Name = "lblOutput";
-            lblOutput.Size = new System.Drawing.Size(98, 35);
+            lblOutput.Size = new System.Drawing.Size(95, 32);
             lblOutput.TabIndex = 0;
             lblOutput.Text = "Output:";
             // 
@@ -292,7 +292,7 @@
             lblTimeout.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             lblTimeout.Location = new System.Drawing.Point(18, 159);
             lblTimeout.Name = "lblTimeout";
-            lblTimeout.Size = new System.Drawing.Size(379, 35);
+            lblTimeout.Size = new System.Drawing.Size(364, 32);
             lblTimeout.TabIndex = 0;
             lblTimeout.Text = "Timeout Per-Round (In Seconds):";
             // 
@@ -324,7 +324,7 @@
             lblInputMode.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             lblInputMode.Location = new System.Drawing.Point(996, 63);
             lblInputMode.Name = "lblInputMode";
-            lblInputMode.Size = new System.Drawing.Size(85, 35);
+            lblInputMode.Size = new System.Drawing.Size(82, 32);
             lblInputMode.TabIndex = 0;
             lblInputMode.Text = "Mode:";
             // 
@@ -344,7 +344,7 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1182, 726);
+            ClientSize = new System.Drawing.Size(1184, 734);
             Controls.Add(comboBoxMode);
             Controls.Add(lblInputMode);
             Controls.Add(textBoxInputMaxRequest);
