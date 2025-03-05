@@ -423,7 +423,7 @@ namespace Endurance_Testing
                     foreach (var result in results)
                     {
                         DisplayResult(result, currentRound);
-                        roundLoadTimeSum += (double)result.WaitTime.TotalMilliseconds;
+                        roundLoadTimeSum += (double)result.LoadTime.TotalMilliseconds;
                         roundWaitTimeSum += (double)result.WaitTime.TotalMilliseconds;
                         roundResponseTime += (double)result.ResponseTime.TotalMilliseconds;
 
@@ -524,17 +524,18 @@ namespace Endurance_Testing
             }
         }
 
-        private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url, int round, CancellationToken cancellationToken,int currentRequests)
+        private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url, int round, CancellationToken cancellationToken, int currentRequests)
         {
-            Stopwatch loadTimeStopwatch = new Stopwatch();
-            Stopwatch waitTimeStopwatch = new Stopwatch();
             Stopwatch totalStopwatch = new Stopwatch();
+            Stopwatch waitTimeStopwatch = new Stopwatch();
+            Stopwatch loadTimeStopwatch = new Stopwatch();
 
-            loadTimeStopwatch.Start();
             totalStopwatch.Start();
+            waitTimeStopwatch.Start();
 
-            TimeSpan loadTime = TimeSpan.Zero;
             TimeSpan waitTime = TimeSpan.Zero;
+            TimeSpan loadTime = TimeSpan.Zero;
+            TimeSpan responseTime = TimeSpan.Zero;
 
             try
             {
@@ -547,16 +548,17 @@ namespace Endurance_Testing
                         using (HttpResponseMessage response = await httpClient.SendAsync(request,
                                 HttpCompletionOption.ResponseHeadersRead, combinedToken.Token))
                         {
-                            loadTime = loadTimeStopwatch.Elapsed;
-                            loadTimeStopwatch.Stop();
-                            
-                            waitTimeStopwatch.Start();
+                            waitTime = waitTimeStopwatch.Elapsed;
+                            waitTimeStopwatch.Stop();
+
+                            loadTimeStopwatch.Start();
 
                             await response.Content.ReadAsStringAsync();
 
-                            waitTime = waitTimeStopwatch.Elapsed;
+                            loadTime = loadTimeStopwatch.Elapsed;
+                            loadTimeStopwatch.Stop();
 
-                            TimeSpan responseTime = totalStopwatch.Elapsed;
+                            responseTime = totalStopwatch.Elapsed;
 
                             return new EnduranceTestResult
                             {
@@ -570,6 +572,8 @@ namespace Endurance_Testing
                                 RamUsage = 0,
                                 SuccessfulRequests = response.StatusCode == System.Net.HttpStatusCode.OK ? 1 : 0,
                                 FailedRequests = response.StatusCode != System.Net.HttpStatusCode.OK ? 1 : 0,
+                                AverageLoadTime = (double)loadTime.TotalMilliseconds,
+                                AverageWaitTime = (double)waitTime.TotalMilliseconds,
                                 AverageResponseTime = (double)responseTime.TotalMilliseconds,
                                 RequestPerRound = currentRequests
                             };
@@ -579,45 +583,51 @@ namespace Endurance_Testing
             }
             catch (TaskCanceledException ex)
             {
+                waitTimeStopwatch.Stop();
+                loadTimeStopwatch.Stop();
+                totalStopwatch.Stop();
+
                 return new EnduranceTestResult
                 {
                     StatusCode = System.Net.HttpStatusCode.RequestTimeout,
                     ReasonPhrase = "Request Timeout - The request was canceled due to timeout",
-                    LoadTime = loadTimeStopwatch.Elapsed,
-                    WaitTime = waitTimeStopwatch.Elapsed,
-                    ResponseTime = totalStopwatch.Elapsed,
+                    LoadTime = TimeSpan.Zero,
+                    WaitTime = TimeSpan.Zero,
+                    ResponseTime = TimeSpan.Zero,
                     Round = round,
                     CpuUsage = 0,
                     RamUsage = 0,
                     SuccessfulRequests = 0,
                     FailedRequests = 1,
-                    AverageResponseTime = 0,
+                    AverageLoadTime = (double)loadTimeStopwatch.Elapsed.TotalMilliseconds,
+                    AverageWaitTime = (double)waitTimeStopwatch.Elapsed.TotalMilliseconds,
+                    AverageResponseTime = (double)totalStopwatch.Elapsed.TotalMilliseconds,
                     RequestPerRound = currentRequests
                 };
             }
             catch (Exception ex)
             {
+                waitTimeStopwatch.Stop();
+                loadTimeStopwatch.Stop();
+                totalStopwatch.Stop();
+
                 return new EnduranceTestResult
                 {
                     StatusCode = System.Net.HttpStatusCode.InternalServerError,
                     ReasonPhrase = ex.Message,
-                    LoadTime = loadTimeStopwatch.Elapsed,
-                    WaitTime = waitTimeStopwatch.Elapsed,
-                    ResponseTime = totalStopwatch.Elapsed,
+                    LoadTime = TimeSpan.Zero,
+                    WaitTime = TimeSpan.Zero,
+                    ResponseTime = TimeSpan.Zero,
                     Round = round,
                     CpuUsage = 0,
                     RamUsage = 0,
                     SuccessfulRequests = 0,
                     FailedRequests = 1,
+                    AverageLoadTime = (double)loadTimeStopwatch.Elapsed.TotalMilliseconds,
+                    AverageWaitTime = (double)waitTimeStopwatch.Elapsed.TotalMilliseconds,
                     AverageResponseTime = (double)totalStopwatch.Elapsed.TotalMilliseconds,
                     RequestPerRound = currentRequests
                 };
-            }
-            finally
-            {
-                loadTimeStopwatch.Stop();
-                waitTimeStopwatch.Stop();
-                totalStopwatch.Stop();
             }
         }
 
@@ -1482,7 +1492,7 @@ namespace Endurance_Testing
                         htmlBuilder.AppendLine("</tr>");
 
                         // Limit to 1000 rows for performance
-                        foreach (var result in enduranceTestResults.Take(1000))
+                        foreach (var result in enduranceTestResults)
                         {
                             htmlBuilder.AppendLine("<tr>");
                             htmlBuilder.AppendLine($"<td>{result.Round}</td>");
