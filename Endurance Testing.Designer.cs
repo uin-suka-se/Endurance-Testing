@@ -55,6 +55,8 @@
             textBoxInputMaxRequest = new System.Windows.Forms.TextBox();
             lblInputMode = new System.Windows.Forms.Label();
             comboBoxMode = new System.Windows.Forms.ComboBox();
+            textBoxApiKey = new System.Windows.Forms.TextBox();
+            lblApiKey = new System.Windows.Forms.Label();
             panelPeriod.SuspendLayout();
             SuspendLayout();
             // 
@@ -98,7 +100,7 @@
             panelPeriod.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             panelPeriod.Name = "panelPeriod";
             panelPeriod.Size = new System.Drawing.Size(174, 83);
-            panelPeriod.TabIndex = 7;
+            panelPeriod.TabIndex = 8;
             // 
             // radioButtonHour
             // 
@@ -108,7 +110,7 @@
             radioButtonHour.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             radioButtonHour.Name = "radioButtonHour";
             radioButtonHour.Size = new System.Drawing.Size(69, 21);
-            radioButtonHour.TabIndex = 10;
+            radioButtonHour.TabIndex = 11;
             radioButtonHour.TabStop = true;
             radioButtonHour.Text = "Hour(s)";
             radioButtonHour.UseVisualStyleBackColor = true;
@@ -121,7 +123,7 @@
             radioButtonMinute.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             radioButtonMinute.Name = "radioButtonMinute";
             radioButtonMinute.Size = new System.Drawing.Size(80, 21);
-            radioButtonMinute.TabIndex = 9;
+            radioButtonMinute.TabIndex = 10;
             radioButtonMinute.TabStop = true;
             radioButtonMinute.Text = "Minute(s)";
             radioButtonMinute.UseVisualStyleBackColor = true;
@@ -134,7 +136,7 @@
             radioButtonSecond.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             radioButtonSecond.Name = "radioButtonSecond";
             radioButtonSecond.Size = new System.Drawing.Size(83, 21);
-            radioButtonSecond.TabIndex = 8;
+            radioButtonSecond.TabIndex = 9;
             radioButtonSecond.TabStop = true;
             radioButtonSecond.Text = "Second(s)";
             radioButtonSecond.UseVisualStyleBackColor = true;
@@ -163,19 +165,19 @@
             // textBoxTime
             // 
             textBoxTime.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxTime.Location = new System.Drawing.Point(579, 209);
+            textBoxTime.Location = new System.Drawing.Point(785, 209);
             textBoxTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxTime.MaxLength = 999999999;
             textBoxTime.Name = "textBoxTime";
-            textBoxTime.Size = new System.Drawing.Size(406, 37);
-            textBoxTime.TabIndex = 6;
+            textBoxTime.Size = new System.Drawing.Size(200, 37);
+            textBoxTime.TabIndex = 7;
             textBoxTime.TextChanged += textBoxTime_TextChanged;
             // 
             // lblTime
             // 
             lblTime.AutoSize = true;
             lblTime.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblTime.Location = new System.Drawing.Point(579, 159);
+            lblTime.Location = new System.Drawing.Point(785, 159);
             lblTime.Name = "lblTime";
             lblTime.Size = new System.Drawing.Size(173, 32);
             lblTime.TabIndex = 0;
@@ -188,7 +190,7 @@
             btnStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnStart.Name = "btnStart";
             btnStart.Size = new System.Drawing.Size(110, 47);
-            btnStart.TabIndex = 11;
+            btnStart.TabIndex = 12;
             btnStart.Text = "Start";
             btnStart.UseVisualStyleBackColor = true;
             btnStart.Click += btnStart_Click;
@@ -200,7 +202,7 @@
             btnStop.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnStop.Name = "btnStop";
             btnStop.Size = new System.Drawing.Size(110, 47);
-            btnStop.TabIndex = 12;
+            btnStop.TabIndex = 13;
             btnStop.Text = "Stop";
             btnStop.UseVisualStyleBackColor = true;
             btnStop.Click += btnStop_Click;
@@ -236,7 +238,7 @@
             textBoxOutput.ReadOnly = true;
             textBoxOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             textBoxOutput.Size = new System.Drawing.Size(1029, 307);
-            textBoxOutput.TabIndex = 13;
+            textBoxOutput.TabIndex = 14;
             // 
             // btnHelp
             // 
@@ -245,7 +247,7 @@
             btnHelp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnHelp.Name = "btnHelp";
             btnHelp.Size = new System.Drawing.Size(110, 47);
-            btnHelp.TabIndex = 14;
+            btnHelp.TabIndex = 15;
             btnHelp.Text = "Help";
             btnHelp.UseVisualStyleBackColor = true;
             btnHelp.Click += btnHelp_Click;
@@ -257,7 +259,7 @@
             btnInfo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnInfo.Name = "btnInfo";
             btnInfo.Size = new System.Drawing.Size(110, 47);
-            btnInfo.TabIndex = 15;
+            btnInfo.TabIndex = 16;
             btnInfo.Text = "Info";
             btnInfo.UseVisualStyleBackColor = true;
             btnInfo.Click += btnInfo_Click;
@@ -269,7 +271,7 @@
             btnClear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnClear.Name = "btnClear";
             btnClear.Size = new System.Drawing.Size(110, 47);
-            btnClear.TabIndex = 16;
+            btnClear.TabIndex = 17;
             btnClear.Text = "Clear";
             btnClear.UseVisualStyleBackColor = true;
             btnClear.Click += btnClear_Click;
@@ -281,7 +283,7 @@
             btnExport.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnExport.Name = "btnExport";
             btnExport.Size = new System.Drawing.Size(110, 47);
-            btnExport.TabIndex = 17;
+            btnExport.TabIndex = 18;
             btnExport.Text = "Export";
             btnExport.UseVisualStyleBackColor = true;
             btnExport.Click += btnExport_Click;
@@ -303,7 +305,7 @@
             textBoxTimeout.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxTimeout.MaxLength = 999999999;
             textBoxTimeout.Name = "textBoxTimeout";
-            textBoxTimeout.Size = new System.Drawing.Size(550, 37);
+            textBoxTimeout.Size = new System.Drawing.Size(364, 37);
             textBoxTimeout.TabIndex = 5;
             textBoxTimeout.TextChanged += textBoxTimeout_TextChanged;
             // 
@@ -340,11 +342,33 @@
             comboBoxMode.TabIndex = 4;
             comboBoxMode.SelectedIndexChanged += comboBoxMode_SelectedIndexChanged;
             // 
+            // textBoxApiKey
+            // 
+            textBoxApiKey.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            textBoxApiKey.Location = new System.Drawing.Point(388, 209);
+            textBoxApiKey.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            textBoxApiKey.MaxLength = 999999999;
+            textBoxApiKey.Name = "textBoxApiKey";
+            textBoxApiKey.Size = new System.Drawing.Size(391, 37);
+            textBoxApiKey.TabIndex = 6;
+            // 
+            // lblApiKey
+            // 
+            lblApiKey.AutoSize = true;
+            lblApiKey.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            lblApiKey.Location = new System.Drawing.Point(388, 159);
+            lblApiKey.Name = "lblApiKey";
+            lblApiKey.Size = new System.Drawing.Size(182, 32);
+            lblApiKey.TabIndex = 0;
+            lblApiKey.Text = "Gemini API Key:";
+            // 
             // EnduranceTesting
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1184, 734);
+            Controls.Add(lblApiKey);
+            Controls.Add(textBoxApiKey);
             Controls.Add(comboBoxMode);
             Controls.Add(lblInputMode);
             Controls.Add(textBoxInputMaxRequest);
@@ -409,6 +433,8 @@
         private System.Windows.Forms.TextBox textBoxInputMaxRequest;
         private System.Windows.Forms.Label lblInputMode;
         private System.Windows.Forms.ComboBox comboBoxMode;
+        private System.Windows.Forms.TextBox textBoxApiKey;
+        private System.Windows.Forms.Label lblApiKey;
     }
 }
 
