@@ -418,8 +418,8 @@ namespace Endurance_Testing
                     var results = await Task.WhenAll(tasks);
                     enduranceTestResults.AddRange(results);
 
-                    double roundCpuUsage = GetCpuUsage();
-                    double roundRamUsage = GetRamUsage();
+                    double roundCpuUsage = await GetCpuUsage();
+                    double roundRamUsage = await GetRamUsage();
 
                     foreach (var result in results)
                     {
@@ -787,17 +787,14 @@ namespace Endurance_Testing
             textBoxOutput.AppendText(summaryMessage);
             textBoxOutput.ScrollToCaret();
 
-            // Cek apakah API key tersedia
             if (!string.IsNullOrWhiteSpace(textBoxApiKey.Text))
             {
                 textBoxOutput.AppendText(Environment.NewLine + Environment.NewLine + "Fetching AI analysis..." + Environment.NewLine);
                 textBoxOutput.ScrollToCaret();
 
-                // Ambil URL dari textbox
                 string url = textBoxInputUrl.Text;
                 double averageErrorRate = (totalFailedRequests / (double)totalRequestsProcessed) * 100;
 
-                // Panggil API Gemini dan dapatkan analisisnya
                 aiAnalysisResult = await GetAIAnalysis(url, averageCpuUsage, averageRamUsage, averageLoadTime,
                                                      averageWaitTime, averageResponseTime, averageThroughput,
                                                      averageErrorRate, totalSuccessfulRequests, totalFailedRequests,
@@ -818,22 +815,28 @@ namespace Endurance_Testing
             }
         }
 
-        private double GetCpuUsage()
+        private async Task<double> GetCpuUsage()
         {
-            using (var cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total"))
+            return await Task.Run(() =>
             {
-                cpuCounter.NextValue();
-                Thread.Sleep(1000);
-                return cpuCounter.NextValue();
-            }
+                using (var cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total"))
+                {
+                    cpuCounter.NextValue();
+                    Thread.Sleep(1000);
+                    return cpuCounter.NextValue();
+                }
+            });
         }
 
-        private double GetRamUsage()
+        private async Task<double> GetRamUsage()
         {
-            using (Process currentProcess = Process.GetCurrentProcess())
+            return await Task.Run(() =>
             {
-                return currentProcess.WorkingSet64 / (1024 * 1024.0);
-            }
+                using (Process currentProcess = Process.GetCurrentProcess())
+                {
+                    return currentProcess.WorkingSet64 / (1024 * 1024.0);
+                }
+            });
         }
 
         private void btnStop_Click(object sender, EventArgs e)
