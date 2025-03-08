@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace Endurance_Testing
+namespace Endurance_Testing.Core
 {
     public static class HttpClientProvider
     {
