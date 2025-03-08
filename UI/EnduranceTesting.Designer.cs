@@ -399,6 +399,7 @@
             MaximumSize = new System.Drawing.Size(1200, 773);
             MinimumSize = new System.Drawing.Size(1200, 773);
             Name = "EnduranceTesting";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Endurance Testing";
             panelPeriod.ResumeLayout(false);
             panelPeriod.PerformLayout();
