@@ -7,6 +7,8 @@ namespace Endurance_Testing.UI
 {
     public partial class SplashScreen : Form
     {
+        private int loadingDots = 0;
+
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
 
         private static extern IntPtr CreateRoundRectRgn(
@@ -30,11 +32,16 @@ namespace Endurance_Testing.UI
             circularProgressBar.Value += 1;
             circularProgressBar.Text = circularProgressBar.Value.ToString() + "%";
 
+            if (circularProgressBar.Value % 5 == 0)
+            {
+                loadingDots = (loadingDots + 1) % 3;
+                lblLoading.Text = "Loading" + new string('.', loadingDots + 1);
+            }
+
             if (circularProgressBar.Value == 100)
             {
                 timerSplashScreen.Stop();
-                this.Hide();
-                new EnduranceTesting().Show();
+                this.Close();
             }
         }
     }

@@ -40,9 +40,9 @@
             // circularProgressBar
             // 
             circularProgressBar.AnimationFunction = WinFormAnimation_NET5.KnownAnimationFunctions.Linear;
-            circularProgressBar.AnimationSpeed = 500;
+            circularProgressBar.AnimationSpeed = 0;
             circularProgressBar.BackColor = System.Drawing.Color.FromArgb(42, 40, 60);
-            circularProgressBar.Font = new System.Drawing.Font("Simplified Arabic", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            circularProgressBar.Font = new System.Drawing.Font("Arial", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             circularProgressBar.ForeColor = System.Drawing.Color.FromArgb(85, 213, 219);
             circularProgressBar.InnerColor = System.Drawing.Color.FromArgb(42, 40, 60);
             circularProgressBar.InnerMargin = 2;
@@ -125,6 +125,10 @@
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            MaximumSize = new System.Drawing.Size(270, 390);
+            MinimizeBox = false;
+            MinimumSize = new System.Drawing.Size(270, 390);
             Name = "SplashScreen";
             Opacity = 0.88D;
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
