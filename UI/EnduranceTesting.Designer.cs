@@ -351,6 +351,7 @@
             textBoxApiKey.Name = "textBoxApiKey";
             textBoxApiKey.Size = new System.Drawing.Size(391, 37);
             textBoxApiKey.TabIndex = 6;
+            textBoxApiKey.TextChanged += textBoxApiKey_TextChanged;
             // 
             // lblApiKey
             // 
