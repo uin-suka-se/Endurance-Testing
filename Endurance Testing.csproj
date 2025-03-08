@@ -12,6 +12,7 @@
     <Content Include="ic_endurance_testing.ico" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CircularProgressBar_NET5" Version="3.0.0" />
     <PackageReference Include="ClosedXML" Version="0.104.2" />
   </ItemGroup>
 </Project>

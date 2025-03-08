@@ -71,6 +71,10 @@ namespace Endurance_Testing
             {
                 e.Cancel = true;
             }
+            else
+            {
+                Application.ExitThread();
+            }
         }
 
         private void EnduranceTesting_Load(object sender, EventArgs e)

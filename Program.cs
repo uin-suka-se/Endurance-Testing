@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Endurance_Testing.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Endurance_Testing
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EnduranceTesting());
+            Application.Run(new SplashScreen());
         }
     }
 }
