@@ -12,6 +12,10 @@ using System.Linq;
 using System.Drawing;
 using System.IO;
 
+using Endurance_Testing.Core;
+using Endurance_Testing.Services;
+using Endurance_Testing.Models;
+
 namespace Endurance_Testing
 {
     public partial class EnduranceTesting : Form
@@ -418,8 +422,8 @@ namespace Endurance_Testing
                 var results = await Task.WhenAll(tasks);
                 enduranceTestResults.AddRange(results);
 
-                double roundCpuUsage = await GetCpuUsage();
-                double roundRamUsage = await GetRamUsage();
+                double roundCpuUsage = await SystemMonitor.GetCpuUsage();
+                double roundRamUsage = await SystemMonitor.GetRamUsage();
 
                 foreach (var result in results)
                 {
@@ -667,98 +671,6 @@ namespace Endurance_Testing
             textBoxOutput.ScrollToCaret();
         }
 
-        private async Task<string> GetAIAnalysis(string url, double averageCpuUsage, double averageRamUsage, double averageLoadTime,
-                                       double averageWaitTime, double averageResponseTime, double averageThroughput,
-                                       double averageErrorRate, int totalSuccessful, int totalFailed, int totalRequests)
-        {
-            string apiKey = textBoxApiKey.Text.Trim();
-
-            // Validasi API key
-            if (string.IsNullOrWhiteSpace(apiKey))
-            {
-                return "";
-            }
-
-            try
-            {
-                using (HttpClient httpClient = new HttpClient())
-                {
-                    // URL endpoint API Gemini
-                    string geminiUrl = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}";
-
-                    // Menyusun data tes untuk dikirim ke API
-                    string testData = $"Endurance Testing Data:\n\n" +
-                                      $"URL Target: {url}\n" +
-                                      $"Total Requests: {totalRequests}\n" +
-                                      $"Successful Requests: {totalSuccessful}\n" +
-                                      $"Failed Requests: {totalFailed}\n" +
-                                      $"Average CPU Usage: {averageCpuUsage}%\n" +
-                                      $"Average RAM Usage: {averageRamUsage} MB\n" +
-                                      $"Average Load Time: {averageLoadTime} ms\n" +
-                                      $"Average Wait Time: {averageWaitTime} ms\n" +
-                                      $"Average Response Time: {averageResponseTime} ms\n" +
-                                      $"Average Throughput: {averageThroughput} requests/second\n" +
-                                      $"Average Error Rate: {averageErrorRate}%\n";
-
-                    string prompt = "The following definitions apply to this analysis: " +
-                                    "Response time: refers to the time spent between sending a request to the server and receiving the response. It is measured in kilobytes per second. " +
-                                    "Throughput: refers to the number of requests/transactions processed in a certain amount of time during the test. It shows the amount of the required capacity that the AUT can handle. Throughput depends on the number of concurrent users. " +
-                                    "Wait time: It is called the average latency. It refers to the time taken until the developer receives the first byte after sending a request. " +
-                                    "Average load time: refers to the average amount of time taken to receive each request. It reflects the quality and the responsivity of the AUT from the user’s perspective. " +
-                                    "Error rate: refers to the ratio between the failed requests and all requests.The ratio is calculated in percentage.The failed requests always occur when the load exceeds the capacity of the AUT. " +
-                                    "Based on the following endurance testing data, please provide an analysis of the Application Under Test (AUT) performance and identify potential issues evident from the data. " +
-                                    "Please structure your response as a Performance Analysis (in 2-3 paragraphs) followed by Potential Issues. " +
-                                    "Provide your answer without text formatting and use spaces rather than line breaks as separators. Ensure there is a space after each period. " +
-                                    "Here is the endurance testing data: ";
-
-                    var requestBody = new GeminiRequest
-                    {
-                        contents = new List<GeminiContent>
-                {
-                    new GeminiContent
-                    {
-                        role = "user",
-                        parts = new List<GeminiPart>
-                        {
-                            new GeminiPart { text = prompt + testData }
-                        }
-                    }
-                }
-                    };
-
-                    string requestJson = System.Text.Json.JsonSerializer.Serialize(requestBody);
-
-                    StringContent content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = await httpClient.PostAsync(geminiUrl, content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        var geminiResponse = System.Text.Json.JsonSerializer.Deserialize<GeminiResponse>(responseBody);
-
-                        if (geminiResponse?.candidates != null && geminiResponse.candidates.Count > 0)
-                        {
-                            return geminiResponse.candidates[0].content.parts[0].text;
-                        }
-                        else
-                        {
-                            return "No analysis generated by AI.";
-                        }
-                    }
-                    else
-                    {
-                        string errorResponse = await response.Content.ReadAsStringAsync();
-                        return $"Error accessing Gemini API: {response.StatusCode}. Details: {errorResponse}";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return $"An error occured: {ex.Message}";
-            }
-        }
-
         private async Task ShowSummary()
         {
             double averageCpuUsage = currentRound > 0 ? totalCpuUsage / currentRound : 0;
@@ -794,10 +706,19 @@ namespace Endurance_Testing
                 string url = textBoxInputUrl.Text;
                 double averageErrorRate = (totalFailedRequests / (double)totalRequestsProcessed) * 100;
 
-                aiAnalysisResult = await GetAIAnalysis(url, averageCpuUsage, averageRamUsage, averageLoadTime,
-                                                     averageWaitTime, averageResponseTime, averageThroughput,
-                                                     averageErrorRate, totalSuccessfulRequests, totalFailedRequests,
-                                                     totalRequestsProcessed);
+                aiAnalysisResult = await AIAnalysisService.GetAIAnalysis(
+                                                                        textBoxApiKey.Text.Trim(),
+                                                                        url,
+                                                                        averageCpuUsage,
+                                                                        averageRamUsage,
+                                                                        averageLoadTime,
+                                                                        averageWaitTime,
+                                                                        averageResponseTime,
+                                                                        averageThroughput,
+                                                                        averageErrorRate,
+                                                                        totalSuccessfulRequests,
+                                                                        totalFailedRequests,
+                                                                        totalRequestsProcessed);
 
                 if (!string.IsNullOrEmpty(aiAnalysisResult))
                 {
@@ -812,30 +733,6 @@ namespace Endurance_Testing
                     textBoxOutput.ScrollToCaret();
                 }
             }
-        }
-
-        private async Task<double> GetCpuUsage()
-        {
-            return await Task.Run(() =>
-            {
-                using (var cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total"))
-                {
-                    cpuCounter.NextValue();
-                    Thread.Sleep(1000);
-                    return cpuCounter.NextValue();
-                }
-            });
-        }
-
-        private async Task<double> GetRamUsage()
-        {
-            return await Task.Run(() =>
-            {
-                using (Process currentProcess = Process.GetCurrentProcess())
-                {
-                    return currentProcess.WorkingSet64 / (1024 * 1024.0);
-                }
-            });
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -1870,77 +1767,5 @@ namespace Endurance_Testing
                 }
             }
         }
-    }
-
-    public class EnduranceTestResult
-    {
-        public System.Net.HttpStatusCode StatusCode { get; set; }
-        public string ReasonPhrase { get; set; }
-        public TimeSpan LoadTime { get; set; }
-        public TimeSpan WaitTime { get; set; }
-        public TimeSpan ResponseTime { get; set; }
-        public int Round { get; set; }
-        public double CpuUsage { get; set; }
-        public double RamUsage { get; set; }
-        public int RequestPerRound { get; set; }
-        public int SuccessfulRequests { get; set; }
-        public int FailedRequests { get; set; }
-        public double AverageLoadTime { get; set; }
-        public double AverageWaitTime { get; set; }
-        public double AverageResponseTime { get; set; }
-        public double Throughput { get; set; }
-        public double ErrorRate { get; set; }
-        public double RoundDuration { get; set; }
-    }
-    public class GeminiRequest
-    {
-        public List<GeminiContent> contents { get; set; }
-        public GenerationConfig generationConfig { get; set; }
-
-        public GeminiRequest()
-        {
-            contents = new List<GeminiContent>();
-            generationConfig = new GenerationConfig
-            {
-                temperature = 1.0f,
-                topK = 40,
-                topP = 0.95f,
-                maxOutputTokens = 8192
-            };
-        }
-    }
-
-    public class GeminiContent
-    {
-        public string role { get; set; }
-        public List<GeminiPart> parts { get; set; }
-
-        public GeminiContent()
-        {
-            parts = new List<GeminiPart>();
-        }
-    }
-
-    public class GeminiPart
-    {
-        public string text { get; set; }
-    }
-
-    public class GenerationConfig
-    {
-        public float temperature { get; set; }
-        public int topK { get; set; }
-        public float topP { get; set; }
-        public int maxOutputTokens { get; set; }
-    }
-
-    public class GeminiResponse
-    {
-        public List<GeminiCandidate> candidates { get; set; }
-    }
-
-    public class GeminiCandidate
-    {
-        public GeminiContent content { get; set; }
     }
 }
