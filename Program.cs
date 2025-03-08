@@ -17,7 +17,13 @@ namespace Endurance_Testing
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SplashScreen());
+
+            using (SplashScreen splash = new SplashScreen())
+            {
+                splash.ShowDialog();
+            }
+
+            Application.Run(new EnduranceTesting());
         }
     }
 }
