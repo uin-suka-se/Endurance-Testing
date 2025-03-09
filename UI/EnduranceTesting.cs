@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text;
 using System.Linq;
 using System.Drawing;
-using System.IO;
 using System.Runtime.InteropServices;
 
 using Endurance_Testing.Core;
@@ -43,6 +41,7 @@ namespace Endurance_Testing
         private ExcelExportService excelExportService;
         private CsvExportService csvExportService;
         private JsonExportService jsonExportService;
+        private HtmlExportService htmlExportService;
 
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
 
@@ -75,6 +74,7 @@ namespace Endurance_Testing
             excelExportService = new ExcelExportService();
             csvExportService = new CsvExportService();
             jsonExportService = new JsonExportService();
+            htmlExportService = new HtmlExportService();
         }
 
         private void EnduranceTesting_FormClosing(object sender, FormClosingEventArgs e)
@@ -804,7 +804,7 @@ namespace Endurance_Testing
             exportMenu.Items.Add("Excel (.xlsx)", null, (s, args) => ExportToExcel());
             exportMenu.Items.Add("CSV (.csv)", null, (s, args) => ExportToCsv());
             exportMenu.Items.Add("JSON (.json)", null, (s, args) => ExportToJson());
-            exportMenu.Items.Add("HTML Report (.html)", null, (s, args) => ExportToHtml(url));
+            exportMenu.Items.Add("HTML Report (.html)", null, (s, args) => ExportToHtml());
 
             exportMenu.Show(btnExport, new Point(0, btnExport.Height));
         }
@@ -917,503 +917,51 @@ namespace Endurance_Testing
             jsonExportService.ExportToJson(enduranceTestResults, summary, parameters, aiAnalysisResult);
         }
 
-        private void ExportToHtml(string url)
+        private void ExportToHtml()
         {
-            using (var saveFileDialog = new SaveFileDialog())
+            if (enduranceTestResults != null && enduranceTestResults.Count > 0)
             {
-                saveFileDialog.Filter = "HTML Files|*.html";
-                saveFileDialog.Title = "Save HTML File";
-                saveFileDialog.FileName = "EnduranceTestResults.html";
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                TestSummary summary = new TestSummary
                 {
-                    try
-                    {
-                        // Prepare summary data
-                        double averageCpuUsage = currentRound > 0 ? totalCpuUsage / currentRound : 0;
-                        double averageRamUsage = currentRound > 0 ? totalRamUsage / currentRound : 0;
-                        double averageLoadTime = totalResponses > 0 ? totalLoadTime / totalResponses : 0;
-                        double averageWaitTime = totalResponses > 0 ? totalWaitTime / totalResponses : 0;
-                        double averageResponseTime = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
-                        double averageThroughput = currentRound > 0 ? totalThroughput / currentRound : 0;
-                        double averageErrorRate = totalRequestsProcessed > 0 ? (double)totalFailedRequests / totalRequestsProcessed * 100 : 0;
-                        double averageRoundDuration = currentRound > 0 ? enduranceTestResults.Average(r => r.RoundDuration) : 0;
+                    TotalRequestsProcessed = totalRequestsProcessed,
+                    TotalSuccessfulRequests = totalSuccessfulRequests,
+                    TotalFailedRequests = totalFailedRequests,
+                    CurrentRound = currentRound,
+                    TotalCpuUsage = totalCpuUsage,
+                    TotalRamUsage = totalRamUsage,
+                    TotalLoadTime = totalLoadTime,
+                    TotalWaitTime = totalWaitTime,
+                    TotalResponseTime = totalResponseTime,
+                    TotalResponses = totalResponses,
+                    TotalThroughput = totalThroughput
+                };
 
-                        StringBuilder htmlBuilder = new StringBuilder();
-
-                        // HTML Document
-                        htmlBuilder.AppendLine("<!DOCTYPE html>");
-                        htmlBuilder.AppendLine("<html lang='id'>");
-                        htmlBuilder.AppendLine("<head>");
-                        htmlBuilder.AppendLine("<meta charset='UTF-8'>");
-                        htmlBuilder.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1.0'>");
-                        htmlBuilder.AppendLine("<title>Endurance Testing Report</title>");
-                        htmlBuilder.AppendLine("<style>");
-                        htmlBuilder.AppendLine("body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }");
-                        htmlBuilder.AppendLine(".container { max-width: 1200px; margin: 0 auto; }");
-                        htmlBuilder.AppendLine("h1, h2 { color: #333; }");
-                        htmlBuilder.AppendLine("table { width: 100%; border-collapse: collapse; margin: 20px 0; }");
-                        htmlBuilder.AppendLine("th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }");
-                        htmlBuilder.AppendLine("th { background-color: #f2f2f2; }");
-                        htmlBuilder.AppendLine("tr:nth-child(even) { background-color: #f9f9f9; }");
-                        htmlBuilder.AppendLine(".summary-card { background-color: #f0f8ff; border-radius: 5px; padding: 15px; margin-bottom: 20px; }");
-                        htmlBuilder.AppendLine(".summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }");
-                        htmlBuilder.AppendLine(".metric { background-color: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }");
-                        htmlBuilder.AppendLine(".metric h3 { margin-top: 0; color: #555; }");
-                        htmlBuilder.AppendLine(".metric p { font-size: 20px; font-weight: bold; margin: 0; }");
-                        htmlBuilder.AppendLine(".success { color: green; }");
-                        htmlBuilder.AppendLine(".error { color: red; }");
-                        htmlBuilder.AppendLine(".chart-container { height: 300px; margin: 20px 0; background: #f9f9f9; border-radius: 5px; padding: 15px; }");
-                        htmlBuilder.AppendLine(".footer { margin-top: 30px; text-align: center; color: #777; font-size: 12px; }");
-                        htmlBuilder.AppendLine(".tab { overflow: hidden; border: 1px solid #ccc; background-color: #f1f1f1; }");
-                        htmlBuilder.AppendLine(".tab button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; }");
-                        htmlBuilder.AppendLine(".tab button:hover { background-color: #ddd; }");
-                        htmlBuilder.AppendLine(".tab button.active { background-color: #ccc; }");
-                        htmlBuilder.AppendLine(".tabcontent { display: none; padding: 6px 12px; border: 1px solid #ccc; border-top: none; }");
-                        htmlBuilder.AppendLine(".tabcontent.active { display: block; }");
-                        htmlBuilder.AppendLine("</style>");
-                        htmlBuilder.AppendLine("<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>");
-                        htmlBuilder.AppendLine("</head>");
-                        htmlBuilder.AppendLine("<body>");
-                        htmlBuilder.AppendLine("<div class='container'>");
-
-                        // Header
-                        htmlBuilder.AppendLine("<h1>Endurance Testing Report</h1>");
-                        htmlBuilder.AppendLine($"<p><strong>URL:</strong> {url}</p>");
-                        htmlBuilder.AppendLine($"<p><strong>Test Date:</strong> {DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss", new CultureInfo("en-US"))}</p>");
-                        htmlBuilder.AppendLine($"<p><strong>Test Mode:</strong> {comboBoxMode.SelectedItem}</p>");
-                        htmlBuilder.AppendLine($"<p><strong>Total Duration:</strong> {durationInSeconds} seconds</p>");
-
-                        // Tabs for different sections
-                        htmlBuilder.AppendLine("<div class='tab'>");
-                        htmlBuilder.AppendLine("<button class='tablinks active' onclick='openTab(event, \"Summary\")'>Summary</button>");
-                        htmlBuilder.AppendLine("<button class='tablinks' onclick='openTab(event, \"Charts\")'>Graph</button>");
-                        htmlBuilder.AppendLine("<button class='tablinks' onclick='openTab(event, \"RoundData\")'>Data Per Round</button>");
-                        htmlBuilder.AppendLine("<button class='tablinks' onclick='openTab(event, \"DetailData\")'>Data Detail</button>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        // Summary Tab
-                        htmlBuilder.AppendLine("<div id='Summary' class='tabcontent active'>");
-                        htmlBuilder.AppendLine("<h2>Test Summary</h2>");
-                        htmlBuilder.AppendLine("<div class='summary-card'>");
-                        htmlBuilder.AppendLine("<div class='summary-grid'>");
-
-                        // Request metrics
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Total Requests</h3>");
-                        htmlBuilder.AppendLine($"<p>{totalRequestsProcessed}</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Successfull Requests</h3>");
-                        htmlBuilder.AppendLine($"<p class='success'>{totalSuccessfulRequests}</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Failed Requests</h3>");
-                        htmlBuilder.AppendLine($"<p class='error'>{totalFailedRequests}</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        // Performance metrics
-
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Average Load Time</h3>");
-                        htmlBuilder.AppendLine($"<p>{averageLoadTime:F2} ms</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Average Wait Time</h3>");
-                        htmlBuilder.AppendLine($"<p>{averageWaitTime:F2} ms</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Average Response Time</h3>");
-                        htmlBuilder.AppendLine($"<p>{averageResponseTime:F2} ms</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Average Throughput</h3>");
-                        htmlBuilder.AppendLine($"<p>{averageThroughput:F2} req/s</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        // Resource metrics
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Average CPU Usage</h3>");
-                        htmlBuilder.AppendLine($"<p>{averageCpuUsage:F2}%</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Average RAM Usage</h3>");
-                        htmlBuilder.AppendLine($"<p>{averageRamUsage:F2} MB</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        htmlBuilder.AppendLine("<div class='metric'>");
-                        htmlBuilder.AppendLine("<h3>Average Error Rate</h3>");
-                        htmlBuilder.AppendLine($"<p>{averageErrorRate:F2}%</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        htmlBuilder.AppendLine("</div>"); // end summary-grid
-                        htmlBuilder.AppendLine("</div>"); // end summary-card
-                        htmlBuilder.AppendLine("</div>"); // end Summary tab
-
-                        // Charts Tab
-                        htmlBuilder.AppendLine("<div id='Charts' class='tabcontent'>");
-                        htmlBuilder.AppendLine("<h2>Data Visualization</h2>");
-
-                        // Load Time Chart
-                        htmlBuilder.AppendLine("<h3>Load Time per Round</h3>");
-                        htmlBuilder.AppendLine("<div class='chart-container'>");
-                        htmlBuilder.AppendLine("<canvas id='loadTimeChart'></canvas>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        // Wait Time Chart
-                        htmlBuilder.AppendLine("<h3>Wait Time per Round</h3>");
-                        htmlBuilder.AppendLine("<div class='chart-container'>");
-                        htmlBuilder.AppendLine("<canvas id='waitTimeChart'></canvas>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        // Response Time Chart
-                        htmlBuilder.AppendLine("<h3>Response Time per Round</h3>");
-                        htmlBuilder.AppendLine("<div class='chart-container'>");
-                        htmlBuilder.AppendLine("<canvas id='responseTimeChart'></canvas>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        // Throughput Chart
-                        htmlBuilder.AppendLine("<h3>Throughput per Round</h3>");
-                        htmlBuilder.AppendLine("<div class='chart-container'>");
-                        htmlBuilder.AppendLine("<canvas id='throughputChart'></canvas>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        // Error Rate Chart
-                        htmlBuilder.AppendLine("<h3>Error Rate per Round</h3>");
-                        htmlBuilder.AppendLine("<div class='chart-container'>");
-                        htmlBuilder.AppendLine("<canvas id='errorRateChart'></canvas>");
-                        htmlBuilder.AppendLine("</div>");
-                        htmlBuilder.AppendLine("</div>"); // end Charts tab
-
-                        // Round Data Tab
-                        htmlBuilder.AppendLine("<div id='RoundData' class='tabcontent'>");
-                        htmlBuilder.AppendLine("<h2>Data Per Round</h2>");
-                        htmlBuilder.AppendLine("<table>");
-                        htmlBuilder.AppendLine("<tr>");
-                        htmlBuilder.AppendLine("<th>Ronde</th>");
-                        htmlBuilder.AppendLine("<th>Total Requests</th>");
-                        htmlBuilder.AppendLine("<th>Successful</th>");
-                        htmlBuilder.AppendLine("<th>Failed</th>");
-                        htmlBuilder.AppendLine("<th>Avg Load Time</th>");
-                        htmlBuilder.AppendLine("<th>Avg Wait Time</th>");
-                        htmlBuilder.AppendLine("<th>Avg Response Time</th>");
-                        htmlBuilder.AppendLine("<th>Throughput</th>");
-                        htmlBuilder.AppendLine("<th>Error Rate</th>");
-                        htmlBuilder.AppendLine("<th>CPU Usage</th>");
-                        htmlBuilder.AppendLine("<th>RAM Usage</th>");
-                        htmlBuilder.AppendLine("</tr>");
-
-                        // Group by round
-                        var roundData = enduranceTestResults
-                            .GroupBy(r => r.Round)
-                            .Select(g => new
-                            {
-                                Round = g.Key,
-                                TotalRequests = g.Count(),
-                                SuccessfulRequests = g.Count(r => r.StatusCode == System.Net.HttpStatusCode.OK),
-                                FailedRequests = g.Count(r => r.StatusCode != System.Net.HttpStatusCode.OK),
-                                AvgLoadTime = g.Average(r => r.LoadTime.TotalMilliseconds),
-                                AvgWaitTime = g.Average(r => r.WaitTime.TotalMilliseconds),
-                                AvgResponseTime = g.Average(r => r.ResponseTime.TotalMilliseconds),
-                                AvgThroughput = g.Average(r => r.Throughput),
-                                AvgErrorRate = g.Average(r => r.ErrorRate),
-                                AvgCpuUsage = g.Average(r => r.CpuUsage),
-                                AvgRamUsage = g.Average(r => r.RamUsage)
-                            })
-                            .OrderBy(r => r.Round);
-
-                        foreach (var round in roundData)
-                        {
-                            htmlBuilder.AppendLine("<tr>");
-                            htmlBuilder.AppendLine($"<td>{round.Round}</td>");
-                            htmlBuilder.AppendLine($"<td>{round.TotalRequests}</td>");
-                            htmlBuilder.AppendLine($"<td>{round.SuccessfulRequests}</td>");
-                            htmlBuilder.AppendLine($"<td>{round.FailedRequests}</td>");
-                            htmlBuilder.AppendLine($"<td>{round.AvgLoadTime:F2} ms</td>");
-                            htmlBuilder.AppendLine($"<td>{round.AvgWaitTime:F2} ms</td>");
-                            htmlBuilder.AppendLine($"<td>{round.AvgResponseTime:F2} ms</td>");
-                            htmlBuilder.AppendLine($"<td>{round.AvgThroughput:F2} req/s</td>");
-                            htmlBuilder.AppendLine($"<td>{round.AvgErrorRate:F2}%</td>");
-                            htmlBuilder.AppendLine($"<td>{round.AvgCpuUsage:F2}%</td>");
-                            htmlBuilder.AppendLine($"<td>{round.AvgRamUsage:F2} MB</td>");
-                            htmlBuilder.AppendLine("</tr>");
-                        }
-
-                        htmlBuilder.AppendLine("</table>");
-                        htmlBuilder.AppendLine("</div>"); // end RoundData tab
-
-                        // Detail Data Tab
-                        htmlBuilder.AppendLine("<div id='DetailData' class='tabcontent'>");
-                        htmlBuilder.AppendLine("<h2>Data Detail</h2>");
-                        htmlBuilder.AppendLine("<div style='overflow-x:auto;'>");
-                        htmlBuilder.AppendLine("<table>");
-                        htmlBuilder.AppendLine("<tr>");
-                        htmlBuilder.AppendLine("<th>Round</th>");
-                        htmlBuilder.AppendLine("<th>Status</th>");
-                        htmlBuilder.AppendLine("<th>Reason Phrase</th>");
-                        htmlBuilder.AppendLine("<th>Load Time</th>");
-                        htmlBuilder.AppendLine("<th>Wait Time</th>");
-                        htmlBuilder.AppendLine("<th>Response Time</th>");
-                        htmlBuilder.AppendLine("<th>CPU Usage</th>");
-                        htmlBuilder.AppendLine("<th>RAM Usage</th>");
-                        htmlBuilder.AppendLine("</tr>");
-
-                        // Limit to 1000 rows for performance
-                        foreach (var result in enduranceTestResults)
-                        {
-                            htmlBuilder.AppendLine("<tr>");
-                            htmlBuilder.AppendLine($"<td>{result.Round}</td>");
-                            htmlBuilder.AppendLine($"<td>{(int)result.StatusCode}</td>");
-                            htmlBuilder.AppendLine($"<td>{result.ReasonPhrase}</td>");
-                            htmlBuilder.AppendLine($"<td>{result.LoadTime.TotalMilliseconds:F2} ms</td>");
-                            htmlBuilder.AppendLine($"<td>{result.WaitTime.TotalMilliseconds:F2} ms</td>");
-                            htmlBuilder.AppendLine($"<td>{result.ResponseTime.TotalMilliseconds:F2} ms</td>");
-                            htmlBuilder.AppendLine($"<td>{result.CpuUsage:F2}%</td>");
-                            htmlBuilder.AppendLine($"<td>{result.RamUsage:F2} MB</td>");
-                            htmlBuilder.AppendLine("</tr>");
-                        }
-
-                        htmlBuilder.AppendLine("</table>");
-                        htmlBuilder.AppendLine("</div>");
-                        htmlBuilder.AppendLine("</div>"); // end DetailData tab
-
-                        // Footer
-                        htmlBuilder.AppendLine("<div class='footer'>");
-                        htmlBuilder.AppendLine($"<p>Made with Endurance Testing Tool by Rahma Bintang Pratama at {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}</p>");
-                        htmlBuilder.AppendLine("</div>");
-
-                        htmlBuilder.AppendLine("</div>"); // end container
-
-                        // JavaScript for Charts
-                        htmlBuilder.AppendLine("<script>");
-
-                        // Data Preparation for Charts
-                        htmlBuilder.AppendLine("document.addEventListener('DOMContentLoaded', function() {");
-
-                        // Load Time Chart
-                        htmlBuilder.AppendLine("var loadTimeData = {");
-                        htmlBuilder.AppendLine("  labels: [" + string.Join(",", roundData.Select(r => r.Round)) + "],");
-                        htmlBuilder.AppendLine("  datasets: [{");
-                        htmlBuilder.AppendLine("    label: 'Load Time (ms)',");
-                        htmlBuilder.AppendLine("    backgroundColor: 'rgba(54, 162, 235, 0.2)',");
-                        htmlBuilder.AppendLine("    borderColor: 'rgba(54, 162, 235, 1)',");
-                        htmlBuilder.AppendLine("    borderWidth: 1,");
-                        htmlBuilder.AppendLine("    data: [" + string.Join(",", roundData.Select(r => r.AvgLoadTime.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))) + "]");
-                        htmlBuilder.AppendLine("  }]");
-                        htmlBuilder.AppendLine("};");
-
-                        htmlBuilder.AppendLine("var loadTimeCtx = document.getElementById('loadTimeChart').getContext('2d');");
-                        htmlBuilder.AppendLine("var loadTimeChart = new Chart(loadTimeCtx, {");
-                        htmlBuilder.AppendLine("  type: 'line',");
-                        htmlBuilder.AppendLine("  data: loadTimeData,");
-                        htmlBuilder.AppendLine("  options: {");
-                        htmlBuilder.AppendLine("    responsive: true,");
-                        htmlBuilder.AppendLine("    maintainAspectRatio: false,");
-                        htmlBuilder.AppendLine("    scales: {");
-                        htmlBuilder.AppendLine("      y: {");
-                        htmlBuilder.AppendLine("        beginAtZero: true,");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Load Time (ms)'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      },");
-                        htmlBuilder.AppendLine("      x: {");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Round'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      }");
-                        htmlBuilder.AppendLine("    }");
-                        htmlBuilder.AppendLine("  }");
-                        htmlBuilder.AppendLine("});");
-
-                        // Wait Time Chart
-                        htmlBuilder.AppendLine("var waitTimeData = {");
-                        htmlBuilder.AppendLine("  labels: [" + string.Join(",", roundData.Select(r => r.Round)) + "],");
-                        htmlBuilder.AppendLine("  datasets: [{");
-                        htmlBuilder.AppendLine("    label: 'Wait Time (ms)',");
-                        htmlBuilder.AppendLine("    backgroundColor: 'rgba(54, 162, 235, 0.2)',");
-                        htmlBuilder.AppendLine("    borderColor: 'rgba(54, 162, 235, 1)',");
-                        htmlBuilder.AppendLine("    borderWidth: 1,");
-                        htmlBuilder.AppendLine("    data: [" + string.Join(",", roundData.Select(r => r.AvgWaitTime.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))) + "]");
-                        htmlBuilder.AppendLine("  }]");
-                        htmlBuilder.AppendLine("};");
-
-                        htmlBuilder.AppendLine("var waitTimeCtx = document.getElementById('waitTimeChart').getContext('2d');");
-                        htmlBuilder.AppendLine("var waitTimeChart = new Chart(waitTimeCtx, {");
-                        htmlBuilder.AppendLine("  type: 'line',");
-                        htmlBuilder.AppendLine("  data: waitTimeData,");
-                        htmlBuilder.AppendLine("  options: {");
-                        htmlBuilder.AppendLine("    responsive: true,");
-                        htmlBuilder.AppendLine("    maintainAspectRatio: false,");
-                        htmlBuilder.AppendLine("    scales: {");
-                        htmlBuilder.AppendLine("      y: {");
-                        htmlBuilder.AppendLine("        beginAtZero: true,");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Wait Time (ms)'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      },");
-                        htmlBuilder.AppendLine("      x: {");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Round'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      }");
-                        htmlBuilder.AppendLine("    }");
-                        htmlBuilder.AppendLine("  }");
-                        htmlBuilder.AppendLine("});");
-
-                        // Response Time Chart
-                        htmlBuilder.AppendLine("var responseTimeData = {");
-                        htmlBuilder.AppendLine("  labels: [" + string.Join(",", roundData.Select(r => r.Round)) + "],");
-                        htmlBuilder.AppendLine("  datasets: [{");
-                        htmlBuilder.AppendLine("    label: 'Response Time (ms)',");
-                        htmlBuilder.AppendLine("    backgroundColor: 'rgba(54, 162, 235, 0.2)',");
-                        htmlBuilder.AppendLine("    borderColor: 'rgba(54, 162, 235, 1)',");
-                        htmlBuilder.AppendLine("    borderWidth: 1,");
-                        htmlBuilder.AppendLine("    data: [" + string.Join(",", roundData.Select(r => r.AvgResponseTime.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))) + "]");
-                        htmlBuilder.AppendLine("  }]");
-                        htmlBuilder.AppendLine("};");
-
-                        htmlBuilder.AppendLine("var responseTimeCtx = document.getElementById('responseTimeChart').getContext('2d');");
-                        htmlBuilder.AppendLine("var responseTimeChart = new Chart(responseTimeCtx, {");
-                        htmlBuilder.AppendLine("  type: 'line',");
-                        htmlBuilder.AppendLine("  data: responseTimeData,");
-                        htmlBuilder.AppendLine("  options: {");
-                        htmlBuilder.AppendLine("    responsive: true,");
-                        htmlBuilder.AppendLine("    maintainAspectRatio: false,");
-                        htmlBuilder.AppendLine("    scales: {");
-                        htmlBuilder.AppendLine("      y: {");
-                        htmlBuilder.AppendLine("        beginAtZero: true,");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Response Time (ms)'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      },");
-                        htmlBuilder.AppendLine("      x: {");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Round'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      }");
-                        htmlBuilder.AppendLine("    }");
-                        htmlBuilder.AppendLine("  }");
-                        htmlBuilder.AppendLine("});");
-
-                        // Throughput Chart
-                        htmlBuilder.AppendLine("var throughputData = {");
-                        htmlBuilder.AppendLine("  labels: [" + string.Join(",", roundData.Select(r => r.Round)) + "],");
-                        htmlBuilder.AppendLine("  datasets: [{");
-                        htmlBuilder.AppendLine("    label: 'Throughput (req/s)',");
-                        htmlBuilder.AppendLine("    backgroundColor: 'rgba(75, 192, 192, 0.2)',");
-                        htmlBuilder.AppendLine("    borderColor: 'rgba(75, 192, 192, 1)',");
-                        htmlBuilder.AppendLine("    borderWidth: 1,");
-                        htmlBuilder.AppendLine("    data: [" + string.Join(",", roundData.Select(r => r.AvgThroughput.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))) + "]");
-                        htmlBuilder.AppendLine("  }]");
-                        htmlBuilder.AppendLine("};");
-
-                        htmlBuilder.AppendLine("var throughputCtx = document.getElementById('throughputChart').getContext('2d');");
-                        htmlBuilder.AppendLine("var throughputChart = new Chart(throughputCtx, {");
-                        htmlBuilder.AppendLine("  type: 'line',");
-                        htmlBuilder.AppendLine("  data: throughputData,");
-                        htmlBuilder.AppendLine("  options: {");
-                        htmlBuilder.AppendLine("    responsive: true,");
-                        htmlBuilder.AppendLine("    maintainAspectRatio: false,");
-                        htmlBuilder.AppendLine("    scales: {");
-                        htmlBuilder.AppendLine("      y: {");
-                        htmlBuilder.AppendLine("        beginAtZero: true,");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Throughput (req/s)'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      },");
-                        htmlBuilder.AppendLine("      x: {");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Round'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      }");
-                        htmlBuilder.AppendLine("    }");
-                        htmlBuilder.AppendLine("  }");
-                        htmlBuilder.AppendLine("});");
-
-                        // Error Rate Chart
-                        htmlBuilder.AppendLine("var errorRateData = {");
-                        htmlBuilder.AppendLine("  labels: [" + string.Join(",", roundData.Select(r => r.Round)) + "],");
-                        htmlBuilder.AppendLine("  datasets: [{");
-                        htmlBuilder.AppendLine("    label: 'Error Rate (%)',");
-                        htmlBuilder.AppendLine("    backgroundColor: 'rgba(255, 99, 132, 0.2)',");
-                        htmlBuilder.AppendLine("    borderColor: 'rgba(255, 99, 132, 1)',");
-                        htmlBuilder.AppendLine("    borderWidth: 1,");
-                        htmlBuilder.AppendLine("    data: [" + string.Join(",", roundData.Select(r => r.AvgErrorRate.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))) + "]");
-                        htmlBuilder.AppendLine("  }]");
-                        htmlBuilder.AppendLine("};");
-
-                        htmlBuilder.AppendLine("var errorRateCtx = document.getElementById('errorRateChart').getContext('2d');");
-                        htmlBuilder.AppendLine("var errorRateChart = new Chart(errorRateCtx, {");
-                        htmlBuilder.AppendLine("  type: 'line',");
-                        htmlBuilder.AppendLine("  data: errorRateData,");
-                        htmlBuilder.AppendLine("  options: {");
-                        htmlBuilder.AppendLine("    responsive: true,");
-                        htmlBuilder.AppendLine("    maintainAspectRatio: false,");
-                        htmlBuilder.AppendLine("    scales: {");
-                        htmlBuilder.AppendLine("      y: {");
-                        htmlBuilder.AppendLine("        beginAtZero: true,");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Error Rate (%)'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      },");
-                        htmlBuilder.AppendLine("      x: {");
-                        htmlBuilder.AppendLine("        title: {");
-                        htmlBuilder.AppendLine("          display: true,");
-                        htmlBuilder.AppendLine("          text: 'Round'");
-                        htmlBuilder.AppendLine("        }");
-                        htmlBuilder.AppendLine("      }");
-                        htmlBuilder.AppendLine("    }");
-                        htmlBuilder.AppendLine("  }");
-                        htmlBuilder.AppendLine("});");
-
-                        htmlBuilder.AppendLine("});"); // DOMContentLoaded event end
-
-                        // Tab Functionality
-                        htmlBuilder.AppendLine("function openTab(evt, tabName) {");
-                        htmlBuilder.AppendLine("  var i, tabcontent, tablinks;");
-                        htmlBuilder.AppendLine("  tabcontent = document.getElementsByClassName('tabcontent');");
-                        htmlBuilder.AppendLine("  for (i = 0; i < tabcontent.length; i++) {");
-                        htmlBuilder.AppendLine("    tabcontent[i].style.display = 'none';");
-                        htmlBuilder.AppendLine("    tabcontent[i].className = tabcontent[i].className.replace(' active', '');");
-                        htmlBuilder.AppendLine("  }");
-                        htmlBuilder.AppendLine("  tablinks = document.getElementsByClassName('tablinks');");
-                        htmlBuilder.AppendLine("  for (i = 0; i < tablinks.length; i++) {");
-                        htmlBuilder.AppendLine("    tablinks[i].className = tablinks[i].className.replace(' active', '');");
-                        htmlBuilder.AppendLine("  }");
-                        htmlBuilder.AppendLine("  document.getElementById(tabName).style.display = 'block';");
-                        htmlBuilder.AppendLine("  document.getElementById(tabName).className += ' active';");
-                        htmlBuilder.AppendLine("  evt.currentTarget.className += ' active';");
-                        htmlBuilder.AppendLine("}");
-
-                        htmlBuilder.AppendLine("</script>");
-                        htmlBuilder.AppendLine("</body>");
-                        htmlBuilder.AppendLine("</html>");
-
-                        File.WriteAllText(saveFileDialog.FileName, htmlBuilder.ToString());
-
-                        MessageBox.Show("Successfully export to HTML!",
-                            "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Failed export to HTML: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
+                {
+                    summary.AverageRoundDuration = enduranceTestResults.Average(result => result.RoundDuration);
                 }
+
+                TestParameters parameters = new TestParameters
+                {
+                    Url = testRunner.Url,
+                    MinRequests = testRunner.MinRequests,
+                    MaxRequests = testRunner.MaxRequests,
+                    Mode = testRunner.TestMode,
+                    TimeoutInSeconds = testRunner.TimeoutInSeconds,
+                    DurationInSeconds = testRunner.DurationInSeconds,
+                    SelectedTimePeriod = selectedTimePeriod
+                };
+
+                htmlExportService.ExportToHtml(
+                    enduranceTestResults,
+                    summary,
+                    parameters,
+                    aiAnalysisResult);
+            }
+            else
+            {
+                MessageBox.Show("There is no test result to export.", "Information",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }
