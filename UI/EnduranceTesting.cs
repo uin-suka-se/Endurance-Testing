@@ -234,6 +234,33 @@ namespace Endurance_Testing
             }
         }
 
+        private void textBoxApiKey_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void textBoxApiKey_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.ControlKey)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBoxApiKey_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (e is HandledMouseEventArgs handledEventArgs)
+                {
+                    handledEventArgs.Handled = true;
+                }
+            }
+        }
+
         private void textBoxTime_TextChanged(object sender, EventArgs e)
         {
             if (textBoxTime.Text.Length > 0 && !isRunning)
