@@ -99,12 +99,12 @@
             lblMade.AutoSize = true;
             lblMade.Font = new System.Drawing.Font("Simplified Arabic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             lblMade.ForeColor = System.Drawing.Color.FromArgb(85, 213, 219);
-            lblMade.Location = new System.Drawing.Point(37, 342);
+            lblMade.Location = new System.Drawing.Point(20, 341);
             lblMade.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblMade.Name = "lblMade";
-            lblMade.Size = new System.Drawing.Size(201, 23);
+            lblMade.Size = new System.Drawing.Size(230, 23);
             lblMade.TabIndex = 3;
-            lblMade.Text = "Made by Rahma Bintang Pratama";
+            lblMade.Text = "Developed by Rahma Bintang Pratama";
             // 
             // timerSplashScreen
             // 
