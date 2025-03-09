@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ClosedXML.Excel;
-using System.Diagnostics;
 using System.Globalization;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,6 +9,7 @@ using System.Text;
 using System.Linq;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using Endurance_Testing.Core;
 using Endurance_Testing.Services;
@@ -18,7 +17,7 @@ using Endurance_Testing.Models;
 
 namespace Endurance_Testing
 {
-    public partial class EnduranceTesting : Form
+    public partial class EnduranceTesting : UI.MacStyleTitleBar
     {
         private TestRunner testRunner;
         private CancellationTokenSource cancellationTokenSource;
@@ -43,9 +42,21 @@ namespace Endurance_Testing
         private string selectedTimePeriod;
         private string aiAnalysisResult = "";
 
+        [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
+
+        private static extern IntPtr CreateRoundRectRgn(
+            int nLeftRect,
+            int nTopRect,
+            int nRightRect,
+            int nBottomRect,
+            int nWidthEllipse,
+            int nHeightEllipse
+        );
+
         public EnduranceTesting()
         {
             InitializeComponent();
+            Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
             this.Load += EnduranceTesting_Load;
             this.FormClosing += EnduranceTesting_FormClosing;
             testRunner = new TestRunner();
