@@ -42,6 +42,7 @@ namespace Endurance_Testing
         private string aiAnalysisResult = "";
         private ExcelExportService excelExportService;
         private CsvExportService csvExportService;
+        private JsonExportService jsonExportService;
 
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
 
@@ -73,6 +74,7 @@ namespace Endurance_Testing
 
             excelExportService = new ExcelExportService();
             csvExportService = new CsvExportService();
+            jsonExportService = new JsonExportService();
         }
 
         private void EnduranceTesting_FormClosing(object sender, FormClosingEventArgs e)
@@ -801,7 +803,7 @@ namespace Endurance_Testing
             ContextMenuStrip exportMenu = new ContextMenuStrip();
             exportMenu.Items.Add("Excel (.xlsx)", null, (s, args) => ExportToExcel());
             exportMenu.Items.Add("CSV (.csv)", null, (s, args) => ExportToCsv());
-            exportMenu.Items.Add("JSON (.json)", null, (s, args) => ExportToJson(url));
+            exportMenu.Items.Add("JSON (.json)", null, (s, args) => ExportToJson());
             exportMenu.Items.Add("HTML Report (.html)", null, (s, args) => ExportToHtml(url));
 
             exportMenu.Show(btnExport, new Point(0, btnExport.Height));
@@ -879,89 +881,40 @@ namespace Endurance_Testing
             csvExportService.ExportToCsv(enduranceTestResults, summary, parameters, aiAnalysisResult);
         }
 
-        private void ExportToJson(string url)
+        private void ExportToJson()
         {
-            using (var saveFileDialog = new SaveFileDialog())
+            TestSummary summary = new TestSummary
             {
-                saveFileDialog.Filter = "JSON Files|*.json";
-                saveFileDialog.Title = "Save JSON File";
-                saveFileDialog.FileName = "EnduranceTestResults.json";
+                TotalRequestsProcessed = totalRequestsProcessed,
+                TotalSuccessfulRequests = totalSuccessfulRequests,
+                TotalFailedRequests = totalFailedRequests,
+                CurrentRound = currentRound,
+                TotalCpuUsage = totalCpuUsage,
+                TotalRamUsage = totalRamUsage,
+                TotalLoadTime = totalLoadTime,
+                TotalWaitTime = totalWaitTime,
+                TotalResponseTime = totalResponseTime,
+                TotalResponses = totalResponses,
+                TotalThroughput = totalThroughput
+            };
 
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        var testSummary = new
-                        {
-                            TestInfo = new
-                            {
-                                TargetUrl = url,
-                                TestDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss", new CultureInfo("en-US")),
-                                TotalRounds = currentRound,
-                                TotalRequests = totalRequestsProcessed,
-                                SuccessfulRequests = totalSuccessfulRequests,
-                                FailedRequests = totalFailedRequests,
-                                TestDuration = durationInSeconds,
-                                TestMode = comboBoxMode.SelectedItem.ToString()
-                            },
-                            Summary = new
-                            {
-                                AverageCpuUsage = currentRound > 0 ? totalCpuUsage / currentRound : 0,
-                                AverageRamUsage = currentRound > 0 ? totalRamUsage / currentRound : 0,
-                                AverageLoadTime = totalResponses > 0 ? totalLoadTime / totalResponses : 0,
-                                AverageWaitTime = totalResponses > 0 ? totalWaitTime / totalResponses : 0,
-                                AverageResponseTime = totalResponses > 0 ? totalResponseTime / totalResponses : 0,
-                                AverageThroughput = currentRound > 0 ? totalThroughput / currentRound : 0,
-                                AverageErrorRate = totalRequestsProcessed > 0 ? (double)totalFailedRequests / totalRequestsProcessed * 100 : 0,
-                                AverageRoundDuration = currentRound > 0 ? enduranceTestResults.Average(r => r.RoundDuration) : 0
-                            },
-                            RoundSummaries = enduranceTestResults
-                                .GroupBy(r => r.Round)
-                                .Select(g => new
-                                {
-                                    Round = g.Key,
-                                    TotalRequests = g.Count(),
-                                    SuccessfulRequests = g.Count(r => r.StatusCode == System.Net.HttpStatusCode.OK),
-                                    FailedRequests = g.Count(r => r.StatusCode != System.Net.HttpStatusCode.OK),
-                                    AverageLoadTime = g.Average(r => r.LoadTime.TotalMilliseconds),
-                                    AverageWaitTime = g.Average(r => r.WaitTime.TotalMilliseconds),
-                                    AverageResponseTime = g.Average(r => r.ResponseTime.TotalMilliseconds),
-                                    Throughput = g.Average(r => r.Throughput),
-                                    ErrorRate = g.Average(r => r.ErrorRate),
-                                    CpuUsage = g.Average(r => r.CpuUsage),
-                                    RamUsage = g.Average(r => r.RamUsage)
-                                }).ToList(),
-                            DetailResults = enduranceTestResults.Select(r => new
-                            {
-                                Round = r.Round,
-                                StatusCode = (int)r.StatusCode,
-                                ReasonPhrase = r.ReasonPhrase,
-                                LoadTimeMs = r.LoadTime.TotalMilliseconds,
-                                WaitTimeMs = r.WaitTime.TotalMilliseconds,
-                                ResponseTimeMs = r.ResponseTime.TotalMilliseconds,
-                                CpuUsage = r.CpuUsage,
-                                RamUsage = r.RamUsage,
-                                Throughput = r.Throughput,
-                                ErrorRate = r.ErrorRate,
-                                RoundDuration = r.RoundDuration
-                            }).ToList()
-                        };
-
-                        string jsonContent = System.Text.Json.JsonSerializer.Serialize(testSummary, new System.Text.Json.JsonSerializerOptions
-                        {
-                            WriteIndented = true
-                        });
-
-                        File.WriteAllText(saveFileDialog.FileName, jsonContent);
-
-                        MessageBox.Show("Succeessfully export to JSON!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Failed export to JSON: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+            if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
+            {
+                summary.AverageRoundDuration = enduranceTestResults.Average(result => result.RoundDuration);
             }
+
+            TestParameters parameters = new TestParameters
+            {
+                Url = testRunner.Url,
+                MinRequests = testRunner.MinRequests,
+                MaxRequests = testRunner.MaxRequests,
+                Mode = testRunner.TestMode,
+                TimeoutInSeconds = testRunner.TimeoutInSeconds,
+                DurationInSeconds = testRunner.DurationInSeconds,
+                SelectedTimePeriod = selectedTimePeriod
+            };
+
+            jsonExportService.ExportToJson(enduranceTestResults, summary, parameters, aiAnalysisResult);
         }
 
         private void ExportToHtml(string url)
