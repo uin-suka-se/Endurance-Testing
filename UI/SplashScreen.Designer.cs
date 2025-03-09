@@ -42,7 +42,7 @@
             circularProgressBar.AnimationFunction = WinFormAnimation_NET5.KnownAnimationFunctions.Linear;
             circularProgressBar.AnimationSpeed = 0;
             circularProgressBar.BackColor = System.Drawing.Color.FromArgb(42, 40, 60);
-            circularProgressBar.Font = new System.Drawing.Font("Arial", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            circularProgressBar.Font = new System.Drawing.Font("Segoe UI", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             circularProgressBar.ForeColor = System.Drawing.Color.FromArgb(85, 213, 219);
             circularProgressBar.InnerColor = System.Drawing.Color.FromArgb(42, 40, 60);
             circularProgressBar.InnerMargin = 2;
