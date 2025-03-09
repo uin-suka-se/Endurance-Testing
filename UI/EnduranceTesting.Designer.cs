@@ -79,7 +79,11 @@
             textBoxApiKey.Name = "textBoxApiKey";
             textBoxApiKey.Size = new System.Drawing.Size(391, 37);
             textBoxApiKey.TabIndex = 33;
+            textBoxApiKey.UseSystemPasswordChar = true;
             textBoxApiKey.TextChanged += textBoxApiKey_TextChanged;
+            textBoxApiKey.KeyDown += textBoxApiKey_KeyDown;
+            textBoxApiKey.KeyPress += textBoxApiKey_KeyPress;
+            textBoxApiKey.MouseDown += textBoxApiKey_MouseDown;
             // 
             // comboBoxMode
             // 
