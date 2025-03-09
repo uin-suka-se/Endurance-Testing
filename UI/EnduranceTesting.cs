@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ClosedXML.Excel;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,6 +41,7 @@ namespace Endurance_Testing
         private string selectedTimePeriod;
         private string aiAnalysisResult = "";
         private ExcelExportService excelExportService;
+        private CsvExportService csvExportService;
 
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
 
@@ -72,6 +72,7 @@ namespace Endurance_Testing
             comboBoxMode.SelectedIndexChanged += new EventHandler(comboBoxMode_SelectedIndexChanged);
 
             excelExportService = new ExcelExportService();
+            csvExportService = new CsvExportService();
         }
 
         private void EnduranceTesting_FormClosing(object sender, FormClosingEventArgs e)
@@ -799,7 +800,7 @@ namespace Endurance_Testing
 
             ContextMenuStrip exportMenu = new ContextMenuStrip();
             exportMenu.Items.Add("Excel (.xlsx)", null, (s, args) => ExportToExcel());
-            exportMenu.Items.Add("CSV (.csv)", null, (s, args) => ExportToCsv(url));
+            exportMenu.Items.Add("CSV (.csv)", null, (s, args) => ExportToCsv());
             exportMenu.Items.Add("JSON (.json)", null, (s, args) => ExportToJson(url));
             exportMenu.Items.Add("HTML Report (.html)", null, (s, args) => ExportToHtml(url));
 
@@ -842,68 +843,40 @@ namespace Endurance_Testing
             excelExportService.ExportToExcel(enduranceTestResults, summary, parameters, aiAnalysisResult);
         }
 
-        private void ExportToCsv(string url)
+        private void ExportToCsv()
         {
-            using (var saveFileDialog = new SaveFileDialog())
+            TestSummary summary = new TestSummary
             {
-                saveFileDialog.Filter = "CSV Files|*.csv";
-                saveFileDialog.Title = "Save CSV File";
-                saveFileDialog.FileName = "EnduranceTestResults.csv";
+                TotalRequestsProcessed = totalRequestsProcessed,
+                TotalSuccessfulRequests = totalSuccessfulRequests,
+                TotalFailedRequests = totalFailedRequests,
+                CurrentRound = currentRound,
+                TotalCpuUsage = totalCpuUsage,
+                TotalRamUsage = totalRamUsage,
+                TotalLoadTime = totalLoadTime,
+                TotalWaitTime = totalWaitTime,
+                TotalResponseTime = totalResponseTime,
+                TotalResponses = totalResponses,
+                TotalThroughput = totalThroughput
+            };
 
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
-                        {
-                            writer.WriteLine("Round,Status,Reason,LoadTime(ms),WaitTime(ms),ResponseTime(ms),CPUUsage(%),RAMUsage(MB)," +
-                                             "TotalRequests,SuccessfulRequests,FailedRequests,AverageLoadTime(ms),AverageWaitTime(ms)," +
-                                             "AverageResponseTime(ms),Throughput(req/s),ErrorRate(%),RoundDuration(s)");
-
-                            foreach (var result in enduranceTestResults)
-                            {
-                                writer.WriteLine($"{result.Round},{(int)result.StatusCode},\"{result.ReasonPhrase}\"," +
-                                                $"{result.LoadTime.TotalMilliseconds},{result.WaitTime.TotalMilliseconds},{result.ResponseTime.TotalMilliseconds}," +
-                                                $"{result.CpuUsage},{result.RamUsage}," +
-                                                $"{result.RequestPerRound},{result.SuccessfulRequests},{result.FailedRequests}," +
-                                                $"{result.AverageLoadTime},{result.AverageWaitTime},{result.AverageResponseTime}," +
-                                                $"{result.Throughput},{result.ErrorRate},{result.RoundDuration}");
-                            }
-
-                            writer.WriteLine();
-
-                            double averageCpuUsage = currentRound > 0 ? totalCpuUsage / currentRound : 0;
-                            double averageRamUsage = currentRound > 0 ? totalRamUsage / currentRound : 0;
-                            double averageLoadTime = totalResponses > 0 ? totalLoadTime / totalResponses : 0;
-                            double averageWaitTime = totalResponses > 0 ? totalWaitTime / totalResponses : 0;
-                            double averageResponseTime = totalResponses > 0 ? totalResponseTime / totalResponses : 0;
-                            double averageThroughput = totalResponses > 0 ? totalThroughput / currentRound : 0;
-                            double averageErrorRate = totalRequestsProcessed > 0 ? (double)totalFailedRequests / totalRequestsProcessed * 100 : 0;
-                            double averageRoundDuration = currentRound > 0 ? enduranceTestResults.Average(r => r.RoundDuration) : 0;
-
-                            writer.WriteLine("SUMMARY");
-                            writer.WriteLine($"URL,{url}");
-                            writer.WriteLine($"Total Requests,{totalRequestsProcessed}");
-                            writer.WriteLine($"Successful Requests,{totalSuccessfulRequests}");
-                            writer.WriteLine($"Failed Requests,{totalFailedRequests}");
-                            writer.WriteLine($"Average CPU Usage,{averageCpuUsage}%");
-                            writer.WriteLine($"Average RAM Usage,{averageRamUsage} MB");
-                            writer.WriteLine($"Average Load Time,{averageLoadTime} ms");
-                            writer.WriteLine($"Average Wait Time,{averageWaitTime} ms");
-                            writer.WriteLine($"Average Response Time,{averageResponseTime} ms");
-                            writer.WriteLine($"Average Throughput,{averageThroughput} requests/second");
-                            writer.WriteLine($"Average Error Rate,{averageErrorRate}%");
-                            writer.WriteLine($"Average Round Duration,{averageRoundDuration} seconds");
-                        }
-
-                        MessageBox.Show("Successfully export to CSV!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Failed export to CSV: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+            if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
+            {
+                summary.AverageRoundDuration = enduranceTestResults.Average(result => result.RoundDuration);
             }
+
+            TestParameters parameters = new TestParameters
+            {
+                Url = testRunner.Url,
+                MinRequests = testRunner.MinRequests,
+                MaxRequests = testRunner.MaxRequests,
+                Mode = testRunner.TestMode,
+                TimeoutInSeconds = testRunner.TimeoutInSeconds,
+                DurationInSeconds = testRunner.DurationInSeconds,
+                SelectedTimePeriod = selectedTimePeriod
+            };
+
+            csvExportService.ExportToCsv(enduranceTestResults, summary, parameters, aiAnalysisResult);
         }
 
         private void ExportToJson(string url)
