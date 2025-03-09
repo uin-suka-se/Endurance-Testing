@@ -8,14 +8,12 @@ namespace Endurance_Testing.UI
 {
     public class MacStyleTitleBar : Form
     {
-        // Fields for custom title bar
         private Panel titleBar;
         private Label lblTitle;
         private Button btnClose;
         private Button btnMaximize;
         private Button btnMinimize;
 
-        // Konstanta untuk tampilan
         private readonly Color CLOSE_BUTTON_COLOR = Color.FromArgb(255, 95, 87);
         private readonly Color MINIMIZE_BUTTON_COLOR = Color.FromArgb(255, 189, 46);
         private readonly Color MAXIMIZE_BUTTON_COLOR = Color.FromArgb(39, 201, 63);
@@ -23,10 +21,8 @@ namespace Endurance_Testing.UI
         private readonly int BUTTON_SIZE = 12;
         private readonly int BUTTON_MARGIN = 8;
 
-        // Panel konten untuk meletakkan komponen-komponen
         public Panel ContentPanel { get; private set; }
 
-        // Import fungsi Windows API untuk mendukung pergerakan form
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
@@ -42,14 +38,12 @@ namespace Endurance_Testing.UI
 
         public MacStyleTitleBar()
         {
-            // Set form properties
             this.FormBorderStyle = FormBorderStyle.None;
             this.DoubleBuffered = true;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
-            this.Padding = new Padding(1); // Border kecil
+            this.Padding = new Padding(1);
 
-            // Initialize components
             InitializeTitleBar();
         }
 

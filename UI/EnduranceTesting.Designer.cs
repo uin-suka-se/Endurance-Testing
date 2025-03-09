@@ -67,7 +67,7 @@
             lblApiKey.Location = new System.Drawing.Point(427, 184);
             lblApiKey.Name = "lblApiKey";
             lblApiKey.Size = new System.Drawing.Size(182, 32);
-            lblApiKey.TabIndex = 19;
+            lblApiKey.TabIndex = 0;
             lblApiKey.Text = "Gemini API Key:";
             // 
             // textBoxApiKey
@@ -78,7 +78,7 @@
             textBoxApiKey.MaxLength = 999999999;
             textBoxApiKey.Name = "textBoxApiKey";
             textBoxApiKey.Size = new System.Drawing.Size(366, 37);
-            textBoxApiKey.TabIndex = 33;
+            textBoxApiKey.TabIndex = 6;
             textBoxApiKey.UseSystemPasswordChar = true;
             textBoxApiKey.TextChanged += textBoxApiKey_TextChanged;
             textBoxApiKey.KeyDown += textBoxApiKey_KeyDown;
@@ -93,8 +93,8 @@
             comboBoxMode.Items.AddRange(new object[] { "Stable", "Progressive", "Fluctuative" });
             comboBoxMode.Location = new System.Drawing.Point(1005, 134);
             comboBoxMode.Name = "comboBoxMode";
-            comboBoxMode.Size = new System.Drawing.Size(173, 38);
-            comboBoxMode.TabIndex = 31;
+            comboBoxMode.Size = new System.Drawing.Size(144, 38);
+            comboBoxMode.TabIndex = 4;
             comboBoxMode.SelectedIndexChanged += comboBoxMode_SelectedIndexChanged;
             // 
             // lblInputMode
@@ -104,7 +104,7 @@
             lblInputMode.Location = new System.Drawing.Point(1005, 88);
             lblInputMode.Name = "lblInputMode";
             lblInputMode.Size = new System.Drawing.Size(82, 32);
-            lblInputMode.TabIndex = 26;
+            lblInputMode.TabIndex = 0;
             lblInputMode.Text = "Mode:";
             // 
             // textBoxInputMaxRequest
@@ -115,7 +115,7 @@
             textBoxInputMaxRequest.MaxLength = 999999999;
             textBoxInputMaxRequest.Name = "textBoxInputMaxRequest";
             textBoxInputMaxRequest.Size = new System.Drawing.Size(200, 37);
-            textBoxInputMaxRequest.TabIndex = 30;
+            textBoxInputMaxRequest.TabIndex = 3;
             textBoxInputMaxRequest.TextChanged += textBoxInputMaxRequest_TextChanged;
             // 
             // textBoxTimeout
@@ -126,7 +126,7 @@
             textBoxTimeout.MaxLength = 999999999;
             textBoxTimeout.Name = "textBoxTimeout";
             textBoxTimeout.Size = new System.Drawing.Size(376, 37);
-            textBoxTimeout.TabIndex = 32;
+            textBoxTimeout.TabIndex = 5;
             textBoxTimeout.TextChanged += textBoxTimeout_TextChanged;
             // 
             // lblTimeout
@@ -136,7 +136,7 @@
             lblTimeout.Location = new System.Drawing.Point(27, 184);
             lblTimeout.Name = "lblTimeout";
             lblTimeout.Size = new System.Drawing.Size(364, 32);
-            lblTimeout.TabIndex = 27;
+            lblTimeout.TabIndex = 0;
             lblTimeout.Text = "Timeout Per-Round (In Seconds):";
             // 
             // btnExport
@@ -146,7 +146,7 @@
             btnExport.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnExport.Name = "btnExport";
             btnExport.Size = new System.Drawing.Size(110, 47);
-            btnExport.TabIndex = 42;
+            btnExport.TabIndex = 18;
             btnExport.Text = "Export";
             btnExport.UseVisualStyleBackColor = true;
             btnExport.Click += btnExport_Click;
@@ -158,7 +158,7 @@
             btnClear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnClear.Name = "btnClear";
             btnClear.Size = new System.Drawing.Size(110, 47);
-            btnClear.TabIndex = 41;
+            btnClear.TabIndex = 17;
             btnClear.Text = "Clear";
             btnClear.UseVisualStyleBackColor = true;
             btnClear.Click += btnClear_Click;
@@ -170,7 +170,7 @@
             btnInfo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnInfo.Name = "btnInfo";
             btnInfo.Size = new System.Drawing.Size(110, 47);
-            btnInfo.TabIndex = 40;
+            btnInfo.TabIndex = 16;
             btnInfo.Text = "Info";
             btnInfo.UseVisualStyleBackColor = true;
             btnInfo.Click += btnInfo_Click;
@@ -182,7 +182,7 @@
             btnHelp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnHelp.Name = "btnHelp";
             btnHelp.Size = new System.Drawing.Size(110, 47);
-            btnHelp.TabIndex = 39;
+            btnHelp.TabIndex = 15;
             btnHelp.Text = "Help";
             btnHelp.UseVisualStyleBackColor = true;
             btnHelp.Click += btnHelp_Click;
@@ -198,7 +198,7 @@
             textBoxOutput.ReadOnly = true;
             textBoxOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             textBoxOutput.Size = new System.Drawing.Size(1017, 307);
-            textBoxOutput.TabIndex = 38;
+            textBoxOutput.TabIndex = 14;
             // 
             // lblOutput
             // 
@@ -207,7 +207,7 @@
             lblOutput.Location = new System.Drawing.Point(22, 384);
             lblOutput.Name = "lblOutput";
             lblOutput.Size = new System.Drawing.Size(95, 32);
-            lblOutput.TabIndex = 23;
+            lblOutput.TabIndex = 0;
             lblOutput.Text = "Output:";
             // 
             // lblTimeLeft
@@ -217,7 +217,7 @@
             lblTimeLeft.Location = new System.Drawing.Point(518, 340);
             lblTimeLeft.Name = "lblTimeLeft";
             lblTimeLeft.Size = new System.Drawing.Size(191, 45);
-            lblTimeLeft.TabIndex = 22;
+            lblTimeLeft.TabIndex = 0;
             lblTimeLeft.Text = "00:00:00:00";
             // 
             // btnStop
@@ -227,7 +227,7 @@
             btnStop.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnStop.Name = "btnStop";
             btnStop.Size = new System.Drawing.Size(110, 47);
-            btnStop.TabIndex = 37;
+            btnStop.TabIndex = 13;
             btnStop.Text = "Stop";
             btnStop.UseVisualStyleBackColor = true;
             btnStop.Click += btnStop_Click;
@@ -239,7 +239,7 @@
             btnStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnStart.Name = "btnStart";
             btnStart.Size = new System.Drawing.Size(110, 47);
-            btnStart.TabIndex = 36;
+            btnStart.TabIndex = 12;
             btnStart.Text = "Start";
             btnStart.UseVisualStyleBackColor = true;
             btnStart.Click += btnStart_Click;
@@ -252,7 +252,7 @@
             textBoxTime.MaxLength = 999999999;
             textBoxTime.Name = "textBoxTime";
             textBoxTime.Size = new System.Drawing.Size(179, 37);
-            textBoxTime.TabIndex = 34;
+            textBoxTime.TabIndex = 7;
             textBoxTime.TextChanged += textBoxTime_TextChanged;
             // 
             // lblTime
@@ -262,7 +262,7 @@
             lblTime.Location = new System.Drawing.Point(815, 184);
             lblTime.Name = "lblTime";
             lblTime.Size = new System.Drawing.Size(173, 32);
-            lblTime.TabIndex = 21;
+            lblTime.TabIndex = 0;
             lblTime.Text = "Time in Period:";
             // 
             // textBoxInputRequest
@@ -273,7 +273,7 @@
             textBoxInputRequest.MaxLength = 999999999;
             textBoxInputRequest.Name = "textBoxInputRequest";
             textBoxInputRequest.Size = new System.Drawing.Size(200, 37);
-            textBoxInputRequest.TabIndex = 29;
+            textBoxInputRequest.TabIndex = 2;
             textBoxInputRequest.TextChanged += textBoxInputRequest_TextChanged;
             // 
             // lblInputNumberOfRequest
@@ -283,7 +283,7 @@
             lblInputNumberOfRequest.Location = new System.Drawing.Point(539, 88);
             lblInputNumberOfRequest.Name = "lblInputNumberOfRequest";
             lblInputNumberOfRequest.Size = new System.Drawing.Size(390, 32);
-            lblInputNumberOfRequest.TabIndex = 20;
+            lblInputNumberOfRequest.TabIndex = 0;
             lblInputNumberOfRequest.Text = "Number of Request (Min and Max):";
             // 
             // panelPeriod
@@ -295,7 +295,7 @@
             panelPeriod.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             panelPeriod.Name = "panelPeriod";
             panelPeriod.Size = new System.Drawing.Size(174, 83);
-            panelPeriod.TabIndex = 35;
+            panelPeriod.TabIndex = 8;
             // 
             // radioButtonHour
             // 
@@ -344,7 +344,7 @@
             textBoxInputUrl.MaxLength = 999999999;
             textBoxInputUrl.Name = "textBoxInputUrl";
             textBoxInputUrl.Size = new System.Drawing.Size(483, 37);
-            textBoxInputUrl.TabIndex = 28;
+            textBoxInputUrl.TabIndex = 1;
             textBoxInputUrl.TextChanged += textBoxInputUrl_TextChanged;
             // 
             // lblInputUrl
@@ -354,7 +354,7 @@
             lblInputUrl.Location = new System.Drawing.Point(27, 88);
             lblInputUrl.Name = "lblInputUrl";
             lblInputUrl.Size = new System.Drawing.Size(60, 32);
-            lblInputUrl.TabIndex = 24;
+            lblInputUrl.TabIndex = 0;
             lblInputUrl.Text = "URL:";
             // 
             // lblEnduranceTesting
@@ -364,7 +364,7 @@
             lblEnduranceTesting.Location = new System.Drawing.Point(427, 34);
             lblEnduranceTesting.Name = "lblEnduranceTesting";
             lblEnduranceTesting.Size = new System.Drawing.Size(366, 54);
-            lblEnduranceTesting.TabIndex = 25;
+            lblEnduranceTesting.TabIndex = 0;
             lblEnduranceTesting.Text = "Endurance Testing";
             // 
             // EnduranceTesting
