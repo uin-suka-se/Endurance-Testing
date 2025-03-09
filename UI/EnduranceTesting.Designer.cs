@@ -197,7 +197,7 @@
             textBoxOutput.Name = "textBoxOutput";
             textBoxOutput.ReadOnly = true;
             textBoxOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            textBoxOutput.Size = new System.Drawing.Size(1029, 307);
+            textBoxOutput.Size = new System.Drawing.Size(1017, 307);
             textBoxOutput.TabIndex = 38;
             // 
             // lblOutput

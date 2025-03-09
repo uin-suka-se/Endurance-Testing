@@ -109,7 +109,7 @@
             // timerSplashScreen
             // 
             timerSplashScreen.Enabled = true;
-            timerSplashScreen.Interval = 33;
+            timerSplashScreen.Interval = 30;
             timerSplashScreen.Tick += timerSplashScreen_Tick;
             // 
             // SplashScreen

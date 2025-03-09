@@ -141,6 +141,13 @@ namespace Endurance_Testing
                 borderWidth: 2,
                 shadowDepth: 5);
 
+            textBoxOutput.MakeRoundCorner(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                cornerRadius: 10,
+                shadowDepth: 5);
+
             textBoxInputUrl.Text = "https://example.com";
             btnStop.Enabled = false;
             btnExport.Enabled = false;
