@@ -123,6 +123,12 @@ namespace Endurance_Testing
                 borderWidth: 2,
                 shadowDepth: 5);
 
+            comboBoxMode.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
             textBoxTimeout.MakeRounded(
                 normalBorderColor: normalBorderColor,
                 focusedBorderColor: focusedBorderColor,
