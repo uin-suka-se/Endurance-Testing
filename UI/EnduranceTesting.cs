@@ -11,6 +11,8 @@ using System.Runtime.InteropServices;
 using Endurance_Testing.Core;
 using Endurance_Testing.Services;
 using Endurance_Testing.Models;
+using System.Drawing.Drawing2D;
+using Endurance_Testing.UI;
 
 namespace Endurance_Testing
 {
@@ -57,13 +59,17 @@ namespace Endurance_Testing
         public EnduranceTesting()
         {
             InitializeComponent();
+
             Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
+
             this.Load += EnduranceTesting_Load;
             this.FormClosing += EnduranceTesting_FormClosing;
+
             testRunner = new TestRunner();
             testRunner.ResultReceived += TestRunner_ResultReceived;
             testRunner.RoundCompleted += TestRunner_RoundCompleted;
             testRunner.TestCompleted += TestRunner_TestCompleted;
+
             textBoxInputRequest.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
             textBoxInputMaxRequest.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
             textBoxTimeout.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
@@ -96,6 +102,45 @@ namespace Endurance_Testing
 
         private void EnduranceTesting_Load(object sender, EventArgs e)
         {
+            Color normalBorderColor = Color.FromArgb(42, 40, 60);
+            Color focusedBorderColor = Color.FromArgb(85, 213, 219);
+
+            textBoxInputUrl.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
+            textBoxInputRequest.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
+            textBoxInputMaxRequest.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
+            textBoxTimeout.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
+            textBoxApiKey.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
+            textBoxTime.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
             textBoxInputUrl.Text = "https://example.com";
             btnStop.Enabled = false;
             btnExport.Enabled = false;
