@@ -122,13 +122,17 @@ namespace Endurance_Testing.Core
                 var results = await Task.WhenAll(tasks);
                 _testResults.AddRange(results);
 
-                double roundCpuUsage = await Services.SystemMonitor.GetCpuUsage();
-                double roundRamUsage = await Services.SystemMonitor.GetRamUsage();
+                double roundCpuUsage = await SystemMonitor.GetCpuUsage();
+                double roundRamUsage = await SystemMonitor.GetRamUsage();
 
-                if (roundCpuUsage < 0.1)
+                int maxRetries = 20;
+                int retryCount = 0;
+
+                while (roundCpuUsage == 0.0 && retryCount < maxRetries)
                 {
                     Thread.Sleep(100);
                     roundCpuUsage = await SystemMonitor.GetCpuUsage();
+                    retryCount++;
                 }
 
                 foreach (var result in results)
