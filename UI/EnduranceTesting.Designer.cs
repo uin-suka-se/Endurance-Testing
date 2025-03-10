@@ -141,7 +141,7 @@
             // 
             // btnExport
             // 
-            btnExport.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnExport.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             btnExport.Location = new System.Drawing.Point(1057, 691);
             btnExport.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnExport.Name = "btnExport";
@@ -153,7 +153,7 @@
             // 
             // btnClear
             // 
-            btnClear.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnClear.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             btnClear.Location = new System.Drawing.Point(1057, 607);
             btnClear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnClear.Name = "btnClear";
@@ -165,7 +165,7 @@
             // 
             // btnInfo
             // 
-            btnInfo.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnInfo.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             btnInfo.Location = new System.Drawing.Point(1057, 519);
             btnInfo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnInfo.Name = "btnInfo";
@@ -177,7 +177,7 @@
             // 
             // btnHelp
             // 
-            btnHelp.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnHelp.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             btnHelp.Location = new System.Drawing.Point(1057, 432);
             btnHelp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnHelp.Name = "btnHelp";
@@ -222,7 +222,7 @@
             // 
             // btnStop
             // 
-            btnStop.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnStop.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             btnStop.Location = new System.Drawing.Point(683, 289);
             btnStop.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnStop.Name = "btnStop";
@@ -234,7 +234,7 @@
             // 
             // btnStart
             // 
-            btnStart.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            btnStart.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             btnStart.Location = new System.Drawing.Point(427, 289);
             btnStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnStart.Name = "btnStart";
