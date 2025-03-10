@@ -9,9 +9,9 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 
 using Endurance_Testing.Core;
+using Endurance_Testing.Helpers;
 using Endurance_Testing.Services;
 using Endurance_Testing.Models;
-using System.Drawing.Drawing2D;
 using Endurance_Testing.UI;
 
 namespace Endurance_Testing
@@ -747,46 +747,8 @@ namespace Endurance_Testing
 
         private void ShowHelpMessageBox()
         {
-            string helpMessage = GenerateHelpMessage();
+            string helpMessage = HelpManager.GenerateHelpMessage();
             MessageBox.Show(helpMessage, "User Guide", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private string GenerateHelpMessage()
-        {
-            StringBuilder helpMessage = new StringBuilder();
-
-            helpMessage.AppendLine("User Guide for Endurance Testing Application:");
-            helpMessage.AppendLine();
-            helpMessage.AppendLine("1. Enter the target URL you wish to test in the text field labeled 'URL:'.");
-            helpMessage.AppendLine("2. Enter the minimum number of requests to dispatch per round in the text field labeled 'Number of Request (Min and Max)' (maximum 8 digits).");
-            helpMessage.AppendLine("   - For 'Progressive' or 'Fluctuative' modes, also enter the maximum number of requests to dispatch per round in the same field.");
-            helpMessage.AppendLine("3. Enter the timeout threshold in seconds for each test round in the text field labeled 'Timeout Per-Round (In Seconds):'.");
-            helpMessage.AppendLine("4. Select the desired test mode from the dropdown menu labeled 'Mode:' (Stable, Progressive, or Fluctuative).");
-            helpMessage.AppendLine("5. Enter the test duration in the 'Time in Period:' field and select the unit of time (seconds, minutes, or hours) using the radio buttons to the right of this field.");
-            helpMessage.AppendLine("   - Stable: Dispatches a consistent number of requests in each test round.");
-            helpMessage.AppendLine("   - Progressive: Gradually increases the number of requests per round over the duration of the test.");
-            helpMessage.AppendLine("   - Fluctuative: Dispatches a random number of requests within the defined minimum and maximum range for each round.");
-            helpMessage.AppendLine("6. Click the 'Start' button to initiate the endurance test.");
-            helpMessage.AppendLine("7. Monitor the test results in the 'Output:' text area below the input fields and the remaining time above the output area.");
-            helpMessage.AppendLine("8. Upon test completion, the 'Output:' area will display:");
-            helpMessage.AppendLine("    - Total Requests: The total number of requests sent during the test.");
-            helpMessage.AppendLine("    - Successful Requests: The number of requests that received a successful HTTP 200 (OK) response.");
-            helpMessage.AppendLine("    - Failed Requests: The number of requests that did not receive an HTTP 200 (OK) response or timed out.");
-            helpMessage.AppendLine("    - Average Computer's CPU Usage: The average percentage of computer's CPU utilization during the test.");
-            helpMessage.AppendLine("    - Average Computer's RAM Usage: The average computer's RAM utilization in megabytes during the test.");
-            helpMessage.AppendLine("    - Average Response Time: The average response time for all requests (including successful and failed).");
-            helpMessage.AppendLine("    - Average Throughput: The average number of requests processed per second.");
-            helpMessage.AppendLine("    - Average Error Rate: The percentage of requests that failed or timed out.");
-            helpMessage.AppendLine("    - Average Round Duration: The average time in seconds it takes to complete one round of requests.");
-            helpMessage.AppendLine("9. Click the 'Clear' button to reset the input fields and the output area.");
-            helpMessage.AppendLine("10. Optionally, click the 'Export' button to export the test results to an Excel file.");
-            helpMessage.AppendLine();
-            helpMessage.AppendLine("Note:");
-            helpMessage.AppendLine("   - Ensure that your internet connection is stable and reliable for conducting this test.");
-            helpMessage.AppendLine("   - Be aware that device performance may be reduced during the testing process and confirm that your device specifications are adequate.");
-            helpMessage.AppendLine("   - The actual test duration may vary slightly from the input time due to the processing time for handling requests and responses.");
-
-            return helpMessage.ToString();
         }
 
         private void btnInfo_Click(object sender, EventArgs e)
@@ -796,67 +758,8 @@ namespace Endurance_Testing
 
         private void ShowInfoMessageBox()
         {
-            string infoMessage = GenerateInfoMessage();
+            string infoMessage = Helpers.InfoManager.GenerateInfoMessage();
             MessageBox.Show(infoMessage, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        private string GenerateInfoMessage()
-        {
-            StringBuilder infoMessage = new StringBuilder();
-
-            infoMessage.AppendLine("Information Regarding Endurance Testing:");
-            infoMessage.AppendLine();
-            infoMessage.AppendLine("\"Endurance testing, also known as soak testing, involves subjecting an application to a sustained load for an extended period. This methodology helps uncover memory leaks, resource depletion, and other performance degradation issues that might only surface after prolonged usage.\"[1]");
-            infoMessage.AppendLine("[1] S. Pargaonkar, \"A Comprehensive Review of Performance Testing Methodologies and Best Practices: Software Quality Engineering,\" International Journal of Science and Research (IJSR), vol. 12, no. 8, pp. 2008-2014, August 2023.");
-            infoMessage.AppendLine();
-            infoMessage.AppendLine("Testing Metrics:");
-            infoMessage.AppendLine();
-            infoMessage.AppendLine("1. Computer's CPU Usage:");
-            infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        The computer's CPU usage metric represents the percentage of the computer's processing power consumed during the endurance test.");
-            infoMessage.AppendLine("    b. Formula:");
-            infoMessage.AppendLine("        Computer's CPU Usage = Current Computer's CPU Utilization Percentage");
-            infoMessage.AppendLine("2. Computer's RAM Usage:");
-            infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        The computer's RAM usage metric indicates the amount of computer memory utilized during the endurance test.");
-            infoMessage.AppendLine("    b. Formula:");
-            infoMessage.AppendLine("        Computer's RAM Usage = Current Computer's RAM Utilization in Megabytes");
-            infoMessage.AppendLine("3. Total Requests:");
-            infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        Total Requests is the aggregate count of requests dispatched during the endurance test.");
-            infoMessage.AppendLine("    b. Formula:");
-            infoMessage.AppendLine("        Total Requests = Sum of Requests Dispatched");
-            infoMessage.AppendLine("4. Successful Requests:");
-            infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        Successful Requests is the count of requests that receive an HTTP 200 (OK) response.");
-            infoMessage.AppendLine("    b. Formula:");
-            infoMessage.AppendLine("        Successful Requests = Count of Requests with HTTP Status Code 200 (OK)");
-            infoMessage.AppendLine("5. Failed Requests:");
-            infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        Failed Requests is the count of requests that fail, calculated as the difference between Total Requests and Successful Requests.");
-            infoMessage.AppendLine("    b. Formula:");
-            infoMessage.AppendLine("        Failed Requests = Total Requests − Successful Requests");
-            infoMessage.AppendLine("6. Average Response Time:");
-            infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        Average Response Time represents the mean response time per request during the endurance test (including successful and failed requests).");
-            infoMessage.AppendLine("    b. Formula:");
-            infoMessage.AppendLine("        Average Response Time = Total Response Time / Total Requests");
-            infoMessage.AppendLine("7. Throughput:");
-            infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        Throughput measures the number of successful requests processed per second during the endurance test.");
-            infoMessage.AppendLine("    b. Formula:");
-            infoMessage.AppendLine("        Throughput = Successful Requests / Total Test Duration (in seconds)");
-            infoMessage.AppendLine("8. Error Rate:");
-            infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        Error Rate indicates the percentage of requests that failed during the endurance test.");
-            infoMessage.AppendLine("    b. Formula:");
-            infoMessage.AppendLine("        Error Rate = (Failed Requests / Total Requests) * 100");
-            infoMessage.AppendLine("9. Round Duration:");
-            infoMessage.AppendLine("   a. Description:");
-            infoMessage.AppendLine("        Round duration indicates the actual duration for each testing round, capped by the timeout value.");
-            infoMessage.AppendLine("   b. Formula:");
-            infoMessage.AppendLine("        Round Duration = Round Time, but if it exceeds Timeout Duration then Round Time = Timeout Duration");
-
-            return infoMessage.ToString();
         }
 
         private void btnClear_Click(object sender, EventArgs e)
