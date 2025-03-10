@@ -154,6 +154,48 @@ namespace Endurance_Testing
                 cornerRadius: 10,
                 shadowDepth: 5);
 
+            btnStart.MakeRounded(
+                Color.FromArgb(40, 167, 69),
+                Color.White,
+                Color.FromArgb(28, 117, 48),
+                Color.FromArgb(230, 230, 230),
+                10);
+
+            btnStop.MakeRounded(
+                Color.FromArgb(220, 53, 69),
+                Color.White,
+                Color.FromArgb(154, 37, 48),
+                Color.FromArgb(230, 230, 230),
+                10);
+
+            btnHelp.MakeRounded(
+                Color.FromArgb(23, 162, 184),
+                Color.White,
+                Color.FromArgb(16, 113, 129),
+                Color.FromArgb(230, 230, 230),
+                10);
+
+            btnInfo.MakeRounded(
+                Color.FromArgb(0, 123, 255),
+                Color.White,
+                Color.FromArgb(0, 86, 179),
+                Color.FromArgb(230, 230, 230),
+                10);
+
+            btnClear.MakeRounded(
+                Color.FromArgb(108, 117, 125),
+                Color.White,
+                Color.FromArgb(76, 82, 88),
+                Color.FromArgb(230, 230, 230),
+                10);
+
+            btnExport.MakeRounded(
+                Color.FromArgb(255, 153, 0),
+                Color.White,
+                Color.FromArgb(179, 107, 0),
+                Color.FromArgb(230, 230, 230),
+                10);
+
             textBoxInputUrl.Text = "https://example.com";
             btnStop.Enabled = false;
             btnExport.Enabled = false;
