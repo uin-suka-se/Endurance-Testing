@@ -6,10 +6,12 @@ namespace Endurance_Testing.Core
 {
     public static class HttpClientProvider
     {
-        private static readonly IServiceProvider _serviceProvider = new ServiceCollection()
-            .AddHttpClient()
-            .BuildServiceProvider();
+        private static readonly Lazy<IServiceProvider> _serviceProvider = new Lazy<IServiceProvider>(() =>
+            new ServiceCollection()
+                .AddHttpClient()
+                .BuildServiceProvider()
+        );
 
-        public static HttpClient Instance => _serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
+        public static HttpClient Instance => _serviceProvider.Value.GetRequiredService<IHttpClientFactory>().CreateClient();
     }
 }
