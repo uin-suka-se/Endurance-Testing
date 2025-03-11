@@ -26,7 +26,7 @@ namespace Endurance_Testing.UI
             int fullHeight = comboBox.Height;
 
             int horizontalPadding = 20;
-            int verticalPadding = 5;
+            int verticalPadding = 2;
 
             Panel containerPanel = new Panel
             {

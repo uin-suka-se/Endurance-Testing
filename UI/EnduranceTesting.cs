@@ -44,6 +44,7 @@ namespace Endurance_Testing
         private CsvExportService csvExportService;
         private JsonExportService jsonExportService;
         private HtmlExportService htmlExportService;
+        private DiscordWebhookService discordWebhookService;
 
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
 
@@ -81,6 +82,8 @@ namespace Endurance_Testing
             csvExportService = new CsvExportService();
             jsonExportService = new JsonExportService();
             htmlExportService = new HtmlExportService();
+
+            discordWebhookService = new DiscordWebhookService();
         }
 
         private void EnduranceTesting_FormClosing(object sender, FormClosingEventArgs e)
@@ -129,19 +132,25 @@ namespace Endurance_Testing
                 borderWidth: 2,
                 shadowDepth: 5);
 
-            textBoxTimeout.MakeRounded(
-                normalBorderColor: normalBorderColor,
-                focusedBorderColor: focusedBorderColor,
-                borderWidth: 2,
-                shadowDepth: 5);
-
             textBoxApiKey.MakeRounded(
                 normalBorderColor: normalBorderColor,
                 focusedBorderColor: focusedBorderColor,
                 borderWidth: 2,
                 shadowDepth: 5);
 
+            textBoxTimeout.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
             textBoxTime.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
+            textBoxDiscordWebhook.MakeRounded(
                 normalBorderColor: normalBorderColor,
                 focusedBorderColor: focusedBorderColor,
                 borderWidth: 2,
@@ -243,6 +252,7 @@ namespace Endurance_Testing
             if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
             {
                 await ShowSummary();
+                await SendToDiscordAutomatically();
             }
             else
             {
@@ -357,6 +367,33 @@ namespace Endurance_Testing
         }
 
         private void textBoxApiKey_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (e is HandledMouseEventArgs handledEventArgs)
+                {
+                    handledEventArgs.Handled = true;
+                }
+            }
+        }
+
+        private void textBoxDiscordWebhook_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxDiscordWebhook.Text.Length > 0 && !isRunning)
+            {
+                btnClear.Enabled = true;
+            }
+        }
+
+        private void textBoxDiscordWebhook_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.ControlKey)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBoxDiscordWebhook_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -783,6 +820,7 @@ namespace Endurance_Testing
             textBoxOutput.Clear();
             enduranceTestResults.Clear();
             textBoxApiKey.Clear();
+            textBoxDiscordWebhook.Clear();
             totalRequests = 0;
             totalRequestsProcessed = 0;
             durationInSeconds = 0;
@@ -808,6 +846,7 @@ namespace Endurance_Testing
             exportMenu.Items.Add("CSV (.csv)", null, (s, args) => ExportToCsv());
             exportMenu.Items.Add("JSON (.json)", null, (s, args) => ExportToJson());
             exportMenu.Items.Add("HTML Report (.html)", null, (s, args) => ExportToHtml());
+            exportMenu.Items.Add("Discord (Test Results Summary)", null, (s, args) => SendToDiscord());
 
             exportMenu.Show(btnExport, new Point(0, btnExport.Height));
         }
@@ -965,6 +1004,136 @@ namespace Endurance_Testing
             {
                 MessageBox.Show("There is no test result to export.", "Information",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private async Task SendToDiscordAutomatically()
+        {
+            string webhookUrl = textBoxDiscordWebhook.Text.Trim();
+
+            if (!string.IsNullOrEmpty(webhookUrl))
+            {
+                try
+                {
+                    TestSummary summary = new TestSummary
+                    {
+                        TotalRequestsProcessed = totalRequestsProcessed,
+                        TotalSuccessfulRequests = totalSuccessfulRequests,
+                        TotalFailedRequests = totalFailedRequests,
+                        CurrentRound = currentRound,
+                        TotalCpuUsage = totalCpuUsage,
+                        TotalRamUsage = totalRamUsage,
+                        TotalLoadTime = totalLoadTime,
+                        TotalWaitTime = totalWaitTime,
+                        TotalResponseTime = totalResponseTime,
+                        TotalResponses = totalResponses,
+                        TotalThroughput = totalThroughput
+                    };
+
+                    if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
+                    {
+                        summary.AverageRoundDuration = enduranceTestResults.Average(result => result.RoundDuration);
+                    }
+
+                    TestParameters parameters = new TestParameters
+                    {
+                        Url = testRunner.Url,
+                        MinRequests = testRunner.MinRequests,
+                        MaxRequests = testRunner.MaxRequests,
+                        Mode = testRunner.TestMode,
+                        TimeoutInSeconds = testRunner.TimeoutInSeconds,
+                        DurationInSeconds = testRunner.DurationInSeconds,
+                        SelectedTimePeriod = selectedTimePeriod
+                    };
+
+                    bool success = await discordWebhookService.SendToDiscord(webhookUrl,
+                        enduranceTestResults, summary, parameters, aiAnalysisResult);
+
+                    if (success)
+                    {
+                        textBoxOutput.AppendText("\r\n[INFO] Test summary successfully sent to Discord!");
+                    }
+                    else
+                    {
+                        textBoxOutput.AppendText("\r\n[ERROR] Failed to send test summary to Discord. Check your webhook URL and internet connection.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    textBoxOutput.AppendText($"\r\n[ERROR] Error sending to Discord: {ex.Message}");
+                }
+            }
+        }
+
+        private async void SendToDiscord()
+        {
+            string webhookUrl = textBoxDiscordWebhook.Text.Trim();
+
+            if (string.IsNullOrEmpty(webhookUrl))
+            {
+                MessageBox.Show("Please enter a Discord webhook URL",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (enduranceTestResults == null || enduranceTestResults.Count == 0)
+            {
+                MessageBox.Show("No test summary available to send",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                TestSummary summary = new TestSummary
+                {
+                    TotalRequestsProcessed = totalRequestsProcessed,
+                    TotalSuccessfulRequests = totalSuccessfulRequests,
+                    TotalFailedRequests = totalFailedRequests,
+                    CurrentRound = currentRound,
+                    TotalCpuUsage = totalCpuUsage,
+                    TotalRamUsage = totalRamUsage,
+                    TotalLoadTime = totalLoadTime,
+                    TotalWaitTime = totalWaitTime,
+                    TotalResponseTime = totalResponseTime,
+                    TotalResponses = totalResponses,
+                    TotalThroughput = totalThroughput
+                };
+
+                if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
+                {
+                    summary.AverageRoundDuration = enduranceTestResults.Average(result => result.RoundDuration);
+                }
+
+                TestParameters parameters = new TestParameters
+                {
+                    Url = testRunner.Url,
+                    MinRequests = testRunner.MinRequests,
+                    MaxRequests = testRunner.MaxRequests,
+                    Mode = testRunner.TestMode,
+                    TimeoutInSeconds = testRunner.TimeoutInSeconds,
+                    DurationInSeconds = testRunner.DurationInSeconds,
+                    SelectedTimePeriod = selectedTimePeriod
+                };
+
+                bool success = await discordWebhookService.SendToDiscord(webhookUrl,
+                    enduranceTestResults, summary, parameters, aiAnalysisResult);
+
+                if (success)
+                {
+                    MessageBox.Show("Test summary successfully sent to Discord!",
+                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to send test summary to Discord. Check your webhook URL and internet connection.",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error sending to Discord: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
