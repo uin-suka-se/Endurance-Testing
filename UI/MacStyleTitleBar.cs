@@ -28,6 +28,15 @@ namespace Endurance_Testing.UI
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MacStyleTitleBar));
+            SuspendLayout();
+            // 
+            // MacStyleTitleBar
+            // 
+            ClientSize = new Size(284, 261);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Name = "MacStyleTitleBar";
+            ResumeLayout(false);
 
         }
 

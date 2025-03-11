@@ -30,8 +30,8 @@ namespace Endurance_Testing.Services
                                       $"Total Requests: {totalRequests}\n" +
                                       $"Successful Requests: {totalSuccessful}\n" +
                                       $"Failed Requests: {totalFailed}\n" +
-                                      $"Average CPU Usage: {averageCpuUsage}%\n" +
-                                      $"Average RAM Usage: {averageRamUsage} MB\n" +
+                                      $"Average My Computer's CPU Usage (It's not server's CPU but my local computer to run this test): {averageCpuUsage}%\n" +
+                                      $"Average My Computer's RAM Usage (It's not server's RAM but my local computer to run this test): {averageRamUsage} MB\n" +
                                       $"Average Load Time: {averageLoadTime} ms\n" +
                                       $"Average Wait Time: {averageWaitTime} ms\n" +
                                       $"Average Response Time: {averageResponseTime} ms\n" +
