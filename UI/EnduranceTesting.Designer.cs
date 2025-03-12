@@ -56,7 +56,7 @@
             lblInputUrl = new System.Windows.Forms.Label();
             lblEnduranceTesting = new System.Windows.Forms.Label();
             textBoxDiscordWebhook = new System.Windows.Forms.TextBox();
-            label1 = new System.Windows.Forms.Label();
+            lblDiscordWebhook = new System.Windows.Forms.Label();
             comboBoxMode = new System.Windows.Forms.ComboBox();
             lblInputMode = new System.Windows.Forms.Label();
             panelPeriod.SuspendLayout();
@@ -360,15 +360,15 @@
             textBoxDiscordWebhook.KeyPress += textBoxDiscordWebhook_KeyPress;
             textBoxDiscordWebhook.MouseDown += textBoxDiscordWebhook_MouseDown;
             // 
-            // label1
+            // lblDiscordWebhook
             // 
-            label1.AutoSize = true;
-            label1.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            label1.Location = new System.Drawing.Point(921, 184);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(256, 32);
-            label1.TabIndex = 0;
-            label1.Text = "Discord Webhook URL:";
+            lblDiscordWebhook.AutoSize = true;
+            lblDiscordWebhook.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            lblDiscordWebhook.Location = new System.Drawing.Point(921, 184);
+            lblDiscordWebhook.Name = "lblDiscordWebhook";
+            lblDiscordWebhook.Size = new System.Drawing.Size(256, 32);
+            lblDiscordWebhook.TabIndex = 0;
+            lblDiscordWebhook.Text = "Discord Webhook URL:";
             // 
             // comboBoxMode
             // 
@@ -398,7 +398,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1200, 773);
             ControlBox = false;
-            Controls.Add(label1);
+            Controls.Add(lblDiscordWebhook);
             Controls.Add(textBoxDiscordWebhook);
             Controls.Add(lblApiKey);
             Controls.Add(textBoxApiKey);
@@ -457,7 +457,7 @@
             Controls.SetChildIndex(textBoxApiKey, 0);
             Controls.SetChildIndex(lblApiKey, 0);
             Controls.SetChildIndex(textBoxDiscordWebhook, 0);
-            Controls.SetChildIndex(label1, 0);
+            Controls.SetChildIndex(lblDiscordWebhook, 0);
             panelPeriod.ResumeLayout(false);
             panelPeriod.PerformLayout();
             ResumeLayout(false);
@@ -492,7 +492,7 @@
         private System.Windows.Forms.Label lblInputUrl;
         private System.Windows.Forms.Label lblEnduranceTesting;
         private System.Windows.Forms.TextBox textBoxDiscordWebhook;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblDiscordWebhook;
         private System.Windows.Forms.ComboBox comboBoxMode;
         private System.Windows.Forms.Label lblInputMode;
     }

@@ -846,7 +846,7 @@ namespace Endurance_Testing
             exportMenu.Items.Add("CSV (.csv)", null, (s, args) => ExportToCsv());
             exportMenu.Items.Add("JSON (.json)", null, (s, args) => ExportToJson());
             exportMenu.Items.Add("HTML Report (.html)", null, (s, args) => ExportToHtml());
-            exportMenu.Items.Add("Discord (Test Results Summary)", null, (s, args) => SendToDiscord());
+            exportMenu.Items.Add("Discord (Test Summary)", null, (s, args) => SendToDiscord());
 
             exportMenu.Show(btnExport, new Point(0, btnExport.Height));
         }

@@ -34,6 +34,7 @@ namespace Endurance_Testing.UI
             // MacStyleTitleBar
             // 
             ClientSize = new Size(284, 261);
+            Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Pixel);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MacStyleTitleBar";
             ResumeLayout(false);
