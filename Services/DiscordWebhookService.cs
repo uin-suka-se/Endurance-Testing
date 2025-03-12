@@ -65,11 +65,11 @@ namespace Endurance_Testing.Services
                     new { name = "📈 Total Requests", value = summary.TotalRequestsProcessed.ToString(), inline = true },
                     new { name = "✅ Successful Requests", value = summary.TotalSuccessfulRequests.ToString(), inline = true },
                     new { name = "❌ Failed Requests", value = summary.TotalFailedRequests.ToString(), inline = true },
-                    new { name = "🔄 Error Rate", value = $"{summary.AverageErrorRate:F2}%", inline = true },
+                    new { name = "🔄 Error Rate", value = $"{summary.AverageErrorRate}%", inline = true },
                     
                     // Performance Metrics
-                    new { name = "⚡ Avg. Throughput", value = $"{summary.AverageThroughput:F2} req/sec", inline = true },
-                    new { name = "⏱️ Avg. Round Duration", value = $"{summary.AverageRoundDuration:F2} sec", inline = true },
+                    new { name = "⚡ Avg. Throughput", value = $"{summary.AverageThroughput} req/sec", inline = true },
+                    new { name = "⏱️ Avg. Round Duration", value = $"{summary.AverageRoundDuration} sec", inline = true },
                     
                     // Time Metrics
                     new { name = "⏳ Timing Metrics", value = GetTimingMetricsText(summary), inline = false },
@@ -80,7 +80,7 @@ namespace Endurance_Testing.Services
                 timestamp = DateTime.UtcNow.ToString("o"),
                 footer = new
                 {
-                    text = "Endurance Testing App • " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                    text = "Endurance Testing Tool by Rahma Bintang Pratama • " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
                 }
             };
 
@@ -111,16 +111,18 @@ namespace Endurance_Testing.Services
             sb.AppendLine($"**Mode**: {parameters.Mode}");
             sb.AppendLine($"**URL**: {parameters.Url}");
 
-            if (parameters.Mode == "Request Mode")
+            if (parameters.Mode != "Stable")
             {
-                sb.AppendLine($"**Min Requests**: {parameters.MinRequests}");
-                sb.AppendLine($"**Max Requests**: {parameters.MaxRequests}");
+                sb.AppendLine($"**Min Round Requests**: {parameters.MinRequests}");
+                sb.AppendLine($"**Max Round Requests**: {parameters.MaxRequests}");
             }
             else
             {
-                sb.AppendLine($"**Duration**: {parameters.DurationInSeconds} seconds");
-                sb.AppendLine($"**Timeout**: {parameters.TimeoutInSeconds} seconds");
+                sb.AppendLine($"**Round Requests**: {parameters.MinRequests}");
             }
+
+            sb.AppendLine($"**Duration**: {parameters.DurationInSeconds} seconds");
+            sb.AppendLine($"**Timeout**: {parameters.TimeoutInSeconds} seconds");
 
             sb.AppendLine($"**Time Period**: {parameters.SelectedTimePeriod}");
             return sb.ToString();
@@ -129,9 +131,9 @@ namespace Endurance_Testing.Services
         private string GetTimingMetricsText(TestSummary summary)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"**Avg. Response Time**: {summary.AverageResponseTime:F2} ms");
-            sb.AppendLine($"**Avg. Wait Time**: {summary.AverageWaitTime:F2} ms");
-            sb.AppendLine($"**Avg. Load Time**: {summary.AverageLoadTime:F2} ms");
+            sb.AppendLine($"**Avg. Response Time**: {summary.AverageResponseTime} ms");
+            sb.AppendLine($"**Avg. Wait Time**: {summary.AverageWaitTime} ms");
+            sb.AppendLine($"**Avg. Load Time**: {summary.AverageLoadTime} ms");
             sb.AppendLine($"**Total Rounds**: {summary.CurrentRound}");
             return sb.ToString();
         }
@@ -139,8 +141,8 @@ namespace Endurance_Testing.Services
         private string GetResourceUsageText(TestSummary summary)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"**CPU Usage**: {summary.AverageCpuUsage:F2}%");
-            sb.AppendLine($"**RAM Usage**: {summary.AverageRamUsage:F2} MB");
+            sb.AppendLine($"**Avg. Computer's CPU Usage**: {summary.AverageCpuUsage}%");
+            sb.AppendLine($"**Avg. Computer's RAM Usage**: {summary.AverageRamUsage} MB");
             return sb.ToString();
         }
 

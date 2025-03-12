@@ -286,19 +286,35 @@ namespace Endurance_Testing.Services
             html.AppendLine("                        <th>Round Duration (s)</th>");
             html.AppendLine("                    </tr>");
 
-            foreach (var result in testResults)
+            var roundGroups = testResults
+                .GroupBy(r => r.Round)
+                .Select(g => new
+                {
+                    Round = g.Key,
+                    RequestPerRound = g.First().RequestPerRound,
+                    SuccessfulRequests = g.Sum(r => r.SuccessfulRequests),
+                    FailedRequests = g.Sum(r => r.FailedRequests),
+                    AverageResponseTime = g.Average(r => r.AverageResponseTime),
+                    Throughput = g.Average(r => r.Throughput),
+                    ErrorRate = g.Sum(r => r.FailedRequests) * 100.0 / g.First().RequestPerRound,
+                    CpuUsage = g.Average(r => r.CpuUsage),
+                    RamUsage = g.Average(r => r.RamUsage),
+                    RoundDuration = g.Max(r => r.RoundDuration)
+                });
+
+            foreach (var roundData in roundGroups)
             {
                 html.AppendLine("                    <tr>");
-                html.AppendLine($"                        <td>{result.Round}</td>");
-                html.AppendLine($"                        <td>{result.RequestPerRound}</td>");
-                html.AppendLine($"                        <td>{result.SuccessfulRequests}</td>");
-                html.AppendLine($"                        <td>{result.FailedRequests}</td>");
-                html.AppendLine($"                        <td>{result.AverageResponseTime:0.00}</td>");
-                html.AppendLine($"                        <td>{result.Throughput:0.00}</td>");
-                html.AppendLine($"                        <td>{result.ErrorRate:0.00}</td>");
-                html.AppendLine($"                        <td>{result.CpuUsage:0.00}</td>");
-                html.AppendLine($"                        <td>{result.RamUsage:0.00}</td>");
-                html.AppendLine($"                        <td>{result.RoundDuration:0.00}</td>");
+                html.AppendLine($"                        <td>{roundData.Round}</td>");
+                html.AppendLine($"                        <td>{roundData.RequestPerRound}</td>");
+                html.AppendLine($"                        <td>{roundData.SuccessfulRequests}</td>");
+                html.AppendLine($"                        <td>{roundData.FailedRequests}</td>");
+                html.AppendLine($"                        <td>{roundData.AverageResponseTime:0.00}</td>");
+                html.AppendLine($"                        <td>{roundData.Throughput:0.00}</td>");
+                html.AppendLine($"                        <td>{roundData.ErrorRate:0.00}</td>");
+                html.AppendLine($"                        <td>{roundData.CpuUsage:0.00}</td>");
+                html.AppendLine($"                        <td>{roundData.RamUsage:0.00}</td>");
+                html.AppendLine($"                        <td>{roundData.RoundDuration:0.00}</td>");
                 html.AppendLine("                    </tr>");
             }
 
