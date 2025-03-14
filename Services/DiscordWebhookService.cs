@@ -54,7 +54,7 @@ namespace Endurance_Testing.Services
 
             var embed = new
             {
-                title = $"Endurance Test Results for {parameters.Url}",
+                title = $"Endurance Test Summary for {parameters.Url}",
                 color = color,
                 fields = new List<object>
                 {
