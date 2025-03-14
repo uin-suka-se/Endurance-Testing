@@ -256,6 +256,7 @@ namespace Endurance_Testing
             else
             {
                 textBoxOutput.AppendText("Test completed with no results.");
+                LimitTextBoxLines();
             }
 
             btnStart.Enabled = true;
@@ -287,11 +288,14 @@ namespace Endurance_Testing
                 btnClear.Enabled = true;
             }
 
-            if (textBoxInputRequest.Text.Length > 8)
+            if (!string.IsNullOrEmpty(textBoxInputRequest.Text) && int.TryParse(textBoxInputRequest.Text, out int value))
             {
-                MessageBox.Show("Input request should be limited to 8 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxInputRequest.Text = textBoxInputRequest.Text.Substring(0, 8);
-                textBoxInputRequest.SelectionStart = textBoxInputRequest.Text.Length;
+                if (value > 1000)
+                {
+                    MessageBox.Show("Input request cannot exceed 1000.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    textBoxInputRequest.Text = "1000";
+                    textBoxInputRequest.SelectionStart = textBoxInputRequest.Text.Length;
+                }
             }
         }
 
@@ -301,12 +305,15 @@ namespace Endurance_Testing
             {
                 btnClear.Enabled = true;
             }
-
-            if (textBoxInputMaxRequest.Text.Length > 8)
+            
+            if (!string.IsNullOrEmpty(textBoxInputMaxRequest.Text) && int.TryParse(textBoxInputMaxRequest.Text, out int value))
             {
-                MessageBox.Show("Input request should be limited to 8 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxInputMaxRequest.Text = textBoxInputMaxRequest.Text.Substring(0, 8);
-                textBoxInputMaxRequest.SelectionStart = textBoxInputMaxRequest.Text.Length;
+                if (value > 1000)
+                {
+                    MessageBox.Show("Input maximum request cannot exceed 1000.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    textBoxInputMaxRequest.Text = "1000";
+                    textBoxInputMaxRequest.SelectionStart = textBoxInputMaxRequest.Text.Length;
+                }
             }
         }
 
@@ -424,6 +431,58 @@ namespace Endurance_Testing
             bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
             return result;
+        }
+
+        private async Task LimitTextBoxLines(int maxLines = 1000)
+        {
+            if (textBoxOutput.Lines.Length <= maxLines)
+            {
+                textBoxOutput.SelectionStart = textBoxOutput.TextLength;
+                textBoxOutput.ScrollToCaret();
+                return;
+            }
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    int currentLineCount = textBoxOutput.Lines.Length;
+                    int linesToRemove = currentLineCount - maxLines;
+
+                    int pos = 0;
+                    for (int i = 0; i < linesToRemove; i++)
+                    {
+                        int newlinePos = textBoxOutput.Text.IndexOf('\n', pos);
+                        if (newlinePos < 0)
+                            break;
+
+                        pos = newlinePos + 1;
+                    }
+
+                    if (pos > 0)
+                    {
+                        this.BeginInvoke(new Action(() =>
+                        {
+                            try
+                            {
+                                textBoxOutput.Select(0, pos);
+                                textBoxOutput.SelectedText = "";
+
+                                textBoxOutput.SelectionStart = textBoxOutput.TextLength;
+                                textBoxOutput.ScrollToCaret();
+                            }
+                            catch (Exception ex)
+                            {
+                                // Handle exception
+                            }
+                        }));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exception
+                }
+            });
         }
 
         private async void btnStart_Click(object sender, EventArgs e)
@@ -637,7 +696,7 @@ namespace Endurance_Testing
         {
             string resultString = $"Round {round}: Status: {(int)result.StatusCode}, Reason: {result.ReasonPhrase}, Load Time: {result.LoadTime.TotalMilliseconds} ms, Wait Time: {result.WaitTime.TotalMilliseconds} ms, Response Time: {result.ResponseTime.TotalMilliseconds} ms";
             textBoxOutput.AppendText(resultString + Environment.NewLine);
-            textBoxOutput.ScrollToCaret();
+            LimitTextBoxLines();
         }
 
         private void DisplayRoundStatistics(double currentCpuUsage,
@@ -666,11 +725,13 @@ namespace Endurance_Testing
                                 $"Round Duration: {roundDuration} seconds{Environment.NewLine}{Environment.NewLine}";
 
             textBoxOutput.AppendText(roundStats);
-            textBoxOutput.ScrollToCaret();
+            LimitTextBoxLines();
         }
 
         private async Task ShowSummary()
         {
+            await LimitTextBoxLines();
+
             double averageCpuUsage = testRunner.CurrentRound > 0 ? testRunner.TotalCpuUsage / testRunner.CurrentRound : 0;
             double averageRamUsage = testRunner.CurrentRound > 0 ? testRunner.TotalRamUsage / testRunner.CurrentRound : 0;
 
@@ -713,12 +774,12 @@ namespace Endurance_Testing
             summaryMessage += $"Average Round Duration: {averageRoundDuration} seconds";
 
             textBoxOutput.AppendText(summaryMessage);
-            textBoxOutput.ScrollToCaret();
+            await LimitTextBoxLines();
 
             if (!string.IsNullOrWhiteSpace(textBoxApiKey.Text))
             {
                 textBoxOutput.AppendText(Environment.NewLine + Environment.NewLine + "Fetching AI analysis..." + Environment.NewLine);
-                textBoxOutput.ScrollToCaret();
+                await LimitTextBoxLines();
 
                 string url = testRunner.Url;
                 double averageErrorRate = (testRunner.TotalFailedRequests / (double)testRunner.TotalRequestsProcessed) * 100;
@@ -747,7 +808,7 @@ namespace Endurance_Testing
                     textBoxOutput.AppendText(aiResultHeader + Environment.NewLine + Environment.NewLine);
                     textBoxOutput.AppendText(aiAnalysisResult + Environment.NewLine);
                     textBoxOutput.AppendText(aiResultFooter);
-                    textBoxOutput.ScrollToCaret();
+                    await LimitTextBoxLines();
                 }
             }
         }
@@ -1051,15 +1112,18 @@ namespace Endurance_Testing
                     if (success)
                     {
                         textBoxOutput.AppendText("\r\n[INFO] Test summary successfully sent to Discord!");
+                        await LimitTextBoxLines();
                     }
                     else
                     {
                         textBoxOutput.AppendText("\r\n[ERROR] Failed to send test summary to Discord. Check your webhook URL and internet connection.");
+                        await LimitTextBoxLines();
                     }
                 }
                 catch (Exception ex)
                 {
                     textBoxOutput.AppendText($"\r\n[ERROR] Error sending to Discord: {ex.Message}");
+                    await LimitTextBoxLines();
                 }
             }
         }

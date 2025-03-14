@@ -11,8 +11,9 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("User Guide for Endurance Testing Tool:");
             helpMessage.AppendLine();
             helpMessage.AppendLine("1. Enter the target URL you wish to test in the text field labeled 'URL:'.");
-            helpMessage.AppendLine("2. Enter the minimum number of requests to dispatch per round in the text field labeled 'Number of Request (Min and Max)' (maximum 8 digits).");
-            helpMessage.AppendLine("   - For 'Progressive' or 'Fluctuative' modes, also enter the maximum number of requests to dispatch per round in the same field.");
+            helpMessage.AppendLine("   - URL must be in valid format (must use http:// or https://)");
+            helpMessage.AppendLine("2. Enter the minimum number of requests to dispatch per round in the text field labeled 'Number of Request (Min and Max)' (maximum 1000 requests).");
+            helpMessage.AppendLine("   - For 'Progressive' or 'Fluctuative' modes, also enter the maximum number of requests to dispatch per round (maximum 1000 requests).");
             helpMessage.AppendLine("3. (Optional) Enter your Gemini API key in the settings to enable AI-powered test result analysis.");
             helpMessage.AppendLine("4. Select the desired test mode from the dropdown menu labeled 'Mode:' (Stable, Progressive, or Fluctuative).");
             helpMessage.AppendLine("   - Stable: Dispatches a consistent number of requests in each test round.");
@@ -23,6 +24,7 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("7. (Optional) Enter Discord Webhook URL in the text field labeled 'Discord Webhook URL:' to automatically send test summary to Discord Server after completion.");
             helpMessage.AppendLine("8. Click the 'Start' button to initiate the endurance test.");
             helpMessage.AppendLine("9. Monitor the test results in the 'Output:' text area below the input fields and the remaining time above the output area.");
+            helpMessage.AppendLine("   - Output panel only displays the last 1000 lines. To view complete data, please export the test results.");
             helpMessage.AppendLine("10. Upon test completion, the 'Output:' area will display:");
             helpMessage.AppendLine("    - Total Requests: The total number of requests sent during the test.");
             helpMessage.AppendLine("    - Successful Requests: The number of requests that received a successful HTTP 200 (OK) response.");
@@ -47,8 +49,8 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("Note:");
             helpMessage.AppendLine("   - Ensure that your internet connection is stable and reliable for conducting this test.");
             helpMessage.AppendLine("   - Be aware that device performance may be reduced during the testing process and confirm that your device specifications are adequate.");
-            helpMessage.AppendLine("   - The actual test duration may vary slightly from the input time due to the processing time for handling requests and responses.");
             helpMessage.AppendLine("   - The Gemini API key is required to enable AI analysis of test results. Without a key, the application will still function but without AI features.");
+            helpMessage.AppendLine("   - For long-term testing, the output panel only shows the last 1000 lines. Use the export feature to save all data.");
 
             return helpMessage.ToString();
         }
