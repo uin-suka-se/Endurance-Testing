@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Endurance_Testing.Models
+﻿namespace Endurance_Testing.Models
 {
     public class TestParameters
     {

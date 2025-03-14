@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Endurance_Testing.Core
+namespace Endurance_Testing.Models
 {
     public class EnduranceTestResult
     {

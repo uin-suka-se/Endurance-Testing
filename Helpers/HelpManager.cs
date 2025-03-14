@@ -8,7 +8,7 @@ namespace Endurance_Testing.Helpers
         {
             StringBuilder helpMessage = new StringBuilder();
 
-            helpMessage.AppendLine("User Guide for Endurance Testing Application:");
+            helpMessage.AppendLine("User Guide for Endurance Testing Tool:");
             helpMessage.AppendLine();
             helpMessage.AppendLine("1. Enter the target URL you wish to test in the text field labeled 'URL:'.");
             helpMessage.AppendLine("2. Enter the minimum number of requests to dispatch per round in the text field labeled 'Number of Request (Min and Max)' (maximum 8 digits).");
