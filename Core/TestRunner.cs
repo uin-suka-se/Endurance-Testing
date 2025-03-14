@@ -1,10 +1,11 @@
-﻿using Endurance_Testing.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Endurance_Testing.Models;
+using Endurance_Testing.Services;
 
 namespace Endurance_Testing.Core
 {
@@ -125,7 +126,7 @@ namespace Endurance_Testing.Core
                 double roundCpuUsage = await SystemMonitor.GetCpuUsage();
                 double roundRamUsage = await SystemMonitor.GetRamUsage();
 
-                int maxRetries = 20;
+                int maxRetries = 30;
                 int retryCount = 0;
 
                 while (roundCpuUsage == 0.0 && retryCount < maxRetries)

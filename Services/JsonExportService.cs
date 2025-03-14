@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
-using Endurance_Testing.Core;
+
 using Endurance_Testing.Models;
 
 namespace Endurance_Testing.Services

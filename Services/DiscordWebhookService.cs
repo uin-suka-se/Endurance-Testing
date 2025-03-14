@@ -1,11 +1,11 @@
-﻿using Endurance_Testing.Core;
-using Endurance_Testing.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+
+using Endurance_Testing.Models;
 
 namespace Endurance_Testing.Services
 {
@@ -100,7 +100,7 @@ namespace Endurance_Testing.Services
 
             return new
             {
-                content = "📊 **Endurance Testing Results** 📊",
+                content = "📊 **Endurance Testing Summary** 📊",
                 embeds = embedsList.ToArray()
             };
         }

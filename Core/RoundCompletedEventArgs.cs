@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Endurance_Testing.Models;
+using System;
 
 namespace Endurance_Testing.Core
 {

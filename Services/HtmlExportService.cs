@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Endurance_Testing.Core;
+
 using Endurance_Testing.Models;
 
 namespace Endurance_Testing.Services
@@ -156,7 +156,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                <div class=\"col\">");
             html.AppendLine("                    <div class=\"metric-card\">");
             html.AppendLine("                        <h3>Average Response Time</h3>");
-            html.AppendLine($"                        <div class=\"metric-value\">{testSummary.AverageResponseTime:0.00}</div>");
+            html.AppendLine($"                        <div class=\"metric-value\">{testSummary.AverageResponseTime}</div>");
             html.AppendLine("                        <div class=\"metric-unit\">milliseconds</div>");
             html.AppendLine("                    </div>");
             html.AppendLine("                </div>");
@@ -164,7 +164,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                <div class=\"col\">");
             html.AppendLine("                    <div class=\"metric-card\">");
             html.AppendLine("                        <h3>Throughput</h3>");
-            html.AppendLine($"                        <div class=\"metric-value\">{testSummary.AverageThroughput:0.00}</div>");
+            html.AppendLine($"                        <div class=\"metric-value\">{testSummary.AverageThroughput}</div>");
             html.AppendLine("                        <div class=\"metric-unit\">requests/second</div>");
             html.AppendLine("                    </div>");
             html.AppendLine("                </div>");
@@ -177,14 +177,14 @@ namespace Endurance_Testing.Services
             html.AppendLine("                    <h3>Performance Metrics</h3>");
             html.AppendLine("                    <table>");
             html.AppendLine("                        <tr><th>Metric</th><th>Value</th></tr>");
-            html.AppendLine($"                        <tr><td>Average Load Time</td><td>{testSummary.AverageLoadTime:0.00} ms</td></tr>");
-            html.AppendLine($"                        <tr><td>Average Wait Time</td><td>{testSummary.AverageWaitTime:0.00} ms</td></tr>");
-            html.AppendLine($"                        <tr><td>Average Response Time</td><td>{testSummary.AverageResponseTime:0.00} ms</td></tr>");
-            html.AppendLine($"                        <tr><td>Average Throughput</td><td>{testSummary.AverageThroughput:0.00} req/sec</td></tr>");
-            html.AppendLine($"                        <tr><td>Average Error Rate</td><td>{testSummary.AverageErrorRate:0.00}%</td></tr>");
-            html.AppendLine($"                        <tr><td>Average Round Duration</td><td>{testSummary.AverageRoundDuration:0.00} sec</td></tr>");
-            html.AppendLine($"                        <tr><td>Average CPU Usage</td><td>{testSummary.AverageCpuUsage:0.00}%</td></tr>");
-            html.AppendLine($"                        <tr><td>Average RAM Usage</td><td>{testSummary.AverageRamUsage:0.00} MB</td></tr>");
+            html.AppendLine($"                        <tr><td>Average Load Time</td><td>{testSummary.AverageLoadTime} ms</td></tr>");
+            html.AppendLine($"                        <tr><td>Average Wait Time</td><td>{testSummary.AverageWaitTime} ms</td></tr>");
+            html.AppendLine($"                        <tr><td>Average Response Time</td><td>{testSummary.AverageResponseTime} ms</td></tr>");
+            html.AppendLine($"                        <tr><td>Average Throughput</td><td>{testSummary.AverageThroughput} req/sec</td></tr>");
+            html.AppendLine($"                        <tr><td>Average Error Rate</td><td>{testSummary.AverageErrorRate}%</td></tr>");
+            html.AppendLine($"                        <tr><td>Average Round Duration</td><td>{testSummary.AverageRoundDuration} sec</td></tr>");
+            html.AppendLine($"                        <tr><td>Average Computer's CPU Usage</td><td>{testSummary.AverageCpuUsage}%</td></tr>");
+            html.AppendLine($"                        <tr><td>Average Computer's RAM Usage</td><td>{testSummary.AverageRamUsage} MB</td></tr>");
             html.AppendLine("                    </table>");
             html.AppendLine("                </div>");
 
@@ -281,8 +281,8 @@ namespace Endurance_Testing.Services
             html.AppendLine("                        <th>Avg Response (ms)</th>");
             html.AppendLine("                        <th>Throughput (req/s)</th>");
             html.AppendLine("                        <th>Error Rate (%)</th>");
-            html.AppendLine("                        <th>CPU (%)</th>");
-            html.AppendLine("                        <th>RAM (MB)</th>");
+            html.AppendLine("                        <th>Computer's CPU (%)</th>");
+            html.AppendLine("                        <th>Computer's RAM (MB)</th>");
             html.AppendLine("                        <th>Round Duration (s)</th>");
             html.AppendLine("                    </tr>");
 
@@ -309,12 +309,12 @@ namespace Endurance_Testing.Services
                 html.AppendLine($"                        <td>{roundData.RequestPerRound}</td>");
                 html.AppendLine($"                        <td>{roundData.SuccessfulRequests}</td>");
                 html.AppendLine($"                        <td>{roundData.FailedRequests}</td>");
-                html.AppendLine($"                        <td>{roundData.AverageResponseTime:0.00}</td>");
-                html.AppendLine($"                        <td>{roundData.Throughput:0.00}</td>");
-                html.AppendLine($"                        <td>{roundData.ErrorRate:0.00}</td>");
-                html.AppendLine($"                        <td>{roundData.CpuUsage:0.00}</td>");
-                html.AppendLine($"                        <td>{roundData.RamUsage:0.00}</td>");
-                html.AppendLine($"                        <td>{roundData.RoundDuration:0.00}</td>");
+                html.AppendLine($"                        <td>{roundData.AverageResponseTime}</td>");
+                html.AppendLine($"                        <td>{roundData.Throughput}</td>");
+                html.AppendLine($"                        <td>{roundData.ErrorRate}</td>");
+                html.AppendLine($"                        <td>{roundData.CpuUsage}</td>");
+                html.AppendLine($"                        <td>{roundData.RamUsage}</td>");
+                html.AppendLine($"                        <td>{roundData.RoundDuration}</td>");
                 html.AppendLine("                    </tr>");
             }
 
@@ -334,8 +334,8 @@ namespace Endurance_Testing.Services
             html.AppendLine("                        <th>Load Time (ms)</th>");
             html.AppendLine("                        <th>Wait Time (ms)</th>");
             html.AppendLine("                        <th>Response Time (ms)</th>");
-            html.AppendLine("                        <th>CPU (%)</th>");
-            html.AppendLine("                        <th>RAM (MB)</th>");
+            html.AppendLine("                        <th>Computer's CPU (%)</th>");
+            html.AppendLine("                        <th>Computer's RAM (MB)</th>");
             html.AppendLine("                        <th>Requests</th>");
             html.AppendLine("                        <th>Success</th>");
             html.AppendLine("                        <th>Failed</th>");
@@ -356,20 +356,20 @@ namespace Endurance_Testing.Services
                 html.AppendLine($"                        <td>{result.Round}</td>");
                 html.AppendLine($"                        <td{statusClass}>{(int)result.StatusCode}</td>");
                 html.AppendLine($"                        <td{statusClass}>{HtmlEncode(result.ReasonPhrase)}</td>");
-                html.AppendLine($"                        <td>{result.LoadTime.TotalMilliseconds:0.00}</td>");
-                html.AppendLine($"                        <td>{result.WaitTime.TotalMilliseconds:0.00}</td>");
-                html.AppendLine($"                        <td>{result.ResponseTime.TotalMilliseconds:0.00}</td>");
-                html.AppendLine($"                        <td>{result.CpuUsage:0.00}</td>");
-                html.AppendLine($"                        <td>{result.RamUsage:0.00}</td>");
+                html.AppendLine($"                        <td>{result.LoadTime.TotalMilliseconds}</td>");
+                html.AppendLine($"                        <td>{result.WaitTime.TotalMilliseconds}</td>");
+                html.AppendLine($"                        <td>{result.ResponseTime.TotalMilliseconds}</td>");
+                html.AppendLine($"                        <td>{result.CpuUsage}</td>");
+                html.AppendLine($"                        <td>{result.RamUsage}</td>");
                 html.AppendLine($"                        <td>{result.RequestPerRound}</td>");
                 html.AppendLine($"                        <td>{result.SuccessfulRequests}</td>");
                 html.AppendLine($"                        <td>{result.FailedRequests}</td>");
-                html.AppendLine($"                        <td>{result.AverageLoadTime:0.00}</td>");
-                html.AppendLine($"                        <td>{result.AverageWaitTime:0.00}</td>");
-                html.AppendLine($"                        <td>{result.AverageResponseTime:0.00}</td>");
-                html.AppendLine($"                        <td>{result.Throughput:0.00}</td>");
-                html.AppendLine($"                        <td>{result.ErrorRate:0.00}</td>");
-                html.AppendLine($"                        <td>{result.RoundDuration:0.00}</td>");
+                html.AppendLine($"                        <td>{result.AverageLoadTime}</td>");
+                html.AppendLine($"                        <td>{result.AverageWaitTime}</td>");
+                html.AppendLine($"                        <td>{result.AverageResponseTime}</td>");
+                html.AppendLine($"                        <td>{result.Throughput}</td>");
+                html.AppendLine($"                        <td>{result.ErrorRate}</td>");
+                html.AppendLine($"                        <td>{result.RoundDuration}</td>");
                 html.AppendLine("                    </tr>");
             }
 
@@ -539,7 +539,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                    data: {");
             html.AppendLine("                        labels: rounds,");
             html.AppendLine("                        datasets: [{");
-            html.AppendLine("                            label: 'CPU Usage (%)',");
+            html.AppendLine("                            label: 'Computer's CPU Usage (%)',");
             html.AppendLine("                            data: cpuUsage,");
             html.AppendLine("                            borderColor: 'rgb(255, 99, 132)',");
             html.AppendLine("                            backgroundColor: 'rgba(255, 99, 132, 0.2)',");
@@ -552,7 +552,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                        plugins: {");
             html.AppendLine("                            title: {");
             html.AppendLine("                                display: true,");
-            html.AppendLine("                                text: 'CPU Usage Analysis'");
+            html.AppendLine("                                text: 'Computer's CPU Usage Analysis'");
             html.AppendLine("                            }");
             html.AppendLine("                        }");
             html.AppendLine("                    }");
@@ -566,7 +566,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                    data: {");
             html.AppendLine("                        labels: rounds,");
             html.AppendLine("                        datasets: [{");
-            html.AppendLine("                            label: 'RAM Usage (MB)',");
+            html.AppendLine("                            label: 'Computer's RAM Usage (MB)',");
             html.AppendLine("                            data: ramUsage,");
             html.AppendLine("                            borderColor: 'rgb(255, 205, 86)',");
             html.AppendLine("                            backgroundColor: 'rgba(255, 205, 86, 0.2)',");
@@ -579,7 +579,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                        plugins: {");
             html.AppendLine("                            title: {");
             html.AppendLine("                                display: true,");
-            html.AppendLine("                                text: 'RAM Usage Analysis'");
+            html.AppendLine("                                text: 'Computer's RAM Usage Analysis'");
             html.AppendLine("                            }");
             html.AppendLine("                        }");
             html.AppendLine("                    }");

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using Endurance_Testing.Core;
+
 using Endurance_Testing.Models;
 
 namespace Endurance_Testing.Services
@@ -32,7 +32,7 @@ namespace Endurance_Testing.Services
                             writer.WriteLine($"Export Date: {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
                             writer.WriteLine();
 
-                            writer.WriteLine("Round,Status,Reason,LoadTime (ms),WaitTime (ms),ResponseTime (ms),CPU Usage (%),RAM Usage (MB),Total Requests,Successful Requests,Failed Requests,Average Load Time (ms),Average Wait Time (ms),Average Response Time (ms),Throughput (req/sec),Error Rate (%),Round Duration (sec)");
+                            writer.WriteLine("Round,Status,Reason,LoadTime (ms),WaitTime (ms),ResponseTime (ms),Computer's CPU Usage (%),Computer's RAM Usage (MB),Total Requests,Successful Requests,Failed Requests,Average Load Time (ms),Average Wait Time (ms),Average Response Time (ms),Throughput (req/sec),Error Rate (%),Round Duration (sec)");
 
                             foreach (var result in testResults)
                             {
@@ -64,8 +64,8 @@ namespace Endurance_Testing.Services
                             writer.WriteLine($"Total Requests,{testSummary.TotalRequestsProcessed}");
                             writer.WriteLine($"Successful Requests,{testSummary.TotalSuccessfulRequests}");
                             writer.WriteLine($"Failed Requests,{testSummary.TotalFailedRequests}");
-                            writer.WriteLine($"Average CPU Usage (%),{testSummary.AverageCpuUsage.ToString(culture)}");
-                            writer.WriteLine($"Average RAM Usage (MB),{testSummary.AverageRamUsage.ToString(culture)}");
+                            writer.WriteLine($"Average Computer's CPU Usage (%),{testSummary.AverageCpuUsage.ToString(culture)}");
+                            writer.WriteLine($"Average Computer's RAM Usage (MB),{testSummary.AverageRamUsage.ToString(culture)}");
                             writer.WriteLine($"Average Load Time (ms),{testSummary.AverageLoadTime.ToString(culture)}");
                             writer.WriteLine($"Average Wait Time (ms),{testSummary.AverageWaitTime.ToString(culture)}");
                             writer.WriteLine($"Average Response Time (ms),{testSummary.AverageResponseTime.ToString(culture)}");

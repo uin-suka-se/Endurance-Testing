@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text;
 using System.Linq;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
 using Endurance_Testing.Core;
 using Endurance_Testing.Helpers;
-using Endurance_Testing.Services;
 using Endurance_Testing.Models;
+using Endurance_Testing.Services;
 using Endurance_Testing.UI;
 
 namespace Endurance_Testing
