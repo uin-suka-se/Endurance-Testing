@@ -24,7 +24,7 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("7. (Optional) Enter Discord Webhook URL in the text field labeled 'Discord Webhook URL:' to automatically send test summary to Discord Server after completion.");
             helpMessage.AppendLine("8. Click the 'Start' button to initiate the endurance test.");
             helpMessage.AppendLine("9. Monitor the test results in the 'Output:' text area below the input fields and the remaining time above the output area.");
-            helpMessage.AppendLine("   - Output panel only displays the last 1000 lines. To view complete data, please export the test results.");
+            helpMessage.AppendLine("   - Output text box only displays the last 1000 lines. To view complete data, please export the test results or view the log file in the same directory as the application.");
             helpMessage.AppendLine("10. Upon test completion, the 'Output:' area will display:");
             helpMessage.AppendLine("    - Total Requests: The total number of requests sent during the test.");
             helpMessage.AppendLine("    - Successful Requests: The number of requests that received a successful HTTP 200 (OK) response.");

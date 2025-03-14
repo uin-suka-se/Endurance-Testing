@@ -12,6 +12,7 @@ using Endurance_Testing.Helpers;
 using Endurance_Testing.Models;
 using Endurance_Testing.Services;
 using Endurance_Testing.UI;
+using System.IO;
 
 namespace Endurance_Testing
 {
@@ -250,12 +251,14 @@ namespace Endurance_Testing
 
             if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
             {
+                await LimitTextBoxLines();
                 await ShowSummary();
                 await SendToDiscordAutomatically();
             }
             else
             {
                 textBoxOutput.AppendText("Test completed with no results.");
+                LogService.WriteLog("Test completed with no results.");
                 LimitTextBoxLines();
             }
 
@@ -500,6 +503,26 @@ namespace Endurance_Testing
                 }
             }
 
+            string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EnduranceTestLog.txt");
+            if (File.Exists(logFilePath))
+            {
+                var deleteLogResult = MessageBox.Show("Log file already exists. Do you want to delete the existing log file to proceed with the test?",
+                                                       "Confirm Deletion",
+                                                       MessageBoxButtons.YesNo,
+                                                       MessageBoxIcon.Warning);
+
+                if (deleteLogResult == DialogResult.No)
+                {
+                    return;
+                }
+                else
+                {
+                    File.Delete(logFilePath);
+                }
+            }
+
+            LogService.InitializeLog();
+
             isRunning = true;
 
             string url = textBoxInputUrl.Text;
@@ -696,6 +719,7 @@ namespace Endurance_Testing
         {
             string resultString = $"Round {round}: Status: {(int)result.StatusCode}, Reason: {result.ReasonPhrase}, Load Time: {result.LoadTime.TotalMilliseconds} ms, Wait Time: {result.WaitTime.TotalMilliseconds} ms, Response Time: {result.ResponseTime.TotalMilliseconds} ms";
             textBoxOutput.AppendText(resultString + Environment.NewLine);
+            LogService.WriteLog(resultString + Environment.NewLine);
             LimitTextBoxLines();
         }
 
@@ -725,13 +749,12 @@ namespace Endurance_Testing
                                 $"Round Duration: {roundDuration} seconds{Environment.NewLine}{Environment.NewLine}";
 
             textBoxOutput.AppendText(roundStats);
+            LogService.WriteLog(roundStats);
             LimitTextBoxLines();
         }
 
         private async Task ShowSummary()
         {
-            await LimitTextBoxLines();
-
             double averageCpuUsage = testRunner.CurrentRound > 0 ? testRunner.TotalCpuUsage / testRunner.CurrentRound : 0;
             double averageRamUsage = testRunner.CurrentRound > 0 ? testRunner.TotalRamUsage / testRunner.CurrentRound : 0;
 
@@ -774,11 +797,13 @@ namespace Endurance_Testing
             summaryMessage += $"Average Round Duration: {averageRoundDuration} seconds";
 
             textBoxOutput.AppendText(summaryMessage);
+            LogService.WriteLog(summaryMessage);
             await LimitTextBoxLines();
 
             if (!string.IsNullOrWhiteSpace(textBoxApiKey.Text))
             {
                 textBoxOutput.AppendText(Environment.NewLine + Environment.NewLine + "Fetching AI analysis..." + Environment.NewLine);
+                LogService.WriteLog(Environment.NewLine + Environment.NewLine + "Fetching AI analysis..." + Environment.NewLine);
                 await LimitTextBoxLines();
 
                 string url = testRunner.Url;
@@ -808,6 +833,9 @@ namespace Endurance_Testing
                     textBoxOutput.AppendText(aiResultHeader + Environment.NewLine + Environment.NewLine);
                     textBoxOutput.AppendText(aiAnalysisResult + Environment.NewLine);
                     textBoxOutput.AppendText(aiResultFooter);
+                    LogService.WriteLog(aiResultHeader + Environment.NewLine + Environment.NewLine);
+                    LogService.WriteLog(aiAnalysisResult + Environment.NewLine);
+                    LogService.WriteLog(aiResultFooter);
                     await LimitTextBoxLines();
                 }
             }
@@ -1112,17 +1140,20 @@ namespace Endurance_Testing
                     if (success)
                     {
                         textBoxOutput.AppendText("\r\n[INFO] Test summary successfully sent to Discord!");
+                        LogService.WriteLog("\r\n[INFO] Test summary successfully sent to Discord!");
                         await LimitTextBoxLines();
                     }
                     else
                     {
                         textBoxOutput.AppendText("\r\n[ERROR] Failed to send test summary to Discord. Check your webhook URL and internet connection.");
+                        LogService.WriteLog("\r\n[ERROR] Failed to send test summary to Discord. Check your webhook URL and internet connection.");
                         await LimitTextBoxLines();
                     }
                 }
                 catch (Exception ex)
                 {
                     textBoxOutput.AppendText($"\r\n[ERROR] Error sending to Discord: {ex.Message}");
+                    LogService.WriteLog($"\r\n[ERROR] Error sending to Discord: {ex.Message}");
                     await LimitTextBoxLines();
                 }
             }
