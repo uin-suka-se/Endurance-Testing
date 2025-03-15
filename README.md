@@ -151,7 +151,7 @@ Click the "Export" button to save results in Excel, CSV, JSON, or HTML format, o
 
 ## License
 
-[MIT License](LICENSE.md)
+[MIT License](LICENSE.txt)
 
 ## Contact and Information
 
