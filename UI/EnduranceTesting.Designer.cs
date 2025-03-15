@@ -66,7 +66,7 @@
             // 
             lblApiKey.AutoSize = true;
             lblApiKey.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblApiKey.Location = new System.Drawing.Point(921, 88);
+            lblApiKey.Location = new System.Drawing.Point(704, 188);
             lblApiKey.Name = "lblApiKey";
             lblApiKey.Size = new System.Drawing.Size(182, 32);
             lblApiKey.TabIndex = 0;
@@ -75,12 +75,12 @@
             // textBoxApiKey
             // 
             textBoxApiKey.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxApiKey.Location = new System.Drawing.Point(921, 134);
+            textBoxApiKey.Location = new System.Drawing.Point(704, 234);
             textBoxApiKey.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxApiKey.MaxLength = 999999999;
             textBoxApiKey.Name = "textBoxApiKey";
-            textBoxApiKey.Size = new System.Drawing.Size(253, 37);
-            textBoxApiKey.TabIndex = 4;
+            textBoxApiKey.Size = new System.Drawing.Size(199, 37);
+            textBoxApiKey.TabIndex = 11;
             textBoxApiKey.UseSystemPasswordChar = true;
             textBoxApiKey.TextChanged += textBoxApiKey_TextChanged;
             textBoxApiKey.KeyDown += textBoxApiKey_KeyDown;
@@ -90,7 +90,7 @@
             // textBoxInputMaxRequest
             // 
             textBoxInputMaxRequest.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxInputMaxRequest.Location = new System.Drawing.Point(716, 134);
+            textBoxInputMaxRequest.Location = new System.Drawing.Point(808, 134);
             textBoxInputMaxRequest.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxInputMaxRequest.MaxLength = 999999999;
             textBoxInputMaxRequest.Name = "textBoxInputMaxRequest";
@@ -101,19 +101,19 @@
             // textBoxTimeout
             // 
             textBoxTimeout.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxTimeout.Location = new System.Drawing.Point(202, 234);
+            textBoxTimeout.Location = new System.Drawing.Point(28, 234);
             textBoxTimeout.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxTimeout.MaxLength = 999999999;
             textBoxTimeout.Name = "textBoxTimeout";
-            textBoxTimeout.Size = new System.Drawing.Size(395, 37);
-            textBoxTimeout.TabIndex = 6;
+            textBoxTimeout.Size = new System.Drawing.Size(364, 37);
+            textBoxTimeout.TabIndex = 5;
             textBoxTimeout.TextChanged += textBoxTimeout_TextChanged;
             // 
             // lblTimeout
             // 
             lblTimeout.AutoSize = true;
             lblTimeout.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblTimeout.Location = new System.Drawing.Point(202, 181);
+            lblTimeout.Location = new System.Drawing.Point(22, 181);
             lblTimeout.Name = "lblTimeout";
             lblTimeout.Size = new System.Drawing.Size(364, 32);
             lblTimeout.TabIndex = 0;
@@ -122,7 +122,7 @@
             // btnExport
             // 
             btnExport.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            btnExport.Location = new System.Drawing.Point(1057, 691);
+            btnExport.Location = new System.Drawing.Point(1069, 691);
             btnExport.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnExport.Name = "btnExport";
             btnExport.Size = new System.Drawing.Size(110, 47);
@@ -134,7 +134,7 @@
             // btnClear
             // 
             btnClear.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            btnClear.Location = new System.Drawing.Point(1057, 607);
+            btnClear.Location = new System.Drawing.Point(1069, 607);
             btnClear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnClear.Name = "btnClear";
             btnClear.Size = new System.Drawing.Size(110, 47);
@@ -146,7 +146,7 @@
             // btnInfo
             // 
             btnInfo.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            btnInfo.Location = new System.Drawing.Point(1057, 519);
+            btnInfo.Location = new System.Drawing.Point(1069, 519);
             btnInfo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnInfo.Name = "btnInfo";
             btnInfo.Size = new System.Drawing.Size(110, 47);
@@ -158,7 +158,7 @@
             // btnHelp
             // 
             btnHelp.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            btnHelp.Location = new System.Drawing.Point(1057, 432);
+            btnHelp.Location = new System.Drawing.Point(1069, 432);
             btnHelp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             btnHelp.Name = "btnHelp";
             btnHelp.Size = new System.Drawing.Size(110, 47);
@@ -177,7 +177,7 @@
             textBoxOutput.Name = "textBoxOutput";
             textBoxOutput.ReadOnly = true;
             textBoxOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            textBoxOutput.Size = new System.Drawing.Size(1017, 307);
+            textBoxOutput.Size = new System.Drawing.Size(1024, 307);
             textBoxOutput.TabIndex = 15;
             // 
             // lblOutput
@@ -227,19 +227,19 @@
             // textBoxTime
             // 
             textBoxTime.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxTime.Location = new System.Drawing.Point(620, 234);
+            textBoxTime.Location = new System.Drawing.Point(408, 234);
             textBoxTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxTime.MaxLength = 999999999;
             textBoxTime.Name = "textBoxTime";
             textBoxTime.Size = new System.Drawing.Size(179, 37);
-            textBoxTime.TabIndex = 7;
+            textBoxTime.TabIndex = 6;
             textBoxTime.TextChanged += textBoxTime_TextChanged;
             // 
             // lblTime
             // 
             lblTime.AutoSize = true;
             lblTime.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblTime.Location = new System.Drawing.Point(620, 184);
+            lblTime.Location = new System.Drawing.Point(408, 184);
             lblTime.Name = "lblTime";
             lblTime.Size = new System.Drawing.Size(173, 32);
             lblTime.TabIndex = 0;
@@ -248,7 +248,7 @@
             // textBoxInputRequest
             // 
             textBoxInputRequest.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxInputRequest.Location = new System.Drawing.Point(508, 134);
+            textBoxInputRequest.Location = new System.Drawing.Point(600, 134);
             textBoxInputRequest.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxInputRequest.MaxLength = 999999999;
             textBoxInputRequest.Name = "textBoxInputRequest";
@@ -260,7 +260,7 @@
             // 
             lblInputNumberOfRequest.AutoSize = true;
             lblInputNumberOfRequest.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblInputNumberOfRequest.Location = new System.Drawing.Point(508, 88);
+            lblInputNumberOfRequest.Location = new System.Drawing.Point(600, 88);
             lblInputNumberOfRequest.Name = "lblInputNumberOfRequest";
             lblInputNumberOfRequest.Size = new System.Drawing.Size(390, 32);
             lblInputNumberOfRequest.TabIndex = 0;
@@ -271,7 +271,7 @@
             panelPeriod.Controls.Add(radioButtonHour);
             panelPeriod.Controls.Add(radioButtonMinute);
             panelPeriod.Controls.Add(radioButtonSecond);
-            panelPeriod.Location = new System.Drawing.Point(810, 188);
+            panelPeriod.Location = new System.Drawing.Point(598, 188);
             panelPeriod.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             panelPeriod.Name = "panelPeriod";
             panelPeriod.Size = new System.Drawing.Size(102, 83);
@@ -323,7 +323,7 @@
             textBoxInputUrl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxInputUrl.MaxLength = 999999999;
             textBoxInputUrl.Name = "textBoxInputUrl";
-            textBoxInputUrl.Size = new System.Drawing.Size(453, 37);
+            textBoxInputUrl.Size = new System.Drawing.Size(545, 37);
             textBoxInputUrl.TabIndex = 1;
             textBoxInputUrl.TextChanged += textBoxInputUrl_TextChanged;
             // 
@@ -376,17 +376,17 @@
             comboBoxMode.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             comboBoxMode.FormattingEnabled = true;
             comboBoxMode.Items.AddRange(new object[] { "Stable", "Progressive", "Fluctuative" });
-            comboBoxMode.Location = new System.Drawing.Point(47, 230);
+            comboBoxMode.Location = new System.Drawing.Point(1037, 129);
             comboBoxMode.Name = "comboBoxMode";
             comboBoxMode.Size = new System.Drawing.Size(119, 38);
-            comboBoxMode.TabIndex = 5;
+            comboBoxMode.TabIndex = 4;
             comboBoxMode.SelectedIndexChanged += comboBoxMode_SelectedIndexChanged;
             // 
             // lblInputMode
             // 
             lblInputMode.AutoSize = true;
             lblInputMode.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblInputMode.Location = new System.Drawing.Point(29, 183);
+            lblInputMode.Location = new System.Drawing.Point(1020, 88);
             lblInputMode.Name = "lblInputMode";
             lblInputMode.Size = new System.Drawing.Size(82, 32);
             lblInputMode.TabIndex = 0;

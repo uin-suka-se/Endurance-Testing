@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Linq;
-using System.Drawing;
-using System.Runtime.InteropServices;
 
 using Endurance_Testing.Core;
 using Endurance_Testing.Helpers;
 using Endurance_Testing.Models;
 using Endurance_Testing.Services;
 using Endurance_Testing.UI;
-using System.IO;
 
 namespace Endurance_Testing
 {
@@ -107,6 +107,7 @@ namespace Endurance_Testing
         {
             Color normalBorderColor = Color.FromArgb(42, 40, 60);
             Color focusedBorderColor = Color.FromArgb(85, 213, 219);
+            Color activeForeColor = Color.FromArgb(28, 26, 43);
 
             textBoxInputUrl.MakeRounded(
                 normalBorderColor: normalBorderColor,
@@ -132,12 +133,6 @@ namespace Endurance_Testing
                 borderWidth: 2,
                 shadowDepth: 5);
 
-            textBoxApiKey.MakeRounded(
-                normalBorderColor: normalBorderColor,
-                focusedBorderColor: focusedBorderColor,
-                borderWidth: 2,
-                shadowDepth: 5);
-
             textBoxTimeout.MakeRounded(
                 normalBorderColor: normalBorderColor,
                 focusedBorderColor: focusedBorderColor,
@@ -145,6 +140,30 @@ namespace Endurance_Testing
                 shadowDepth: 5);
 
             textBoxTime.MakeRounded(
+                normalBorderColor: normalBorderColor,
+                focusedBorderColor: focusedBorderColor,
+                borderWidth: 2,
+                shadowDepth: 5);
+
+            radioButtonSecond.MakeBold(
+                foreColor: Color.Black,
+                activeForeColor: activeForeColor,
+                borderWidth: 2
+            );
+
+            radioButtonMinute.MakeBold(
+                foreColor: Color.Black,
+                activeForeColor: activeForeColor,
+                borderWidth: 2
+            );
+
+            radioButtonHour.MakeBold(
+                foreColor: Color.Black,
+                activeForeColor: activeForeColor,
+                borderWidth: 2
+            );
+
+            textBoxApiKey.MakeRounded(
                 normalBorderColor: normalBorderColor,
                 focusedBorderColor: focusedBorderColor,
                 borderWidth: 2,
