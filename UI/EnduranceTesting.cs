@@ -522,26 +522,6 @@ namespace Endurance_Testing
                 }
             }
 
-            string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EnduranceTestLog.txt");
-            if (File.Exists(logFilePath))
-            {
-                var deleteLogResult = MessageBox.Show("Log file already exists. Do you want to delete the existing log file to proceed with the test?",
-                                                       "Confirm Deletion",
-                                                       MessageBoxButtons.YesNo,
-                                                       MessageBoxIcon.Warning);
-
-                if (deleteLogResult == DialogResult.No)
-                {
-                    return;
-                }
-                else
-                {
-                    File.Delete(logFilePath);
-                }
-            }
-
-            LogService.InitializeLog();
-
             isRunning = true;
 
             string url = textBoxInputUrl.Text;
@@ -633,6 +613,26 @@ namespace Endurance_Testing
                 isRunning = false;
                 return;
             }
+
+            string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EnduranceTestLog.txt");
+            if (File.Exists(logFilePath))
+            {
+                var deleteLogResult = MessageBox.Show("Log file already exists. Do you want to delete the existing log file to proceed with the test?",
+                                                       "Confirm Deletion",
+                                                       MessageBoxButtons.YesNo,
+                                                       MessageBoxIcon.Warning);
+
+                if (deleteLogResult == DialogResult.No)
+                {
+                    return;
+                }
+                else
+                {
+                    File.Delete(logFilePath);
+                }
+            }
+
+            LogService.InitializeLog();
 
             testRunner.DurationInSeconds = durationValue;
             durationInSeconds = durationValue;
@@ -774,6 +774,8 @@ namespace Endurance_Testing
 
         private async Task ShowSummary()
         {
+            await LimitTextBoxLines();
+
             double averageCpuUsage = testRunner.CurrentRound > 0 ? testRunner.TotalCpuUsage / testRunner.CurrentRound : 0;
             double averageRamUsage = testRunner.CurrentRound > 0 ? testRunner.TotalRamUsage / testRunner.CurrentRound : 0;
 
@@ -828,7 +830,7 @@ namespace Endurance_Testing
                 string url = testRunner.Url;
                 double averageErrorRate = (testRunner.TotalFailedRequests / (double)testRunner.TotalRequestsProcessed) * 100;
 
-                aiAnalysisResult = await Services.AIAnalysisService.GetAIAnalysis(
+                aiAnalysisResult = await AIAnalysisService.GetAIAnalysis(
                     textBoxApiKey.Text.Trim(),
                     url,
                     averageCpuUsage,
