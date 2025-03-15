@@ -14,13 +14,13 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("   - URL must be in valid format (must use http:// or https://)");
             helpMessage.AppendLine("2. Enter the minimum number of requests to dispatch per round in the text field labeled 'Number of Request (Min and Max)' (maximum 1000 requests).");
             helpMessage.AppendLine("   - For 'Progressive' or 'Fluctuative' modes, also enter the maximum number of requests to dispatch per round (maximum 1000 requests).");
-            helpMessage.AppendLine("3. (Optional) Enter your Gemini API key in the settings to enable AI-powered test result analysis.");
-            helpMessage.AppendLine("4. Select the desired test mode from the dropdown menu labeled 'Mode:' (Stable, Progressive, or Fluctuative).");
+            helpMessage.AppendLine("3. Select the desired test mode from the dropdown menu labeled 'Mode:' (Stable, Progressive, or Fluctuative).");
             helpMessage.AppendLine("   - Stable: Dispatches a consistent number of requests in each test round.");
             helpMessage.AppendLine("   - Progressive: Gradually increases the number of requests per round over the duration of the test.");
             helpMessage.AppendLine("   - Fluctuative: Dispatches a random number of requests within the defined minimum and maximum range for each round.");
-            helpMessage.AppendLine("5. Enter the timeout threshold in seconds for each test round in the text field labeled 'Timeout Per-Round (In Seconds):'.");
-            helpMessage.AppendLine("6. Enter the test duration in the 'Time in Period:' field and select the unit of time (seconds, minutes, or hours) using the radio buttons to the right of this field.");
+            helpMessage.AppendLine("4. Enter the timeout threshold in seconds for each test round in the text field labeled 'Timeout Per-Round (In Seconds):'.");
+            helpMessage.AppendLine("5. Enter the test duration in the 'Time in Period:' field and select the unit of time (seconds, minutes, or hours) using the radio buttons to the right of this field.");
+            helpMessage.AppendLine("6. (Optional) Enter your Gemini API key in the settings to enable AI-powered test result analysis.");
             helpMessage.AppendLine("7. (Optional) Enter Discord Webhook URL in the text field labeled 'Discord Webhook URL:' to automatically send test summary to Discord Server after completion.");
             helpMessage.AppendLine("8. Click the 'Start' button to initiate the endurance test.");
             helpMessage.AppendLine("9. Monitor the test results in the 'Output:' text area below the input fields and the remaining time above the output area.");
@@ -50,6 +50,7 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("   - Ensure that your internet connection is stable and reliable for conducting this test.");
             helpMessage.AppendLine("   - Be aware that device performance may be reduced during the testing process and confirm that your device specifications are adequate.");
             helpMessage.AppendLine("   - The Gemini API key is required to enable AI analysis of test results. Without a key, the application will still function but without AI features.");
+            helpMessage.AppendLine("   - The Discord Webhook URL is required if you want to receive notifications on Discord.");
             helpMessage.AppendLine("   - For long-term testing, the output panel only shows the last 1000 lines. Use the export feature to save all data.");
 
             return helpMessage.ToString();

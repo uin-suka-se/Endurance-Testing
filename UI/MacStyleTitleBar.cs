@@ -30,15 +30,12 @@ namespace Endurance_Testing.UI
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MacStyleTitleBar));
             SuspendLayout();
-            // 
-            // MacStyleTitleBar
-            // 
+
             ClientSize = new Size(284, 261);
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Pixel);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MacStyleTitleBar";
             ResumeLayout(false);
-
         }
 
         [DllImport("user32.dll")]
@@ -52,7 +49,6 @@ namespace Endurance_Testing.UI
             this.DoubleBuffered = true;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
-            this.Padding = new Padding(1);
 
             InitializeTitleBar();
         }
@@ -64,7 +60,7 @@ namespace Endurance_Testing.UI
             {
                 Dock = DockStyle.Top,
                 Height = TITLE_BAR_HEIGHT,
-                BackColor = Color.WhiteSmoke
+                BackColor = Color.FromArgb(45, 45, 48)
             };
 
             // Close Button
@@ -94,7 +90,8 @@ namespace Endurance_Testing.UI
                 AutoSize = false,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 10, FontStyle.Regular)
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.White
             };
 
             titleBar.Controls.Add(btnClose);
