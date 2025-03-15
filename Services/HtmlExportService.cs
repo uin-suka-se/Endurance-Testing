@@ -539,7 +539,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                    data: {");
             html.AppendLine("                        labels: rounds,");
             html.AppendLine("                        datasets: [{");
-            html.AppendLine("                            label: 'Computer's CPU Usage (%)',");
+            html.AppendLine("                            label: \"Computer's CPU Usage (%)\",");
             html.AppendLine("                            data: cpuUsage,");
             html.AppendLine("                            borderColor: 'rgb(255, 99, 132)',");
             html.AppendLine("                            backgroundColor: 'rgba(255, 99, 132, 0.2)',");
@@ -552,7 +552,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                        plugins: {");
             html.AppendLine("                            title: {");
             html.AppendLine("                                display: true,");
-            html.AppendLine("                                text: 'Computer's CPU Usage Analysis'");
+            html.AppendLine("                                text: \"Computer's CPU Usage Analysis\"");
             html.AppendLine("                            }");
             html.AppendLine("                        }");
             html.AppendLine("                    }");
@@ -566,7 +566,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                    data: {");
             html.AppendLine("                        labels: rounds,");
             html.AppendLine("                        datasets: [{");
-            html.AppendLine("                            label: 'Computer's RAM Usage (MB)',");
+            html.AppendLine("                            label: \"Computer's RAM Usage (MB)\",");
             html.AppendLine("                            data: ramUsage,");
             html.AppendLine("                            borderColor: 'rgb(255, 205, 86)',");
             html.AppendLine("                            backgroundColor: 'rgba(255, 205, 86, 0.2)',");
@@ -579,7 +579,7 @@ namespace Endurance_Testing.Services
             html.AppendLine("                        plugins: {");
             html.AppendLine("                            title: {");
             html.AppendLine("                                display: true,");
-            html.AppendLine("                                text: 'Computer's RAM Usage Analysis'");
+            html.AppendLine("                                text: \"Computer's RAM Usage Analysis\"");
             html.AppendLine("                            }");
             html.AppendLine("                        }");
             html.AppendLine("                    }");
