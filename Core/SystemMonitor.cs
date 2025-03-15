@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Endurance_Testing.Services
+namespace Endurance_Testing.Core
 {
     public class SystemMonitor
     {
@@ -28,7 +28,7 @@ namespace Endurance_Testing.Services
                         return 0;
                     }
 
-                    double cpuUsagePercent = (cpuUsedMs / (Environment.ProcessorCount * totalElapsedMs)) * 100;
+                    double cpuUsagePercent = cpuUsedMs / (Environment.ProcessorCount * totalElapsedMs) * 100;
 
                     _lastCpuTime = currentCpuTime;
                     _lastCpuCheck = now;

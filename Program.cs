@@ -1,9 +1,7 @@
-﻿using Endurance_Testing.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
+
+using Endurance_Testing.UI;
 
 namespace Endurance_Testing
 {

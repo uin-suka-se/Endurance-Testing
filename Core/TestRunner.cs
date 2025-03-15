@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Endurance_Testing.Models;
-using Endurance_Testing.Services;
 
 namespace Endurance_Testing.Core
 {
