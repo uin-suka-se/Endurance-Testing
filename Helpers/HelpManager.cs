@@ -24,7 +24,7 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("7. (Optional) Enter Discord Webhook URL in the text field labeled 'Discord Webhook URL:' to automatically send test summary to Discord Server after completion.");
             helpMessage.AppendLine("8. Click the 'Start' button to initiate the endurance test.");
             helpMessage.AppendLine("9. Monitor the test results in the 'Output:' text area below the input fields and the remaining time above the output area.");
-            helpMessage.AppendLine("   - Output text box only displays the last 1000 lines. To view complete data, please export the test results or view the log file in the same directory as the application.");
+            helpMessage.AppendLine("   - Output text box only displays the last 1000 lines. To view complete data, please export the test results or view EnduranceTestLog.txt in the same directory with your executable file.");
             helpMessage.AppendLine("10. Upon test completion, the 'Output:' area will display:");
             helpMessage.AppendLine("    - Total Requests: The total number of requests sent during the test.");
             helpMessage.AppendLine("    - Successful Requests: The number of requests that received a successful HTTP 200 (OK) response.");
@@ -51,7 +51,6 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("   - Be aware that device performance may be reduced during the testing process and confirm that your device specifications are adequate.");
             helpMessage.AppendLine("   - The Gemini API key is required to enable AI analysis of test results. Without a key, the application will still function but without AI features.");
             helpMessage.AppendLine("   - The Discord Webhook URL is required if you want to receive notifications on Discord.");
-            helpMessage.AppendLine("   - For long-term testing, the output panel only shows the last 1000 lines. Use the export feature to save all data.");
 
             return helpMessage.ToString();
         }
