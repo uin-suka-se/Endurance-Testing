@@ -37,7 +37,7 @@ The Endurance Testing application is a tool for evaluating the performance and s
 
 1. Download the latest release from the [Releases page](https://github.com/rahmabintangpratama/Endurance-Testing/releases)
 2. Extract the ZIP file to your desired location
-3. Run the installer package `Endurance-Testing-Installer.exe` or `Endurance-Testing-Installer.msi`
+3. Run the installer package `Endurance-Testing-Installer.msi`
 
 ### Prerequisites
 
