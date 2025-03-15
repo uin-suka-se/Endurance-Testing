@@ -118,23 +118,5 @@ namespace Endurance_Testing.UI
             int b = (int)((255 - color.B) * factor + color.B);
             return Color.FromArgb(color.A, r, g, b);
         }
-
-        // For future usage (if any)
-        //public static void MakeRounded(this Button button, Color backColor, Color hoverBackColor, int radius = 10)
-        //{
-        //    MakeRounded(button, backColor, Color.White, hoverBackColor, Color.FromArgb(230, 230, 230), radius);
-        //}
-
-        //public static void MakeRounded(this Button button)
-        //{
-        //    MakeRounded(
-        //        button,
-        //        Color.FromArgb(64, 158, 255),
-        //        Color.White,
-        //        Color.FromArgb(45, 111, 179),
-        //        Color.FromArgb(230, 230, 230),
-        //        10
-        //    );
-        //}
     }
 }
