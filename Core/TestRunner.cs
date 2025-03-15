@@ -240,12 +240,11 @@ namespace Endurance_Testing.Core
             Stopwatch waitTimeStopwatch = new Stopwatch();
             Stopwatch loadTimeStopwatch = new Stopwatch();
 
-            totalStopwatch.Start();
-            waitTimeStopwatch.Start();
-
             TimeSpan waitTime = TimeSpan.Zero;
             TimeSpan loadTime = TimeSpan.Zero;
             TimeSpan responseTime = TimeSpan.Zero;
+
+            totalStopwatch.Start();
 
             try
             {
@@ -254,6 +253,8 @@ namespace Endurance_Testing.Core
                     using (var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, requestTimeout.Token))
                     {
                         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                        waitTimeStopwatch.Start();
 
                         using (HttpResponseMessage response = await httpClient.SendAsync(request,
                                 HttpCompletionOption.ResponseHeadersRead, combinedToken.Token))
