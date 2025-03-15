@@ -147,7 +147,7 @@ Click the "Export" button to save results in Excel, CSV, JSON, or HTML format, o
 10. Monitor the test results in the output area and remaining time above the output area
 11. After testing completes, use the 'Export' button to save results
 
-> **Note**: Ensure that your internet connection is stable and reliable for conducting this test. Device performance may be reduced during the testing process. The output panel only displays the last 1000 lines for long-term testing - use the export feature to save all data or view EnduranceTestLog.txt in the same directory with your executable file.
+> **Note**: Ensure that your internet connection is stable and reliable for conducting this test. Device performance may be reduced during the testing process. The output text box only displays the last 1000 lines for long-term testing - use the export feature to save all data or view EnduranceTestLog.txt in the same directory with your executable file.
 
 ## License
 
