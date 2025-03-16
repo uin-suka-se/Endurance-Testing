@@ -238,6 +238,11 @@ namespace Endurance_Testing
             DisplayResult(e.Result, e.Round);
         }
 
+        private void MarkRoundComplete()
+        {
+            testRunner.CompleteRound();
+        }
+
         private void TestRunner_RoundCompleted(object sender, RoundCompletedEventArgs e)
         {
             DisplayRoundStatistics(
@@ -265,6 +270,8 @@ namespace Endurance_Testing
             totalResponses = testRunner.TotalResponses;
             totalRequestsProcessed = testRunner.TotalRequestsProcessed;
             totalThroughput = testRunner.TotalThroughput;
+
+            MarkRoundComplete();
         }
 
         private async void TestRunner_TestCompleted(object sender, EventArgs e)
