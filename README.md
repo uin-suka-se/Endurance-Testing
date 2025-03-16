@@ -1,6 +1,12 @@
 ﻿# Endurance Testing
 
-![Endurance Testing](ic_endurance_testing.png)
+<h1 align="center">
+    <div align="center">
+        <div style="text-align:center">
+            <img src="https://github.com/rahmabintangpratama/Endurance-Testing/blob/main/ic_endurance_testing.png" alt="App Icon" width="300"/>
+        </div>
+    </div>
+</h1>
 
 ## Description
 
@@ -45,7 +51,6 @@ The Endurance Testing application is a tool for evaluating the performance and s
 - .NET 8.0 Runtime
 - 64-bit processor
 - 16GB RAM or higher
-- Internet connection
 
 ## How to Use
 
@@ -79,6 +84,10 @@ After testing completes, the application will display:
 3. **AI Analysis** (if API key is provided):
    - Performance evaluation of the tested application
    - Identification of potential issues
+
+4. **Automatic Notifications**:
+   - Test summary is automatically sent to Discord server when testing completes if Discord webhook URL has been provided
+   - Notification includes key metrics and overall performance assessment
 
 ### Exporting Results
 
@@ -151,7 +160,7 @@ Click the "Export" button to save results in Excel, CSV, JSON, or HTML format, o
 
 ## License
 
-[MIT License](LICENSE)
+This **Endurance Testing** project is licensed under the [MIT License](LICENSE).
 
 ## Contact and Information
 
@@ -159,6 +168,6 @@ This application was developed by Rahma Bintang Pratama.
 
 Project Link: [https://github.com/rahmabintangpratama/Endurance-Testing](https://github.com/rahmabintangpratama/Endurance-Testing)
 
-> "Endurance testing, also known as soak testing, involves subjecting an application to a sustained load for an extended period. This methodology helps uncover memory leaks, resource depletion, and other performance degradation issues that might only surface after prolonged usage."
+> "Endurance testing, also known as soak testing, involves subjecting an application to a sustained load for an extended period. This methodology helps uncover memory leaks, resource depletion, and other performance degradation issues that might only surface after prolonged usage." [`[1]`](https://www.doi.org/10.21275/SR23822111402)
 > 
-> — S. Pargaonkar, "A Comprehensive Review of Performance Testing Methodologies and Best Practices: Software Quality Engineering," International Journal of Science and Research (IJSR), vol. 12, no. 8, pp. 2008-2014, August 2023.
+> [`[1]`](https://www.doi.org/10.21275/SR23822111402) S. Pargaonkar, "A Comprehensive Review of Performance Testing Methodologies and Best Practices: Software Quality Engineering," _International Journal of Science and Research (IJSR)_, vol. 12, no. 8, pp. 2008-2014, August 2023.
