@@ -245,6 +245,8 @@ namespace Endurance_Testing
 
         private void TestRunner_RoundCompleted(object sender, RoundCompletedEventArgs e)
         {
+            textBoxOutput.Clear();
+
             DisplayRoundStatistics(
                 e.CpuUsage,
                 e.RamUsage,
@@ -280,7 +282,6 @@ namespace Endurance_Testing
 
             if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
             {
-                await LimitTextBoxLines();
                 await ShowSummary();
                 await SendToDiscordAutomatically();
             }
@@ -288,7 +289,7 @@ namespace Endurance_Testing
             {
                 textBoxOutput.AppendText("Test completed with no results.");
                 LogService.WriteLog("Test completed with no results.");
-                LimitTextBoxLines();
+                textBoxOutput.ScrollToCaret();
             }
 
             btnStart.Enabled = true;
@@ -471,58 +472,6 @@ namespace Endurance_Testing
             bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
             return result;
-        }
-
-        private async Task LimitTextBoxLines(int maxLines = 1000)
-        {
-            if (textBoxOutput.Lines.Length <= maxLines)
-            {
-                textBoxOutput.SelectionStart = textBoxOutput.TextLength;
-                textBoxOutput.ScrollToCaret();
-                return;
-            }
-
-            await Task.Run(() =>
-            {
-                try
-                {
-                    int currentLineCount = textBoxOutput.Lines.Length;
-                    int linesToRemove = currentLineCount - maxLines;
-
-                    int pos = 0;
-                    for (int i = 0; i < linesToRemove; i++)
-                    {
-                        int newlinePos = textBoxOutput.Text.IndexOf('\n', pos);
-                        if (newlinePos < 0)
-                            break;
-
-                        pos = newlinePos + 1;
-                    }
-
-                    if (pos > 0)
-                    {
-                        this.BeginInvoke(new Action(() =>
-                        {
-                            try
-                            {
-                                textBoxOutput.Select(0, pos);
-                                textBoxOutput.SelectedText = "";
-
-                                textBoxOutput.SelectionStart = textBoxOutput.TextLength;
-                                textBoxOutput.ScrollToCaret();
-                            }
-                            catch (Exception ex)
-                            {
-                                // Handle exception
-                            }
-                        }));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Handle exception
-                }
-            });
         }
 
         private async void btnStart_Click(object sender, EventArgs e)
@@ -781,7 +730,7 @@ namespace Endurance_Testing
             string resultString = $"Round {round}: Status: {(int)result.StatusCode}, Reason: {result.ReasonPhrase}, Load Time: {result.LoadTime.TotalMilliseconds} ms, Wait Time: {result.WaitTime.TotalMilliseconds} ms, Response Time: {result.ResponseTime.TotalMilliseconds} ms";
             textBoxOutput.AppendText(resultString + Environment.NewLine);
             LogService.WriteLog(resultString + Environment.NewLine);
-            LimitTextBoxLines();
+            textBoxOutput.ScrollToCaret();
         }
 
         private void DisplayRoundStatistics(double currentCpuUsage,
@@ -811,13 +760,11 @@ namespace Endurance_Testing
 
             textBoxOutput.AppendText(roundStats);
             LogService.WriteLog(roundStats);
-            LimitTextBoxLines();
+            textBoxOutput.ScrollToCaret();
         }
 
         private async Task ShowSummary()
         {
-            await LimitTextBoxLines();
-
             double averageCpuUsage = testRunner.CurrentRound > 0 ? testRunner.TotalCpuUsage / testRunner.CurrentRound : 0;
             double averageRamUsage = testRunner.CurrentRound > 0 ? testRunner.TotalRamUsage / testRunner.CurrentRound : 0;
 
@@ -861,13 +808,13 @@ namespace Endurance_Testing
 
             textBoxOutput.AppendText(summaryMessage);
             LogService.WriteLog(summaryMessage);
-            await LimitTextBoxLines();
+            textBoxOutput.ScrollToCaret();
 
             if (!string.IsNullOrWhiteSpace(textBoxApiKey.Text))
             {
                 textBoxOutput.AppendText(Environment.NewLine + Environment.NewLine + "Fetching AI analysis..." + Environment.NewLine);
                 LogService.WriteLog(Environment.NewLine + Environment.NewLine + "Fetching AI analysis..." + Environment.NewLine);
-                await LimitTextBoxLines();
+                textBoxOutput.ScrollToCaret();
 
                 string url = testRunner.Url;
                 double averageErrorRate = (testRunner.TotalFailedRequests / (double)testRunner.TotalRequestsProcessed) * 100;
@@ -899,7 +846,7 @@ namespace Endurance_Testing
                     LogService.WriteLog(aiResultHeader + Environment.NewLine + Environment.NewLine);
                     LogService.WriteLog(aiAnalysisResult + Environment.NewLine);
                     LogService.WriteLog(aiResultFooter);
-                    await LimitTextBoxLines();
+                    textBoxOutput.ScrollToCaret();
                 }
             }
         }
@@ -1207,20 +1154,20 @@ namespace Endurance_Testing
                     {
                         textBoxOutput.AppendText("\r\n[INFO] Test summary successfully sent to Discord!");
                         LogService.WriteLog("\r\n[INFO] Test summary successfully sent to Discord!");
-                        await LimitTextBoxLines();
+                        textBoxOutput.ScrollToCaret();
                     }
                     else
                     {
                         textBoxOutput.AppendText("\r\n[ERROR] Failed to send test summary to Discord. Check your webhook URL and internet connection.");
                         LogService.WriteLog("\r\n[ERROR] Failed to send test summary to Discord. Check your webhook URL and internet connection.");
-                        await LimitTextBoxLines();
+                        textBoxOutput.ScrollToCaret();
                     }
                 }
                 catch (Exception ex)
                 {
                     textBoxOutput.AppendText($"\r\n[ERROR] Error sending to Discord: {ex.Message}");
                     LogService.WriteLog($"\r\n[ERROR] Error sending to Discord: {ex.Message}");
-                    await LimitTextBoxLines();
+                    textBoxOutput.ScrollToCaret();
                 }
             }
         }

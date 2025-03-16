@@ -292,11 +292,11 @@ namespace Endurance_Testing.Services
                 {
                     Round = g.Key,
                     RequestPerRound = g.First().RequestPerRound,
-                    SuccessfulRequests = g.Sum(r => r.SuccessfulRequests),
-                    FailedRequests = g.Sum(r => r.FailedRequests),
+                    SuccessfulRequests = g.Sum(r => r.StatusCode == System.Net.HttpStatusCode.OK ? 1 : 0),
+                    FailedRequests = g.Sum(r => r.StatusCode != System.Net.HttpStatusCode.OK ? 1 : 0),
                     AverageResponseTime = g.Average(r => r.AverageResponseTime),
                     Throughput = g.Average(r => r.Throughput),
-                    ErrorRate = g.Sum(r => r.FailedRequests) * 100.0 / g.First().RequestPerRound,
+                    ErrorRate = g.Sum(r => r.StatusCode != System.Net.HttpStatusCode.OK ? 1 : 0) * 100.0 / g.First().RequestPerRound,
                     CpuUsage = g.Average(r => r.CpuUsage),
                     RamUsage = g.Average(r => r.RamUsage),
                     RoundDuration = g.Max(r => r.RoundDuration)
