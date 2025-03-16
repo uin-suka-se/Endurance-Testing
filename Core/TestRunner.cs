@@ -12,6 +12,7 @@ namespace Endurance_Testing.Core
     public class TestRunner
     {
         private List<EnduranceTestResult> _testResults = new List<EnduranceTestResult>();
+        private TaskCompletionSource<bool> roundCompletedTcs;
 
         public string Url { get; set; }
         public int MinRequests { get; set; }
@@ -126,7 +127,7 @@ namespace Endurance_Testing.Core
                 double roundCpuUsage = await SystemMonitor.GetCpuUsage();
                 double roundRamUsage = await SystemMonitor.GetRamUsage();
 
-                int maxRetries = 30;
+                int maxRetries = 5;
                 int retryCount = 0;
 
                 while (roundCpuUsage == 0.0 && retryCount < maxRetries)
@@ -216,12 +217,14 @@ namespace Endurance_Testing.Core
                     TotalResponses += currentRequests;
                     TotalRequestsProcessed += currentRequests;
 
+                    roundCompletedTcs = new TaskCompletionSource<bool>();
                     RoundCompleted?.Invoke(this, new RoundCompletedEventArgs(
                         roundCpuUsage, roundRamUsage,
                         roundSuccessfulRequests, roundFailedRequests,
                         averageRoundLoadTime, averageRoundWaitTime, averageRoundResponseTime,
                         throughput, errorRate, roundDuration, currentRequests
                     ));
+                    await roundCompletedTcs.Task;
                 }
 
                 if (stopwatchTotal.Elapsed.TotalSeconds >= DurationInSeconds)
@@ -232,6 +235,11 @@ namespace Endurance_Testing.Core
 
             stopwatchTotal.Stop();
             TestCompleted?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void CompleteRound()
+        {
+            roundCompletedTcs?.TrySetResult(true);
         }
 
         private async Task<EnduranceTestResult> SendHttpRequest(HttpClient httpClient, string url, int round, CancellationToken cancellationToken, int currentRequests)
@@ -256,8 +264,7 @@ namespace Endurance_Testing.Core
 
                         waitTimeStopwatch.Start();
 
-                        using (HttpResponseMessage response = await httpClient.SendAsync(request,
-                                HttpCompletionOption.ResponseHeadersRead, combinedToken.Token))
+                        using (HttpResponseMessage response = await httpClient.SendCompressedAsync(request))
                         {
                             waitTime = waitTimeStopwatch.Elapsed;
                             waitTimeStopwatch.Stop();
