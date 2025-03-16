@@ -361,13 +361,28 @@ namespace Endurance_Testing
                 btnClear.Enabled = true;
             }
 
-            if (textBoxTimeout.Text.Length > 8)
+            if (textBoxTimeout.Text.Length > 6)
             {
-                MessageBox.Show("Input timeout should be limited to 8 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxTimeout.Text = textBoxTimeout.Text.Substring(0, 8);
+                MessageBox.Show("Input timeout should be limited to 6 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBoxTimeout.Text = textBoxTimeout.Text.Substring(0, 6);
                 textBoxTimeout.SelectionStart = textBoxTimeout.Text.Length;
             }
 
+        }
+
+        private void textBoxTime_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxTime.Text.Length > 0 && !isRunning)
+            {
+                btnClear.Enabled = true;
+            }
+
+            if (textBoxTime.Text.Length > 6)
+            {
+                MessageBox.Show("Input time in period should be limited to 6 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBoxTime.Text = textBoxTime.Text.Substring(0, 6);
+                textBoxTime.SelectionStart = textBoxTime.Text.Length;
+            }
         }
 
         private void textBoxApiKey_TextChanged(object sender, EventArgs e)
@@ -429,21 +444,6 @@ namespace Endurance_Testing
                 {
                     handledEventArgs.Handled = true;
                 }
-            }
-        }
-
-        private void textBoxTime_TextChanged(object sender, EventArgs e)
-        {
-            if (textBoxTime.Text.Length > 0 && !isRunning)
-            {
-                btnClear.Enabled = true;
-            }
-
-            if (textBoxTime.Text.Length > 8)
-            {
-                MessageBox.Show("Input time in period should be limited to 8 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxTime.Text = textBoxTime.Text.Substring(0, 8);
-                textBoxTime.SelectionStart = textBoxTime.Text.Length;
             }
         }
 
@@ -527,7 +527,10 @@ namespace Endurance_Testing
             string url = textBoxInputUrl.Text;
             if (string.IsNullOrWhiteSpace(url) || !IsValidUrl(url))
             {
-                MessageBox.Show("Please enter a valid URL.");
+                MessageBox.Show("Please enter a valid URL.",
+                                "Invalid Input",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
                 isRunning = false;
                 return;
             }
@@ -535,7 +538,10 @@ namespace Endurance_Testing
 
             if (!int.TryParse(textBoxInputRequest.Text, out int minRequests) || minRequests <= 0)
             {
-                MessageBox.Show("Please enter a valid number of requests.");
+                MessageBox.Show("Please enter a valid number of requests.",
+                                "Invalid Input",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
                 isRunning = false;
                 return;
             }
@@ -549,14 +555,20 @@ namespace Endurance_Testing
             {
                 if (!int.TryParse(textBoxInputMaxRequest.Text, out int maxRequests) || maxRequests <= 0)
                 {
-                    MessageBox.Show("Please enter a valid maximum number of requests.");
+                    MessageBox.Show("Please enter a valid maximum number of requests.",
+                                    "Invalid Input",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
                     isRunning = false;
                     return;
                 }
 
                 if (maxRequests <= minRequests)
                 {
-                    MessageBox.Show("Maximum requests must be greater than minimum requests.");
+                    MessageBox.Show("Maximum requests must be greater than minimum requests.",
+                                    "Invalid Input",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
                     isRunning = false;
                     return;
                 }
@@ -571,7 +583,10 @@ namespace Endurance_Testing
 
             if (!int.TryParse(textBoxTimeout.Text, out int timeoutValue) || timeoutValue <= 0)
             {
-                MessageBox.Show("Please enter a valid timeout.");
+                MessageBox.Show("Please enter a valid timeout.",
+                                "Invalid Input",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
                 isRunning = false;
                 return;
             }
@@ -580,7 +595,10 @@ namespace Endurance_Testing
 
             if (!long.TryParse(textBoxTime.Text, out long durationValue) || durationValue <= 0)
             {
-                MessageBox.Show("Please enter a valid duration.");
+                MessageBox.Show("Please enter a valid duration.",
+                                "Invalid Input",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
                 isRunning = false;
                 return;
             }
@@ -601,15 +619,21 @@ namespace Endurance_Testing
             }
             else
             {
-                MessageBox.Show("Please select a time period (seconds, minutes, or hours).");
+                MessageBox.Show("Please select a time period (seconds, minutes, or hours).",
+                                "Invalid Input",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
                 isRunning = false;
                 return;
             }
 
-            long maxDurationInSeconds = 86400 * 365;
+            long maxDurationInSeconds = 86400 * 3;
             if (durationValue > maxDurationInSeconds)
             {
-                MessageBox.Show("Duration exceeds the maximum limit of 1 year (which is 8760 hours, 525600 minutes, or 31536000 seconds).");
+                MessageBox.Show("Duration exceeds the maximum limit of 3 days (72 hours, 4320 minutes, or 259200 seconds).",
+                                "Duration Too Long",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
                 isRunning = false;
                 return;
             }
