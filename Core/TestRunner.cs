@@ -131,7 +131,7 @@ namespace Endurance_Testing.Core
 
                 while (roundCpuUsage == 0.0 && retryCount < maxRetries)
                 {
-                    Thread.Sleep(100);
+                    await Task.Delay(100);
                     roundCpuUsage = await SystemMonitor.GetCpuUsage();
                     retryCount++;
                 }
