@@ -75,6 +75,9 @@ namespace Endurance_Testing
             textBoxInputMaxRequest.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
             textBoxTimeout.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
             textBoxTime.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
+            radioButtonSecond.CheckedChanged += radioButton_CheckedChanged;
+            radioButtonMinute.CheckedChanged += radioButton_CheckedChanged;
+            radioButtonHour.CheckedChanged += radioButton_CheckedChanged;
             comboBoxMode.SelectedIndex = 0;
             comboBoxMode.SelectedIndexChanged += new EventHandler(comboBoxMode_SelectedIndexChanged);
 
@@ -382,6 +385,14 @@ namespace Endurance_Testing
                 MessageBox.Show("Input time in period should be limited to 6 digits.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxTime.Text = textBoxTime.Text.Substring(0, 6);
                 textBoxTime.SelectionStart = textBoxTime.Text.Length;
+            }
+        }
+
+        private void radioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!isRunning)
+            {
+                btnClear.Enabled = true;
             }
         }
 
@@ -949,6 +960,9 @@ namespace Endurance_Testing
             textBoxInputMaxRequest.Clear();
             textBoxTime.Clear();
             textBoxTimeout.Clear();
+            radioButtonSecond.Checked = false;
+            radioButtonMinute.Checked = false;
+            radioButtonHour.Checked = false;
             lblTimeLeft.Text = "00:00:00:00";
             textBoxOutput.Clear();
             enduranceTestResults.Clear();
