@@ -23,9 +23,9 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("6. (Optional) Enter your Gemini API key in the settings to enable AI-powered test result analysis.");
             helpMessage.AppendLine("7. (Optional) Enter Discord Webhook URL in the text field labeled 'Discord Webhook URL:' to automatically send test summary to Discord Server after completion.");
             helpMessage.AppendLine("8. Click the 'Start' button to initiate the endurance test.");
-            helpMessage.AppendLine("9. Monitor the test results in the 'Output:' text area below the input fields and the remaining time above the output area.");
-            helpMessage.AppendLine("   - Output text box only displays the last 1000 lines. To view complete data, please export the test results or view EnduranceTestLog.txt in the same directory with your executable file.");
-            helpMessage.AppendLine("10. Upon test completion, the 'Output:' area will display:");
+            helpMessage.AppendLine("9. Monitor the test results in the output text box and the remaining time above the output text box.");
+            helpMessage.AppendLine("   - Output text box only displays the latest round results. To view complete data, please export the test results or view EnduranceTestLog.txt in the same directory with your executable file.");
+            helpMessage.AppendLine("10. Upon test completion, the output text box will display:");
             helpMessage.AppendLine("    - Total Requests: The total number of requests sent during the test.");
             helpMessage.AppendLine("    - Successful Requests: The number of requests that received a successful HTTP 200 (OK) response.");
             helpMessage.AppendLine("    - Failed Requests: The number of requests that did not receive an HTTP 200 (OK) response or timed out.");
@@ -38,7 +38,7 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("    - Average Error Rate: The percentage of requests that failed or timed out.");
             helpMessage.AppendLine("    - Average Round Duration: The average time in seconds it takes to complete one round of requests.");
             helpMessage.AppendLine("    - AI Analysis: If Gemini API key is provided, an AI-generated analysis of test results.");
-            helpMessage.AppendLine("11. Click the 'Clear' button to reset the input fields and the output area.");
+            helpMessage.AppendLine("11. Click the 'Clear' button to reset the input fields and the output text box.");
             helpMessage.AppendLine("12. Click the 'Export' button to save test results in various formats:");
             helpMessage.AppendLine("    - Excel (.xlsx)");
             helpMessage.AppendLine("    - CSV (.csv)");
