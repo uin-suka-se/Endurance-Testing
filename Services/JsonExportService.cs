@@ -41,7 +41,8 @@ namespace Endurance_Testing.Services
                         {
                             WriteIndented = true,
                             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                            Converters = { new TimeSpanConverter() }
                         };
 
                         string jsonString = JsonSerializer.Serialize(exportData, options);
@@ -76,5 +77,18 @@ namespace Endurance_Testing.Services
     {
         public DateTime ExportDate { get; set; }
         public string Url { get; set; }
+    }
+
+    public class TimeSpanConverter : JsonConverter<TimeSpan>
+    {
+        public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return TimeSpan.FromMilliseconds(reader.GetDouble());
+        }
+
+        public override void Write(Utf8JsonWriter writer, TimeSpan value, JsonSerializerOptions options)
+        {
+            writer.WriteNumberValue(value.TotalMilliseconds);
+        }
     }
 }
