@@ -205,8 +205,24 @@ namespace Endurance_Testing.Services
                 html.AppendLine($"                        <tr><td>Maximum Requests</td><td>{testParameters.MaxRequests}</td></tr>");
             }
 
+            string period = testParameters.SelectedTimePeriod;
+            long duration = testParameters.DurationInSeconds;
+
+            if (period == "hour(s)")
+            {
+                duration = testParameters.DurationInSeconds / 3600;
+            }
+            else if (period == "minute(s)")
+            {
+                duration = testParameters.DurationInSeconds / 60;
+            }
+            else
+            {
+                duration = testParameters.DurationInSeconds;
+            }
+
             html.AppendLine($"                        <tr><td>Timeout Per Round</td><td>{testParameters.TimeoutInSeconds} seconds</td></tr>");
-            html.AppendLine($"                        <tr><td>Test Duration</td><td>{testParameters.SelectedTimePeriod}</td></tr>");
+            html.AppendLine($"                        <tr><td>Test Duration</td><td>{duration} {testParameters.SelectedTimePeriod}</td></tr>");
             html.AppendLine("                    </table>");
             html.AppendLine("                </div>");
             html.AppendLine("            </div>");

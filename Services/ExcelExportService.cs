@@ -196,9 +196,25 @@ namespace Endurance_Testing.Services
             worksheet.Cell(paramStartRow, paramStartColumn).Value = "Timeout Per Round:";
             worksheet.Cell(paramStartRow, paramStartColumn + 1).Value = testParameters.TimeoutInSeconds + " second(s)";
 
+            string period = testParameters.SelectedTimePeriod;
+            long duration = testParameters.DurationInSeconds;
+
+            if (period == "hour(s)")
+            {
+                duration = testParameters.DurationInSeconds / 3600;
+            }
+            else if (period == "minute(s)")
+            {
+                duration = testParameters.DurationInSeconds / 60;
+            }
+            else
+            {
+                duration = testParameters.DurationInSeconds;
+            }
+
             paramStartRow++;
             worksheet.Cell(paramStartRow, paramStartColumn).Value = "Time in Period:";
-            worksheet.Cell(paramStartRow, paramStartColumn + 1).Value = testParameters.SelectedTimePeriod;
+            worksheet.Cell(paramStartRow, paramStartColumn + 1).Value = duration + " " + testParameters.SelectedTimePeriod;
 
             return paramStartColumn + 1;
         }

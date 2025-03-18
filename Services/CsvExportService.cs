@@ -90,8 +90,24 @@ namespace Endurance_Testing.Services
                                 writer.WriteLine($"Maximum Requests,{testParameters.MaxRequests}");
                             }
 
+                            string period = testParameters.SelectedTimePeriod;
+                            long duration = testParameters.DurationInSeconds;
+
+                            if (period == "hour(s)")
+                            {
+                                duration = testParameters.DurationInSeconds / 3600;
+                            }
+                            else if (period == "minute(s)")
+                            {
+                                duration = testParameters.DurationInSeconds / 60;
+                            }
+                            else
+                            {
+                                duration = testParameters.DurationInSeconds;
+                            }
+
                             writer.WriteLine($"Timeout Per Round,{testParameters.TimeoutInSeconds} seconds");
-                            writer.WriteLine($"Test Duration,{testParameters.SelectedTimePeriod}");
+                            writer.WriteLine($"Test Duration, {duration} {testParameters.SelectedTimePeriod}");
 
                             if (!string.IsNullOrWhiteSpace(aiAnalysisResult))
                             {
