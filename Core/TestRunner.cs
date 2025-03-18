@@ -12,7 +12,7 @@ namespace Endurance_Testing.Core
     public class TestRunner
     {
         private List<EnduranceTestResult> _testResults = new List<EnduranceTestResult>();
-        private SemaphoreSlim _semaphore = new SemaphoreSlim(100);
+        private SemaphoreSlim _semaphore = new SemaphoreSlim(10);
         private TaskCompletionSource<bool> roundCompletedTcs;
 
         public string Url { get; set; }
@@ -75,7 +75,7 @@ namespace Endurance_Testing.Core
         public async Task RunTest(CancellationToken cancellationToken)
         {
             ThreadPool.SetMinThreads(10, 10);
-            ThreadPool.SetMaxThreads(100, 100);
+            ThreadPool.SetMaxThreads(10, 10);
 
             Reset();
             HttpClient httpClient = HttpClientProvider.Instance;

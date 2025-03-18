@@ -20,12 +20,13 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("   - Fluctuative: Dispatches a random number of requests within the defined minimum and maximum range for each round.");
             helpMessage.AppendLine("4. Enter the timeout threshold in seconds for each test round in the text field labeled 'Timeout Per-Round (In Seconds):'.");
             helpMessage.AppendLine("5. Enter the test duration in the 'Time in Period:' field and select the unit of time (seconds, minutes, or hours) using the radio buttons to the right of this field.");
-            helpMessage.AppendLine("6. (Optional) Enter your Gemini API key in the settings to enable AI-powered test result analysis.");
+            helpMessage.AppendLine("6. (Optional) Enter your Gemini API key in the text field labeled 'Gemini API Key:' to enable AI-powered descriptive test summary.");
             helpMessage.AppendLine("7. (Optional) Enter Discord Webhook URL in the text field labeled 'Discord Webhook URL:' to automatically send test summary to Discord Server after completion.");
             helpMessage.AppendLine("8. Click the 'Start' button to initiate the endurance test.");
-            helpMessage.AppendLine("9. Monitor the test results in the output text box and the remaining time above the output text box.");
+            helpMessage.AppendLine("9. Click the 'Stop' button if you want to stop the test before the countdown finishes.");
+            helpMessage.AppendLine("10. Monitor the test results in the output text box and the remaining time above the output text box.");
             helpMessage.AppendLine("   - Output text box only displays the latest round results. To view complete data, please export the test results or view EnduranceTestLog.txt in the same directory with your executable file.");
-            helpMessage.AppendLine("10. Upon test completion, the output text box will display:");
+            helpMessage.AppendLine("11. Upon test completion, the output text box will display:");
             helpMessage.AppendLine("    - Total Requests: The total number of requests sent during the test.");
             helpMessage.AppendLine("    - Successful Requests: The number of requests that received a successful HTTP 200 (OK) response.");
             helpMessage.AppendLine("    - Failed Requests: The number of requests that did not receive an HTTP 200 (OK) response or timed out.");
@@ -37,9 +38,9 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("    - Average Throughput: The average number of requests processed per second.");
             helpMessage.AppendLine("    - Average Error Rate: The percentage of requests that failed or timed out.");
             helpMessage.AppendLine("    - Average Round Duration: The average time in seconds it takes to complete one round of requests.");
-            helpMessage.AppendLine("    - AI Analysis: If Gemini API key is provided, an AI-generated analysis of test results.");
-            helpMessage.AppendLine("11. Click the 'Clear' button to reset the input fields and the output text box.");
-            helpMessage.AppendLine("12. Click the 'Export' button to save test results in various formats:");
+            helpMessage.AppendLine("    - AI Analysis: If Gemini API key is provided, an AI-generated descriptive test summary.");
+            helpMessage.AppendLine("12. Click the 'Clear' button to reset the input fields and the output text box.");
+            helpMessage.AppendLine("13. Click the 'Export' button to save test results in various formats:");
             helpMessage.AppendLine("    - Excel (.xlsx)");
             helpMessage.AppendLine("    - CSV (.csv)");
             helpMessage.AppendLine("    - JSON (.json)");
@@ -49,8 +50,8 @@ namespace Endurance_Testing.Helpers
             helpMessage.AppendLine("Note:");
             helpMessage.AppendLine("   - Ensure that your internet connection is stable and reliable for conducting this test.");
             helpMessage.AppendLine("   - Be aware that device performance may be reduced during the testing process and confirm that your device specifications are adequate.");
-            helpMessage.AppendLine("   - The Gemini API key is required to enable AI analysis of test results. Without a key, the application will still function but without AI features.");
-            helpMessage.AppendLine("   - The Discord Webhook URL is required if you want to receive notifications on Discord.");
+            helpMessage.AppendLine("   - The Gemini API key is required to enable AI-powered descriptive test summary. Without a key, the application will still function but without AI features.");
+            helpMessage.AppendLine("   - The Discord Webhook URL is required if you want to receive notifications on Discord Server.");
 
             return helpMessage.ToString();
         }
