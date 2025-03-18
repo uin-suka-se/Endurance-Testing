@@ -81,8 +81,8 @@ After testing completes, the application will display:
    - Average error rate
    - Average round duration
 
-3. **AI Analysis** (if API key is provided):
-   - Performance evaluation of the tested application
+3. **AI Analysis** (if Gemini API key is provided):
+   - Performance evaluation of the tested web application
    - Identification of potential issues
 
 4. **Automatic Notifications**:
@@ -150,11 +150,12 @@ Click the "Export" button to save results in Excel, CSV, JSON, or HTML format, o
    - Fluctuative: Dispatches a random number of requests within the defined range
 5. Enter the timeout threshold in seconds for each test round
 6. Enter the test duration and select the time unit (seconds/minutes/hours)
-7. (Optional) Enter your Gemini API key for AI-powered test result analysis
+7. (Optional) Enter your Gemini API key for AI-powered descriptive test summary
 8. (Optional) Enter Discord Webhook URL for automatic summary delivery
 9. Click the 'Start' button to initiate the endurance test
-10. Monitor the test results in the output text box and remaining time above the output text box
-11. After testing completes, use the 'Export' button to save results
+10. Click the 'Stop' button if you want to stop the test before the countdown finishes
+11. Monitor the test results in the output text box and remaining time above the output text box
+12. After testing completes, use the 'Export' button to save results
 
 > **Note**: Ensure that your internet connection is stable and reliable for conducting this test. Device performance may be reduced during the testing process. The output text box only displays the latest round results - use the export feature to save all data or view EnduranceTestLog.txt in the same directory with your executable file.
 
