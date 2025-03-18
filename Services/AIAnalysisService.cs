@@ -10,10 +10,11 @@ namespace Endurance_Testing.Services
 {
     public class AIAnalysisService
     {
-        public static async Task<string> GetAIAnalysis(string apiKey, string url, double averageCpuUsage,
-            double averageRamUsage, double averageLoadTime, double averageWaitTime,
-            double averageResponseTime, double averageThroughput, double averageErrorRate,
-            int totalSuccessful, int totalFailed, int totalRequests)
+        public static async Task<string> GetAIAnalysis(string apiKey, string url,
+            double averageLoadTime, double averageWaitTime,
+            double averageResponseTime, double averageThroughput,
+            double averageErrorRate, int totalSuccessful,
+            int totalFailed, int totalRequests)
         {
             if (string.IsNullOrWhiteSpace(apiKey))
             {

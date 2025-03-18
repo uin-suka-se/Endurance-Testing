@@ -829,8 +829,6 @@ namespace Endurance_Testing
                 aiAnalysisResult = await AIAnalysisService.GetAIAnalysis(
                     textBoxApiKey.Text.Trim(),
                     url,
-                    averageCpuUsage,
-                    averageRamUsage,
                     averageLoadTime,
                     averageWaitTime,
                     averageResponseTime,
