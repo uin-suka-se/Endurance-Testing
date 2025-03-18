@@ -21,6 +21,7 @@ namespace Endurance_Testing
         private TestRunner testRunner;
         private CancellationTokenSource cancellationTokenSource;
         private List<EnduranceTestResult> enduranceTestResults = new List<EnduranceTestResult>();
+        private List<string> roundResults = new List<string>();
         private int totalRequestsProcessed;
         private int totalRequests;
         private int maxRequests;
@@ -246,6 +247,12 @@ namespace Endurance_Testing
         private void TestRunner_RoundCompleted(object sender, RoundCompletedEventArgs e)
         {
             textBoxOutput.Clear();
+
+            foreach (var result in roundResults)
+            {
+                textBoxOutput.AppendText(result + Environment.NewLine);
+            }
+            roundResults.Clear();
 
             DisplayRoundStatistics(
                 e.CpuUsage,
@@ -729,8 +736,8 @@ namespace Endurance_Testing
         {
             string resultString = $"Round {round}: Status: {(int)result.StatusCode}, Reason: {result.ReasonPhrase}, Load Time: {result.LoadTime.TotalMilliseconds} ms, Wait Time: {result.WaitTime.TotalMilliseconds} ms, Response Time: {result.ResponseTime.TotalMilliseconds} ms";
             textBoxOutput.AppendText(resultString + Environment.NewLine);
+            roundResults.Add(resultString);
             LogService.WriteLog(resultString + Environment.NewLine);
-            textBoxOutput.ScrollToCaret();
         }
 
         private void DisplayRoundStatistics(double currentCpuUsage,

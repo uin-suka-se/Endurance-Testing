@@ -90,7 +90,7 @@
             // textBoxInputMaxRequest
             // 
             textBoxInputMaxRequest.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxInputMaxRequest.Location = new System.Drawing.Point(808, 134);
+            textBoxInputMaxRequest.Location = new System.Drawing.Point(775, 134);
             textBoxInputMaxRequest.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxInputMaxRequest.MaxLength = 999999999;
             textBoxInputMaxRequest.Name = "textBoxInputMaxRequest";
@@ -248,7 +248,7 @@
             // textBoxInputRequest
             // 
             textBoxInputRequest.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            textBoxInputRequest.Location = new System.Drawing.Point(600, 134);
+            textBoxInputRequest.Location = new System.Drawing.Point(567, 134);
             textBoxInputRequest.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxInputRequest.MaxLength = 999999999;
             textBoxInputRequest.Name = "textBoxInputRequest";
@@ -260,7 +260,7 @@
             // 
             lblInputNumberOfRequest.AutoSize = true;
             lblInputNumberOfRequest.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblInputNumberOfRequest.Location = new System.Drawing.Point(600, 88);
+            lblInputNumberOfRequest.Location = new System.Drawing.Point(567, 88);
             lblInputNumberOfRequest.Name = "lblInputNumberOfRequest";
             lblInputNumberOfRequest.Size = new System.Drawing.Size(390, 32);
             lblInputNumberOfRequest.TabIndex = 0;
@@ -323,7 +323,7 @@
             textBoxInputUrl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxInputUrl.MaxLength = 999999999;
             textBoxInputUrl.Name = "textBoxInputUrl";
-            textBoxInputUrl.Size = new System.Drawing.Size(545, 37);
+            textBoxInputUrl.Size = new System.Drawing.Size(510, 37);
             textBoxInputUrl.TabIndex = 1;
             textBoxInputUrl.TextChanged += textBoxInputUrl_TextChanged;
             // 
@@ -376,9 +376,9 @@
             comboBoxMode.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             comboBoxMode.FormattingEnabled = true;
             comboBoxMode.Items.AddRange(new object[] { "Stable", "Progressive", "Fluctuative" });
-            comboBoxMode.Location = new System.Drawing.Point(1037, 129);
+            comboBoxMode.Location = new System.Drawing.Point(1005, 129);
             comboBoxMode.Name = "comboBoxMode";
-            comboBoxMode.Size = new System.Drawing.Size(119, 38);
+            comboBoxMode.Size = new System.Drawing.Size(151, 38);
             comboBoxMode.TabIndex = 4;
             comboBoxMode.SelectedIndexChanged += comboBoxMode_SelectedIndexChanged;
             // 
@@ -386,7 +386,7 @@
             // 
             lblInputMode.AutoSize = true;
             lblInputMode.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            lblInputMode.Location = new System.Drawing.Point(1020, 88);
+            lblInputMode.Location = new System.Drawing.Point(988, 88);
             lblInputMode.Name = "lblInputMode";
             lblInputMode.Size = new System.Drawing.Size(82, 32);
             lblInputMode.TabIndex = 0;
