@@ -121,10 +121,25 @@ namespace Endurance_Testing.Services
                 sb.AppendLine($"**Round Requests**: {parameters.MinRequests}");
             }
 
-            sb.AppendLine($"**Duration**: {parameters.DurationInSeconds} seconds");
             sb.AppendLine($"**Timeout**: {parameters.TimeoutInSeconds} seconds");
 
-            sb.AppendLine($"**Time Period**: {parameters.SelectedTimePeriod}");
+            string period = parameters.SelectedTimePeriod;
+            long duration = parameters.DurationInSeconds;
+
+            if (period == "hour(s)")
+            {
+                duration = parameters.DurationInSeconds / 3600;
+            }
+            else if (period == "minute(s)")
+            {
+                duration = parameters.DurationInSeconds / 60;
+            }
+            else
+            {
+                duration = parameters.DurationInSeconds;
+            }
+
+            sb.AppendLine($"**Test Duration**: {duration} {parameters.SelectedTimePeriod}");
             return sb.ToString();
         }
 
