@@ -37,7 +37,7 @@ The Endurance Testing application is a tool for evaluating the performance and s
 
 - **Visualization and Analytics**:
   - Modern interface design
-  - Test summary and result analysis
+  - Test summary analysis
 
 ## Installation
 
