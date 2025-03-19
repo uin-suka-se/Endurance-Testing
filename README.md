@@ -1,11 +1,7 @@
 ﻿# Endurance Testing
 
 <h1 align="center">
-    <div align="center">
-        <div style="text-align:center">
-            <img src="https://github.com/rahmabintangpratama/Endurance-Testing/blob/main/ic_endurance_testing.png" alt="App Icon" width="300"/>
-        </div>
-    </div>
+    <img src="ic_endurance_testing.png" alt="App Icon" width="300"/>
 </h1>
 
 ## Description

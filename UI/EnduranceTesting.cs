@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,25 +20,10 @@ namespace Endurance_Testing
     public partial class EnduranceTesting : UI.MacStyleTitleBar
     {
         private TestRunner testRunner;
+        private TestSummary testSummary;
         private CancellationTokenSource cancellationTokenSource;
         private List<EnduranceTestResult> enduranceTestResults = new List<EnduranceTestResult>();
         private List<string> roundResults = new List<string>();
-        private int totalRequestsProcessed;
-        private int totalRequests;
-        private int maxRequests;
-        private int timeoutInSeconds;
-        private long durationInSeconds;
-        private int currentRound;
-        private int totalSuccessfulRequests;
-        private int totalFailedRequests;
-        private int totalErrors;
-        private double totalCpuUsage;
-        private double totalRamUsage;
-        private double totalLoadTime;
-        private double totalWaitTime;
-        private double totalResponseTime;
-        private int totalResponses;
-        private double totalThroughput;
         private bool isRunning = false;
         private string selectedTimePeriod;
         private string aiAnalysisResult = "";
@@ -71,6 +57,8 @@ namespace Endurance_Testing
             testRunner.ResultReceived += TestRunner_ResultReceived;
             testRunner.RoundCompleted += TestRunner_RoundCompleted;
             testRunner.TestCompleted += TestRunner_TestCompleted;
+
+            testSummary = new TestSummary();
 
             textBoxInputRequest.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
             textBoxInputMaxRequest.KeyPress += new KeyPressEventHandler(textBoxOnlyNumber_KeyPress);
@@ -268,17 +256,17 @@ namespace Endurance_Testing
                 e.RequestCount
             );
 
-            currentRound = testRunner.CurrentRound;
-            totalSuccessfulRequests = testRunner.TotalSuccessfulRequests;
-            totalFailedRequests = testRunner.TotalFailedRequests;
-            totalCpuUsage = testRunner.TotalCpuUsage;
-            totalRamUsage = testRunner.TotalRamUsage;
-            totalLoadTime = testRunner.TotalLoadTime;
-            totalWaitTime = testRunner.TotalWaitTime;
-            totalResponseTime = testRunner.TotalResponseTime;
-            totalResponses = testRunner.TotalResponses;
-            totalRequestsProcessed = testRunner.TotalRequestsProcessed;
-            totalThroughput = testRunner.TotalThroughput;
+            testSummary.CurrentRound = testRunner.CurrentRound;
+            testSummary.TotalSuccessfulRequests = testRunner.TotalSuccessfulRequests;
+            testSummary.TotalFailedRequests = testRunner.TotalFailedRequests;
+            testSummary.TotalCpuUsage = testRunner.TotalCpuUsage;
+            testSummary.TotalRamUsage = testRunner.TotalRamUsage;
+            testSummary.TotalLoadTime = testRunner.TotalLoadTime;
+            testSummary.TotalWaitTime = testRunner.TotalWaitTime;
+            testSummary.TotalResponseTime = testRunner.TotalResponseTime;
+            testSummary.TotalResponses = testRunner.TotalResponses;
+            testSummary.TotalRequestsProcessed = testRunner.TotalRequestsProcessed;
+            testSummary.TotalThroughput = testRunner.TotalThroughput;
 
             MarkRoundComplete();
         }
@@ -520,7 +508,6 @@ namespace Endurance_Testing
                 return;
             }
             testRunner.MinRequests = minRequests;
-            totalRequests = minRequests;
 
             string selectedMode = comboBoxMode.SelectedItem.ToString();
             testRunner.TestMode = selectedMode;
@@ -565,7 +552,6 @@ namespace Endurance_Testing
                 return;
             }
             testRunner.TimeoutInSeconds = timeoutValue;
-            timeoutInSeconds = timeoutValue;
 
             if (!long.TryParse(textBoxTime.Text, out long durationValue) || durationValue <= 0)
             {
@@ -633,7 +619,6 @@ namespace Endurance_Testing
             LogService.InitializeLog();
 
             testRunner.DurationInSeconds = durationValue;
-            durationInSeconds = durationValue;
 
             textBoxOutput.Clear();
             lblTimeLeft.Text = "00:00:00:00";
@@ -644,23 +629,22 @@ namespace Endurance_Testing
             btnClear.Enabled = false;
             btnExport.Enabled = false;
 
-            currentRound = 0;
-            totalSuccessfulRequests = 0;
-            totalFailedRequests = 0;
-            totalCpuUsage = 0;
-            totalRamUsage = 0;
-            totalLoadTime = 0;
-            totalWaitTime = 0;
-            totalResponseTime = 0;
-            totalResponses = 0;
-            totalRequestsProcessed = 0;
-            totalErrors = 0;
-            totalThroughput = 0;
+            testSummary.CurrentRound = 0;
+            testSummary.TotalSuccessfulRequests = 0;
+            testSummary.TotalFailedRequests = 0;
+            testSummary.TotalCpuUsage = 0;
+            testSummary.TotalRamUsage = 0;
+            testSummary.TotalLoadTime = 0;
+            testSummary.TotalWaitTime = 0;
+            testSummary.TotalResponseTime = 0;
+            testSummary.TotalResponses = 0;
+            testSummary.TotalRequestsProcessed = 0;
+            testSummary.TotalThroughput = 0;
             aiAnalysisResult = "";
 
             cancellationTokenSource = new CancellationTokenSource();
 
-            var countdownTask = StartCountdown(durationInSeconds, cancellationTokenSource.Token);
+            var countdownTask = StartCountdown(durationValue, cancellationTokenSource.Token);
 
             try
             {
@@ -752,21 +736,26 @@ namespace Endurance_Testing
                                             double roundDuration,
                                             int currentRequests)
         {
-            string roundStats = $"Round {testRunner.CurrentRound} Statistics:{Environment.NewLine}" +
-                                $"Computer's CPU Usage: {currentCpuUsage}%{Environment.NewLine}" +
-                                $"Computer's RAM Usage: {currentRamUsage} MB{Environment.NewLine}" +
-                                $"Total Requests: {currentRequests}{Environment.NewLine}" +
-                                $"Successful Requests: {roundSuccessfulRequests}{Environment.NewLine}" +
-                                $"Failed Requests: {roundFailedRequests}{Environment.NewLine}" +
-                                $"Average Load Time: {averageRoundLoadTime} ms{Environment.NewLine}" +
-                                $"Average Wait Time: {averageRoundWaitTime} ms{Environment.NewLine}" +
-                                $"Average Response Time: {averageRoundResponseTime} ms{Environment.NewLine}" +
-                                $"Throughput: {throughput} requests/second{Environment.NewLine}" +
-                                $"Error Rate: {errorRate}%{Environment.NewLine}" +
-                                $"Round Duration: {roundDuration} seconds{Environment.NewLine}{Environment.NewLine}";
+            StringBuilder roundStats = new StringBuilder();
+            roundStats.AppendLine();
+            roundStats.AppendLine($"Round {testRunner.CurrentRound} Statistics:");
+            roundStats.AppendLine($"Computer's CPU Usage: {currentCpuUsage}%");
+            roundStats.AppendLine($"Computer's RAM Usage: {currentRamUsage} MB");
+            roundStats.AppendLine($"Total Requests: {currentRequests}");
+            roundStats.AppendLine($"Successful Requests: {roundSuccessfulRequests}");
+            roundStats.AppendLine($"Failed Requests: {roundFailedRequests}");
+            roundStats.AppendLine($"Average Load Time: {averageRoundLoadTime} ms");
+            roundStats.AppendLine($"Average Wait Time: {averageRoundWaitTime} ms");
+            roundStats.AppendLine($"Average Response Time: {averageRoundResponseTime} ms");
+            roundStats.AppendLine($"Throughput: {throughput} requests/second");
+            roundStats.AppendLine($"Error Rate: {errorRate}%");
+            roundStats.AppendLine($"Round Duration: {roundDuration} seconds");
+            roundStats.AppendLine();
 
-            textBoxOutput.AppendText(roundStats);
-            LogService.WriteLog(roundStats);
+            string roundStatsString = roundStats.ToString();
+
+            textBoxOutput.AppendText(roundStatsString);
+            LogService.WriteLog(roundStatsString);
             textBoxOutput.ScrollToCaret();
         }
 
@@ -927,9 +916,17 @@ namespace Endurance_Testing
             enduranceTestResults.Clear();
             textBoxApiKey.Clear();
             textBoxDiscordWebhook.Clear();
-            totalRequests = 0;
-            totalRequestsProcessed = 0;
-            durationInSeconds = 0;
+            testSummary.CurrentRound = 0;
+            testSummary.TotalSuccessfulRequests = 0;
+            testSummary.TotalFailedRequests = 0;
+            testSummary.TotalCpuUsage = 0;
+            testSummary.TotalRamUsage = 0;
+            testSummary.TotalLoadTime = 0;
+            testSummary.TotalWaitTime = 0;
+            testSummary.TotalResponseTime = 0;
+            testSummary.TotalResponses = 0;
+            testSummary.TotalRequestsProcessed = 0;
+            testSummary.TotalThroughput = 0;
             aiAnalysisResult = "";
             btnStart.Enabled = true;
             btnStop.Enabled = false;
@@ -961,20 +958,20 @@ namespace Endurance_Testing
         {
             TestSummary summary = new TestSummary
             {
-                TotalRequestsProcessed = totalRequestsProcessed,
-                TotalSuccessfulRequests = totalSuccessfulRequests,
-                TotalFailedRequests = totalFailedRequests,
-                CurrentRound = currentRound,
-                TotalCpuUsage = totalCpuUsage,
-                TotalRamUsage = totalRamUsage,
-                TotalLoadTime = totalLoadTime,
-                TotalWaitTime = totalWaitTime,
-                TotalResponseTime = totalResponseTime,
-                TotalResponses = totalResponses,
-                TotalThroughput = totalThroughput
+                TotalRequestsProcessed = testSummary.TotalRequestsProcessed,
+                TotalSuccessfulRequests = testSummary.TotalSuccessfulRequests,
+                TotalFailedRequests = testSummary.TotalFailedRequests,
+                CurrentRound = testSummary.CurrentRound,
+                TotalCpuUsage = testSummary.TotalCpuUsage,
+                TotalRamUsage = testSummary.TotalRamUsage,
+                TotalLoadTime = testSummary.TotalLoadTime,
+                TotalWaitTime = testSummary.TotalWaitTime,
+                TotalResponseTime = testSummary.TotalResponseTime,
+                TotalResponses = testSummary.TotalResponses,
+                TotalThroughput = testSummary.TotalThroughput
             };
 
-            if (currentRound > 0 && enduranceTestResults.Any())
+            if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
             {
                 summary.AverageRoundDuration = enduranceTestResults.Average(result => result.RoundDuration);
             }
@@ -997,17 +994,17 @@ namespace Endurance_Testing
         {
             TestSummary summary = new TestSummary
             {
-                TotalRequestsProcessed = totalRequestsProcessed,
-                TotalSuccessfulRequests = totalSuccessfulRequests,
-                TotalFailedRequests = totalFailedRequests,
-                CurrentRound = currentRound,
-                TotalCpuUsage = totalCpuUsage,
-                TotalRamUsage = totalRamUsage,
-                TotalLoadTime = totalLoadTime,
-                TotalWaitTime = totalWaitTime,
-                TotalResponseTime = totalResponseTime,
-                TotalResponses = totalResponses,
-                TotalThroughput = totalThroughput
+                TotalRequestsProcessed = testSummary.TotalRequestsProcessed,
+                TotalSuccessfulRequests = testSummary.TotalSuccessfulRequests,
+                TotalFailedRequests = testSummary.TotalFailedRequests,
+                CurrentRound = testSummary.CurrentRound,
+                TotalCpuUsage = testSummary.TotalCpuUsage,
+                TotalRamUsage = testSummary.TotalRamUsage,
+                TotalLoadTime = testSummary.TotalLoadTime,
+                TotalWaitTime = testSummary.TotalWaitTime,
+                TotalResponseTime = testSummary.TotalResponseTime,
+                TotalResponses = testSummary.TotalResponses,
+                TotalThroughput = testSummary.TotalThroughput
             };
 
             if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
@@ -1033,17 +1030,17 @@ namespace Endurance_Testing
         {
             TestSummary summary = new TestSummary
             {
-                TotalRequestsProcessed = totalRequestsProcessed,
-                TotalSuccessfulRequests = totalSuccessfulRequests,
-                TotalFailedRequests = totalFailedRequests,
-                CurrentRound = currentRound,
-                TotalCpuUsage = totalCpuUsage,
-                TotalRamUsage = totalRamUsage,
-                TotalLoadTime = totalLoadTime,
-                TotalWaitTime = totalWaitTime,
-                TotalResponseTime = totalResponseTime,
-                TotalResponses = totalResponses,
-                TotalThroughput = totalThroughput
+                TotalRequestsProcessed = testSummary.TotalRequestsProcessed,
+                TotalSuccessfulRequests = testSummary.TotalSuccessfulRequests,
+                TotalFailedRequests = testSummary.TotalFailedRequests,
+                CurrentRound = testSummary.CurrentRound,
+                TotalCpuUsage = testSummary.TotalCpuUsage,
+                TotalRamUsage = testSummary.TotalRamUsage,
+                TotalLoadTime = testSummary.TotalLoadTime,
+                TotalWaitTime = testSummary.TotalWaitTime,
+                TotalResponseTime = testSummary.TotalResponseTime,
+                TotalResponses = testSummary.TotalResponses,
+                TotalThroughput = testSummary.TotalThroughput
             };
 
             if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
@@ -1071,17 +1068,17 @@ namespace Endurance_Testing
             {
                 TestSummary summary = new TestSummary
                 {
-                    TotalRequestsProcessed = totalRequestsProcessed,
-                    TotalSuccessfulRequests = totalSuccessfulRequests,
-                    TotalFailedRequests = totalFailedRequests,
-                    CurrentRound = currentRound,
-                    TotalCpuUsage = totalCpuUsage,
-                    TotalRamUsage = totalRamUsage,
-                    TotalLoadTime = totalLoadTime,
-                    TotalWaitTime = totalWaitTime,
-                    TotalResponseTime = totalResponseTime,
-                    TotalResponses = totalResponses,
-                    TotalThroughput = totalThroughput
+                    TotalRequestsProcessed = testSummary.TotalRequestsProcessed,
+                    TotalSuccessfulRequests = testSummary.TotalSuccessfulRequests,
+                    TotalFailedRequests = testSummary.TotalFailedRequests,
+                    CurrentRound = testSummary.CurrentRound,
+                    TotalCpuUsage = testSummary.TotalCpuUsage,
+                    TotalRamUsage = testSummary.TotalRamUsage,
+                    TotalLoadTime = testSummary.TotalLoadTime,
+                    TotalWaitTime = testSummary.TotalWaitTime,
+                    TotalResponseTime = testSummary.TotalResponseTime,
+                    TotalResponses = testSummary.TotalResponses,
+                    TotalThroughput = testSummary.TotalThroughput
                 };
 
                 if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
@@ -1123,17 +1120,17 @@ namespace Endurance_Testing
                 {
                     TestSummary summary = new TestSummary
                     {
-                        TotalRequestsProcessed = totalRequestsProcessed,
-                        TotalSuccessfulRequests = totalSuccessfulRequests,
-                        TotalFailedRequests = totalFailedRequests,
-                        CurrentRound = currentRound,
-                        TotalCpuUsage = totalCpuUsage,
-                        TotalRamUsage = totalRamUsage,
-                        TotalLoadTime = totalLoadTime,
-                        TotalWaitTime = totalWaitTime,
-                        TotalResponseTime = totalResponseTime,
-                        TotalResponses = totalResponses,
-                        TotalThroughput = totalThroughput
+                        TotalRequestsProcessed = testSummary.TotalRequestsProcessed,
+                        TotalSuccessfulRequests = testSummary.TotalSuccessfulRequests,
+                        TotalFailedRequests = testSummary.TotalFailedRequests,
+                        CurrentRound = testSummary.CurrentRound,
+                        TotalCpuUsage = testSummary.TotalCpuUsage,
+                        TotalRamUsage = testSummary.TotalRamUsage,
+                        TotalLoadTime = testSummary.TotalLoadTime,
+                        TotalWaitTime = testSummary.TotalWaitTime,
+                        TotalResponseTime = testSummary.TotalResponseTime,
+                        TotalResponses = testSummary.TotalResponses,
+                        TotalThroughput = testSummary.TotalThroughput
                     };
 
                     if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
@@ -1152,8 +1149,7 @@ namespace Endurance_Testing
                         SelectedTimePeriod = selectedTimePeriod
                     };
 
-                    bool success = await discordWebhookService.SendToDiscord(webhookUrl,
-                        enduranceTestResults, summary, parameters, aiAnalysisResult);
+                    bool success = await discordWebhookService.SendToDiscord(webhookUrl, summary, parameters, aiAnalysisResult);
 
                     if (success)
                     {
@@ -1199,17 +1195,17 @@ namespace Endurance_Testing
             {
                 TestSummary summary = new TestSummary
                 {
-                    TotalRequestsProcessed = totalRequestsProcessed,
-                    TotalSuccessfulRequests = totalSuccessfulRequests,
-                    TotalFailedRequests = totalFailedRequests,
-                    CurrentRound = currentRound,
-                    TotalCpuUsage = totalCpuUsage,
-                    TotalRamUsage = totalRamUsage,
-                    TotalLoadTime = totalLoadTime,
-                    TotalWaitTime = totalWaitTime,
-                    TotalResponseTime = totalResponseTime,
-                    TotalResponses = totalResponses,
-                    TotalThroughput = totalThroughput
+                    TotalRequestsProcessed = testSummary.TotalRequestsProcessed,
+                    TotalSuccessfulRequests = testSummary.TotalSuccessfulRequests,
+                    TotalFailedRequests = testSummary.TotalFailedRequests,
+                    CurrentRound = testSummary.CurrentRound,
+                    TotalCpuUsage = testSummary.TotalCpuUsage,
+                    TotalRamUsage = testSummary.TotalRamUsage,
+                    TotalLoadTime = testSummary.TotalLoadTime,
+                    TotalWaitTime = testSummary.TotalWaitTime,
+                    TotalResponseTime = testSummary.TotalResponseTime,
+                    TotalResponses = testSummary.TotalResponses,
+                    TotalThroughput = testSummary.TotalThroughput
                 };
 
                 if (testRunner.CurrentRound > 0 && enduranceTestResults.Any())
@@ -1228,8 +1224,7 @@ namespace Endurance_Testing
                     SelectedTimePeriod = selectedTimePeriod
                 };
 
-                bool success = await discordWebhookService.SendToDiscord(webhookUrl,
-                    enduranceTestResults, summary, parameters, aiAnalysisResult);
+                bool success = await discordWebhookService.SendToDiscord(webhookUrl, summary, parameters, aiAnalysisResult);
 
                 if (success)
                 {

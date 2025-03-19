@@ -52,7 +52,7 @@ namespace Endurance_Testing.Helpers
             infoMessage.AppendLine("        Average Wait Time = Total Wait Time / Total Requests");
             infoMessage.AppendLine("8. Average Response Time:");
             infoMessage.AppendLine("    a. Description:");
-            infoMessage.AppendLine("        Average Response Time represents the mean response time per request during the endurance test (including successful and failed requests).");
+            infoMessage.AppendLine("        Average Response Time represents the mean response time per request during the endurance test.");
             infoMessage.AppendLine("    b. Formula:");
             infoMessage.AppendLine("        Average Response Time = Total Response Time / Total Requests");
             infoMessage.AppendLine("9. Throughput:");
