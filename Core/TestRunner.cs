@@ -282,7 +282,8 @@ namespace Endurance_Testing.Core
 
                         waitTimeStopwatch.Start();
 
-                        using (HttpResponseMessage response = await httpClient.SendCompressedAsync(request))
+                        using (HttpResponseMessage response = await httpClient.SendAsync(request,
+                                 HttpCompletionOption.ResponseHeadersRead, combinedToken.Token))
                         {
                             waitTime = waitTimeStopwatch.Elapsed;
                             waitTimeStopwatch.Stop();

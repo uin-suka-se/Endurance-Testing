@@ -18,8 +18,8 @@ namespace Endurance_Testing.Services
             _httpClient = new HttpClient();
         }
 
-        public async Task<bool> SendToDiscord(string webhookUrl, List<EnduranceTestResult> enduranceTestResults,
-            TestSummary summary, TestParameters parameters, string aiAnalysisResult = null)
+        public async Task<bool> SendToDiscord(string webhookUrl, TestSummary summary,
+                                              TestParameters parameters, string aiAnalysisResult = null)
         {
             try
             {
