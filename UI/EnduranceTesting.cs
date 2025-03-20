@@ -873,21 +873,10 @@ namespace Endurance_Testing
         {
 
             ContextMenuStrip helpMenu = new ContextMenuStrip();
-            helpMenu.Items.Add("Indonesia", null, (s, args) => ShowUserGuideID());
+            helpMenu.Items.Add("Bahasa Indonesia", null, (s, args) => ShowUserGuideID());
             helpMenu.Items.Add("English", null, (s, args) => ShowUserGuideEN());
 
             helpMenu.Show(btnHelp, new Point(0, btnHelp.Height));
-        }
-
-        private void ShowUserGuideID()
-        {
-            this.Hide();
-
-            UserGuideID userGuideIDForm = new UserGuideID();
-
-            userGuideIDForm.FormClosed += (s, args) => this.Show();
-
-            userGuideIDForm.Show();
         }
 
         private void ShowUserGuideEN()
@@ -899,6 +888,17 @@ namespace Endurance_Testing
             userGuideENForm.FormClosed += (s, args) => this.Show();
 
             userGuideENForm.Show();
+        }
+
+        private void ShowUserGuideID()
+        {
+            this.Hide();
+
+            UserGuideID userGuideIDForm = new UserGuideID();
+
+            userGuideIDForm.FormClosed += (s, args) => this.Show();
+
+            userGuideIDForm.Show();
         }
 
         private void btnInfo_Click(object sender, EventArgs e)

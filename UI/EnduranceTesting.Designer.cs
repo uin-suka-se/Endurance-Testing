@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EnduranceTesting));
-            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             lblApiKey = new System.Windows.Forms.Label();
             textBoxApiKey = new System.Windows.Forms.TextBox();
             textBoxInputMaxRequest = new System.Windows.Forms.TextBox();
@@ -465,7 +464,6 @@
         }
 
         #endregion
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Label lblApiKey;
         private System.Windows.Forms.TextBox textBoxApiKey;
         private System.Windows.Forms.TextBox textBoxInputMaxRequest;
