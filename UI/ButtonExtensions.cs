@@ -50,7 +50,6 @@ namespace Endurance_Testing.UI
 
             if (button.Tag is object[] colors && colors.Length >= 4)
             {
-                // Ganti warna saat hover
                 button.BackColor = (Color)colors[2];
                 button.ForeColor = (Color)colors[3];
                 button.Cursor = Cursors.Hand;
