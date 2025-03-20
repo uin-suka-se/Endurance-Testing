@@ -17,7 +17,7 @@ using Endurance_Testing.UI;
 
 namespace Endurance_Testing
 {
-    public partial class EnduranceTesting : UI.MacStyleTitleBar
+    public partial class EnduranceTesting : MacStyleTitleBar
     {
         private TestRunner testRunner;
         private TestSummary testSummary;
@@ -871,13 +871,34 @@ namespace Endurance_Testing
 
         private void btnHelp_Click(object sender, EventArgs e)
         {
-            ShowHelpMessageBox();
+
+            ContextMenuStrip helpMenu = new ContextMenuStrip();
+            helpMenu.Items.Add("Indonesia", null, (s, args) => ShowUserGuideID());
+            helpMenu.Items.Add("English", null, (s, args) => ShowUserGuideEN());
+
+            helpMenu.Show(btnHelp, new Point(0, btnHelp.Height));
         }
 
-        private void ShowHelpMessageBox()
+        private void ShowUserGuideID()
         {
-            string helpMessage = HelpManager.GenerateHelpMessage();
-            MessageBox.Show(helpMessage, "User Guide", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Hide();
+
+            UserGuideID userGuideIDForm = new UserGuideID();
+
+            userGuideIDForm.FormClosed += (s, args) => this.Show();
+
+            userGuideIDForm.Show();
+        }
+
+        private void ShowUserGuideEN()
+        {
+            this.Hide();
+
+            UserGuideEN userGuideENForm = new UserGuideEN();
+
+            userGuideENForm.FormClosed += (s, args) => this.Show();
+
+            userGuideENForm.Show();
         }
 
         private void btnInfo_Click(object sender, EventArgs e)
@@ -887,7 +908,7 @@ namespace Endurance_Testing
 
         private void ShowInfoMessageBox()
         {
-            string infoMessage = Helpers.InfoManager.GenerateInfoMessage();
+            string infoMessage = InfoManager.GenerateInfoMessage();
             MessageBox.Show(infoMessage, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

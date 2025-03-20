@@ -9,12 +9,23 @@
     <ApplicationIcon>ic_endurance_testing.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UserGuideEN.pdf" />
+    <None Remove="UserGuideID.pdf" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="ic_endurance_testing.ico" />
+    <Content Include="UserGuideEN.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UserGuideID.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CircularProgressBar_NET5" Version="3.0.0" />
     <PackageReference Include="ClosedXML" Version="0.104.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3124.44" />
   </ItemGroup>
 </Project>
