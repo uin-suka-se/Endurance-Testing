@@ -159,6 +159,18 @@ Click the "Export" button to save results in Excel, CSV, JSON, or HTML format, o
 
 This **Endurance Testing** project is licensed under the [MIT License](LICENSE).
 
+## Third-Party Libraries
+
+This project uses the following third-party libraries, each with their own licenses:
+
+- CircularProgressBar_NET5 3.0.0
+- ClosedXML 0.104.2
+- Microsoft.Extensions.DependencyInjection 9.03
+- Microsoft.Extensions.Http 9.03
+- Microsoft.Web.WebView2 1.0.3124.44
+
+For more information, refer to the respective license files provided with these libraries.
+
 ## Contact and Information
 
 This application was developed by Rahma Bintang Pratama.
