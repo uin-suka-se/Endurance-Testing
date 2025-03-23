@@ -30,11 +30,15 @@ namespace Endurance_Testing.UI
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MacStyleTitleBar));
             SuspendLayout();
-
+            // 
+            // MacStyleTitleBar
+            // 
             ClientSize = new Size(284, 261);
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Pixel);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
             Name = "MacStyleTitleBar";
+            StartPosition = FormStartPosition.CenterScreen;
             ResumeLayout(false);
         }
 
