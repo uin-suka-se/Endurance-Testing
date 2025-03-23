@@ -6,7 +6,7 @@
 
 ## Description
 
-The Endurance Testing application is a tool for evaluating the performance and stability of web applications through continuous load testing. It enables users to send multiple HTTP requests simultaneously to a specified URL while monitoring various performance metrics such as load time, wait time, response time, throughput, and error rate.
+The Endurance Testing Software is a tool for evaluating the performance and stability of web applications through continuous load testing. It enables users to send multiple HTTP requests simultaneously to a specified URL while monitoring various performance metrics such as load time, wait time, response time, throughput, and error rate.
 
 ## Features
 
