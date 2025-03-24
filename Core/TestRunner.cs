@@ -285,16 +285,17 @@ namespace Endurance_Testing.Core
                         using (HttpResponseMessage response = await httpClient.SendAsync(request,
                                  HttpCompletionOption.ResponseHeadersRead, combinedToken.Token))
                         {
-                            waitTime = waitTimeStopwatch.Elapsed;
                             waitTimeStopwatch.Stop();
+                            waitTime = waitTimeStopwatch.Elapsed;
 
                             loadTimeStopwatch.Start();
 
                             await response.Content.ReadAsStringAsync();
 
-                            loadTime = loadTimeStopwatch.Elapsed;
                             loadTimeStopwatch.Stop();
+                            loadTime = loadTimeStopwatch.Elapsed;
 
+                            totalStopwatch.Stop();
                             responseTime = totalStopwatch.Elapsed;
 
                             return new EnduranceTestResult
