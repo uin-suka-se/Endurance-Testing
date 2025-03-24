@@ -38,7 +38,8 @@ namespace Endurance_Testing.Services
                                       $"Average Throughput: {averageThroughput} requests/second\n" +
                                       $"Average Error Rate: {averageErrorRate}%\n";
 
-                    string prompt = "The following definitions apply to this analysis: " +
+                    string prompt = "The HTTP method used for these endurance tests is GET, meaning requests retrieve data from the server without modifying it. " +
+                                    "The following definitions apply to this analysis: " +
                                     "Response time: refers to the time spent between sending a request to the server and receiving the response. It is measured in kilobytes per second. " +
                                     "Throughput: refers to the number of requests/transactions processed in a certain amount of time during the test. It shows the amount of the required capacity that the Application Under Test can handle. Throughput depends on the number of concurrent users. " +
                                     "Wait time: It is called the average latency. It refers to the time taken until the developer receives the first byte after sending a request. " +

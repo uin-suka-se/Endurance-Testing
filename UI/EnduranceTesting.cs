@@ -598,6 +598,16 @@ namespace Endurance_Testing
                 return;
             }
 
+            if (timeoutValue > durationValue)
+            {
+                MessageBox.Show("Timeout value cannot exceed the duration value.",
+                     "Invalid Input",
+                     MessageBoxButtons.OK,
+                     MessageBoxIcon.Warning);
+                isRunning = false;
+                return;
+            }
+
             string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EnduranceTestLog.txt");
             if (File.Exists(logFilePath))
             {
