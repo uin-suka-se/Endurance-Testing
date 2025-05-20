@@ -37,7 +37,7 @@ The Endurance Testing Software is a tool for evaluating the performance and stab
 
 ## Installation
 
-1. Download the latest release from the [Releases page](https://github.com/rahmabintangpratama/Endurance-Testing/releases)
+1. Download the latest release from the [Releases page](https://github.com/uin-suka-se/Endurance-Testing/releases)
 2. Extract the ZIP file to your desired location
 3. Run the installer package `Endurance-Testing-Installer.msi`
 
@@ -175,7 +175,7 @@ For more information, refer to the respective license files provided with these 
 
 This application was developed by Rahma Bintang Pratama.
 
-Project Link: [https://github.com/rahmabintangpratama/Endurance-Testing](https://github.com/rahmabintangpratama/Endurance-Testing)
+Project Link: [https://github.com/uin-suka-se/Endurance-Testing](https://github.com/uin-suka-se/Endurance-Testing)
 
 > "Endurance testing, also known as soak testing, involves subjecting an application to a sustained load for an extended period. This methodology helps uncover memory leaks, resource depletion, and other performance degradation issues that might only surface after prolonged usage." [`[1]`](https://www.doi.org/10.21275/SR23822111402)
 > 
